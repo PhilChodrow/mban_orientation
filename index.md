@@ -11,15 +11,15 @@ The course aims to familiarize students with the major stages of the circle of d
 
 You can [download](https://github.com/PhilChodrow/data_science_intro/archive/master.zip) all the course materials as a `.zip` file, or access individual materials through the links below. 
 
-## Introduction - Phil
+## Introduction - Daisy + Phil
 
 - [Slides](https://philchodrow.github.io/data_science_intro/introduction/introduction.html) ([source](https://philchodrow.github.io/data_science_intro/introduction/introduction.md))
 
-## Data Wrangling and Visualization - Daisy
+## Data Wrangling and Visualization - Phil
 
 - [Slides](https://philchodrow.github.io/data_science_intro/wrangle_viz/slides.html) ([source](https://philchodrow.github.io/data_science_intro/wrangle_viz/slides.md))
 - [Notes](https://philchodrow.github.io/data_science_intro/wrangle_viz/notes.html) ([source](https://philchodrow.github.io/data_science_intro/wrangle_viz/notes.md))
 - [Script](https://philchodrow.github.io/data_science_intro/wrangle_viz/script.R) ([complete](https://philchodrow.github.io/data_science_intro/wrangle_viz/script_complete.R))
 
-## Case Study
+## Case Study - Daisy
 
