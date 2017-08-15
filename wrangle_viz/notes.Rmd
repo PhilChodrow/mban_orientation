@@ -1,0 +1,163 @@
+---
+title: "Data Preparation and Exploration"
+subtitle: "Import, Wrangling, and Visualization in `R`"
+author: "Phil Chodrow"
+date: "8/15/2017"
+output: 
+  html_document:
+    theme: sandstone
+    highlight: tango
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Load the Tidyverse
+
+```{r}
+library(tidyverse)
+```
+
+# Load the Data
+
+The tidyverse provides the `read_csv` function for easily importing data sets in `.csv` format. Functions like `read_tsv`, `read_table`, and `read_delim` will read in alternative formats. 
+
+```{r}
+listings <- read_csv('../data/listings.csv')
+```
+
+# Look Around, Look Around...
+
+The first thing you should do when you access a new data set is look around to get an overview of its structure. One easy way to do this is to just type the name of the data set into the console. 
+
+```{r}
+listings
+```
+
+We've learned that our data set is a `tibble` (also called a "data frame") with `r nrow(listings) ` rows and `r length(listings)` columns. Most of the columns are either `int` (integers), `dbl` (decimal numbers), or `chr` (character strings). There are a few columns with the more specialized `date` data type. 
+
+This much info can be a bit overwhelming. You can query specific aspects of the data using some of the commands below: 
+
+```{r}
+head(listings) # just the first few rows
+colnames(listings) # just the names of the columns
+```
+
+Arguably the most useful function for peaking at your data is `glimpse`. 
+```{r}
+glimpse(listings)
+```
+
+We get a more readable view of the data, including row and column counts, column types, and the first few entries of each column. 
+
+# Leci n'est pas...
+
+Let's start by considering a slightly more complex task. We want to summarise the types of the columns in `listings`. How many `int` columns are there? How many `dbl`s? Etc? 
+
+You don't need to worry about the details of the code at this point, but here's a solution:
+
+```{r}
+table(unlist(map(listings, class)))
+```
+
+In this solution, `map` applies the function `class` to each column of `listings`, `unlist` converts the result into a vector, and `table` does the counting. Functionally, this solution has the form 
+
+```
+h(g(f(x))).
+```
+
+When we want to string together long, complex operations, this *nested* structure will be difficult to read, write, and troubleshoot. The tidyverse provides an alternative syntax that we'll be using throughout our programming today: the *pipe*, written `%>%`. 
+
+![](https://upload.wikimedia.org/wikipedia/en/b/b9/MagrittePipe.jpg)
+
+Simply put: 
+
+> `x %>% f()` is the same as `f(x)`. 
+
+If you are working with a function with multiple arguments, the pipe applies to the first argument: 
+
+> `x %>% g(y)` is the same as `g(x,y)`
+
+Using the pipe, we can rewrite our queries above: 
+
+```{r, eval = FALSE}
+listings %>% head()
+listings %>% colnames()
+listings %>% glimpse()
+listings %>% map(class) %>% unlist() %>% table()
+```
+
+The result is that we can string together simple operations to make complex ones, while keeping our code readable. 
+
+## Filter, Select, Arrange
+
+Now let's start digging into our data. Let's start by taking a simple approach to the following useful question: 
+
+> What are the "nicest" listings in Jamaica Plain?
+
+For any data scientific question, there are usually many good ways to answer it. This time, our approach will be to construct a list of all listings in Jamaica Plain, sorted in descending order by rating. To do this, we'll need to: 
+
+1. `Filter` out all listings that aren't in Jamacia Plain.
+2. `Arrange` the rows of the resulting data frame in descending order by rating. 
+3. `Select` a small number of columns so that we don't display irrelevant ones. 
+
+Using the `%>%` syntax and the tidyverse's natural function library, we can write out code that corresponds exactly to this sequence of steps. 
+
+```{r}
+listings %>% 
+	filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test
+	arrange(desc(review_scores_rating)) %>%           # desc() makes descending order 
+	select(neighbourhood, name, review_scores_rating) # show only these three columns
+```
+
+You don't really need to know `R` to understand what's going on here: the readable syntax makes it easy to piece together. The main tricks to remember are: 
+
+1. `filter` requires a logical test, for which `R` uses operators like `==`, `>=`, and `%in%` to check for membership. 
+2. `filter` operates on rows, `select` operates on columns.
+3. `arrange` by default will sort in ascending order, so use `desc` if you need it. 
+4. Due to the magic of so-called "nonstandard evaluation," you should use **unquoted** column names in pipelines like these. That is, `listings %>% select("neighborhood")` is **wrong**: `listings %>% select(neighborhood)` is correct. 
+
+Just to reinforce the value of the pipe, compare our solution above to the following two alternatives. The first uses nested syntax, while the second stores each stage in an intermediate step. 
+
+```{r, eval = FALSE}
+
+# illegible
+select(arrange(filter(listings, neighbourhood == 'Jamaica Plain'), desc(review_scores_rating)), neighbourhood, name, review_scores_rating)
+
+# wastes memory storing intermediate objects, repetitive typing 
+intermediate_1 <- filter(listings, neighbourhood == 'Jamaica Plain')
+intermediate_2 <- arrange(intermediate_1, desc(review_scores_rating))
+select(intermediate_2, neighbourhood, name, review_scores_rating)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+## Construct New Columns
+
+## Summary Statistics
+
+# Data Visualization
+
+The single most important way of exploring your data is to *visualize it*. Human beings are garbage at processing long lists of numbers, but we are very good at seeing visual trends, even in very complex data sets. Effective communication through data visualization rests on *graphical excellence*, as defined by [Edward Tufte](https://en.wikipedia.org/wiki/Edward_Tufte).
+
+> Graphical excellence is the well-designed presentation of interesting data -- a matter of *substance*, of *statistics*, and of *design*. 
+
+> Graphical excellence consists of complex ideas communicated with clarity, precision, and efficiency. 
+
+Now let's use `ggplot2` and tidyverse principles to achieve clarity, precision, and efficiency. 
+
+## 
+
+

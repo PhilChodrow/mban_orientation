@@ -1,0 +1,92 @@
+---
+title: "Data Preparation and Exploration"
+author: "Phil Chodrow"
+date: "8/15/2017"
+output: 
+  ioslides_presentation:
+    logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
+    css: ../slide_style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
+```
+
+# Introduction
+
+## What We'll Do This Morning
+
+- Work with real and interesting data
+- Create appealing and informative visualizations
+- Draw useful conclusions
+
+[*David Robinson*](http://varianceexplained.org/r/teach-tidyverse/)
+
+## Why Data Preparation?
+
+![](http://r4ds.had.co.nz/diagrams/data-science.png)
+
+
+
+
+## The 80/20 Rule
+
+## FYI: Base `R` 
+
+> - `R` without any packages offers ways to do most of the things we will see today. 
+> - But base `R` is not a very good programming language. 
+> - So, we will use....
+
+## The Tidyverse
+
+> - "Programs must be written for people to read and only incidentally for machines to execute" - [Hal Abelson](https://en.wikipedia.org/wiki/Hal_Abelson)
+
+The Tidyverse is a set of packages that promote code which is: 
+
+- Easy to read and write
+- Highly performant
+- Consistent across the data science workflow
+
+**When you master the Tidyverse, you spend more time thinking about your problem and less time thinking about your code.** 
+
+# Data Wrangling 
+
+## "So your data is..."
+
+- Incomplete
+- Inconsistent
+- In many pieces
+- "Shaped funny"
+- ...
+
+
+
+
+
+
+
+# Data Visualization with `ggplot2`
+
+## Graphical Excellence
+
+> Graphical excellence is the well-designed presentation of interesting data -- a matter of *substance*, of *statistics*, and of *design*. 
+
+> Graphical excellence consists of complex ideas communicated with clarity, precision, and efficiency. -- *Edward Tufte*
+
+## Visualization Problems are Wrangling Problems
+
+> "In my experience, the vast majority of graphing agony is due to insufficient data wrangling." - [Jenny Bryan](http://stat545.com/cm006_tibbles-dplyr-ggplot2.html)
+
+
+# Reference (might get folded in)
+
+## Map of the Tidyverse
+
+```{r}
+knitr::include_graphics("https://rviews.rstudio.com/post/2017-06-09-What-is-the-tidyverse_files/tidyverse1.png")
+```
+
+
+
+
+
