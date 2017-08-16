@@ -1,0 +1,116 @@
+---
+title: "Case Study - Machine Learning in R"
+author: "Daisy Zhuo"
+date: "8/15/2017"
+output: 
+  ioslides_presentation:
+    logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
+    css: ../slide_style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
+```
+
+# Introduction
+
+## What We'll Do This Afternoon
+
+- Form hypothesis for machine learning
+- Introducing basic machine learning methods
+- Continue working with the data to a format good for machine learning
+- Implement some in R
+
+## Why Machine Learning?
+- Prediction
+- Pattern recognition 
+- Interpretation and diagnosis
+- ...
+
+## Types of machine learning
+
+- Supervised learning: learn a function to map predictor variables ($\mathbf{X}$) to response variables ($\mathbf{Y}$)
+  - Linear models
+  - SVM, CART, random forest
+  - Neural networks
+- Unsupervised learning: learn the structure of data points
+  - Clustering (k-means, hierarchical clustering)
+  - Anomaly detection
+- Semi-supervised learning
+
+## Model selection and evaluation
+> - Model evaluation
+  - Perform on a separate set (train/test split)
+  - Regression: $R^2$, MSE
+  - Classification: Accuracy, confusion table, AUC
+> - Model selection
+  - Cross validation (train/validation/test split)
+  - Selection criterion
+
+
+
+# Case Study - Regression
+## Generating hypotheses
+
+- Take 15 minutes to come up with your predictive models for the price, keep the following in mind:
+  - Which factors influence price?
+  - Should it be linear?
+  - Should variables be transformed?
+  - Advanced: additional data to be joined on?
+- Use visualization, data summary from the morning to explore
+
+## First linear model
+- Before running the model, recall we need to split the data first:
+```r
+library(modelr)
+listings_for_lm = listings_for_lm %>% 	
+  resample_partition(c(train=0.7,test=0.3))	
+```
+
+- Use the lm command. Example:
+```r
+mylm = lm(price ~ (your variable of choice),data=listings_for_lm$train)
+```
+
+- To look at the model, use the summary command:
+```r
+summary(mylm)	
+```
+
+## Evaluating first model
+- How would you visualize the model fit? Spend 10 minutes to come up with your visualizations
+
+
+## Add more variables
+- Inspect the "amenities" column. Need some data cleaning to make it useful!
+
+## LASSO
+
+## Comparing models
+
+
+
+# Case Study - Classification
+## Generating hypotheses
+- Now think about a binary variable that you might find interesting to predict
+- Come up with a model to explain the variable
+
+
+## Logistic regression
+- Use the glm function for generalized linear models
+```r
+l.glm = glm(amenity_Elevator_in_Building ~ price,family="binomial",data=listings_glm$train)
+summary(l.glm)
+```
+
+## Additional Resources
+> - [The Elements of Statistical Learning]("https://web.stanford.edu/~hastie/ElemStatLearn/")
+
+## The End
+Special thanks to Clark Pixton, Colin Pawlowski, and Jerry Kung for previous course materials.
+
+
+
+
+
+

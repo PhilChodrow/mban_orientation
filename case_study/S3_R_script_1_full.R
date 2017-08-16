@@ -1,5 +1,5 @@
 
-#' # Statistical Modelling and Machine Learning in R: Part 1
+#' # Statistical Modelling and Machine Learning in R
 
 #' ## Regression	
 #' Within the world of supervised learning, we can divide tasks into two parts. In settings where the response variable is continuous we call the modelling *regression*, and when the response is categorical we call it *classification*. We will begin with regression to understand what factors influence price in the AirBnB data set.	
@@ -7,7 +7,7 @@
 #' Let's start by loading the data (after first setting the correct working directory). We'll use the 'listings.csv' file for now. Since we'll be wrangling and visualizing, we'll also load the `tidyverse` package. (Instead of `tidyverse`, it also works to load `tidyr`, `dplyr`, and `ggplot2` as we saw last session.)	
 
 
-listings = read.csv("listings.csv",stringsAsFactors = FALSE)	
+listings = read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
 library(tidyverse)	
 
 
@@ -23,8 +23,7 @@ summary(listings$price) # Check to make sure things worked
 #' #### Data Preparation	
 #' Let's begin by looking at the relationship between `listings$accommodates` and `listings$price`. As a first look:	
 
-plot(listings$accommodates,listings$price) # Note: I use base R instead of ggplot2 for the really simple first-blush plots	
-
+ggplot(listings, aes(x=accommodates, y=price))+geom_point()
 
 #' Looks like there are some outliers on both axes. There are fancier ways to deal with this statistically, but for today let's just get rid of the outliers and fit a model on the cleaner data:	
 
@@ -33,7 +32,11 @@ listings_for_lm = listings %>%
 
 #' Let's take another look:	
 
-plot(listings_for_lm$accommodates,listings_for_lm$price)	
+ggplot(listings_for_lm, aes(x=accommodates, y=price))+geom_point()
+
+
+#' 
+
 
 
 #' You may argue that it's still a bit messy, but let's see what we can do with a linear model. Since we care about prediction accuracy, we'll reserve a portion of our data to be a test set. There are lots of ways to do this. We'll use the `modelr` package, which is part of the `tidyverse`.	
@@ -197,8 +200,19 @@ listings %>% select(amenities) %>% head()
 
 #' This could be good predictive information if we can separate out which listing has which amenity. Our goal here is to turn the amenities column into many columns, one for each amenity, and with logical values indicating whether each listing has each amenity. This is just a bit tricky, so I've written a function called `clean_amenities` that will do this for us. We need to `source()` the file that has this function in it, and then we'll call it on the `listings` data frame.	
 
-source("../3_modeling_and_ml/clean_amenities.R")	
-listings = clean_amenities(listings)	
+listings = listings %>%
+  filter(!grepl("translation missing",amenities)) %>%
+  mutate(amenities=gsub("[{}]|\"|[()]|-","",amenities)) %>%
+  mutate(amenities=gsub(" |/","_",amenities)) %>%
+  mutate(amenities=gsub("24","x24",amenities))
+
+# Then, split the strings by amenity and create new column
+splitting = strsplit(listings$amenities,",")
+all_amenities = Reduce(union,splitting)
+for (i in all_amenities){
+  listings[paste("amenity_",i,sep="")] = grepl(i,listings$amenities)
+}
+
 
 #' In total, we'll use all of these predictors:	
 
