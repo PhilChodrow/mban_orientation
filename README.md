@@ -27,7 +27,8 @@ This training does not require any specific theoretical background. However, all
 2. An installation of `RStudio`.
 3. Installations of the following packages: 
     - `tidyverse`
-    - OTHER???
+    - `glmnet`
+    - `ROCR`
 
 
 If you can follow the instructions below, you should be in good shape. 
@@ -37,7 +38,7 @@ If you can follow the instructions below, you should be in good shape.
 3. **Test Your Installation**: Open RStudio and type 1+2 into the Console window, and press "Enter." 
 4. **Install packages**: In the RStudio console, type 
 ```
-install.packages(c('tidyverse', OTHER???))
+install.packages(c('tidyverse', 'glmnet', 'ROCR'))
 ```
 5. Copy and paste the following code into the console window and press "Enter:"
 ```
