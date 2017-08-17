@@ -51,7 +51,7 @@ install.packages(c('tidyverse', 'knitr', 'flexdashboard' 'glmnet', 'ROCR'))
 
 ## 3. Test Packages
 
-- **Test for Wrangling and Visualization**: Open the file `wrangle_viz/preassignment_1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](preassignment_1.html).  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. 
+- **Test for Wrangling and Visualization**: Open the file `wrangle_viz/preassignment_1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/data_science_intro/wrangle_viz/preassignment_1.html).  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. 
 
 
 
