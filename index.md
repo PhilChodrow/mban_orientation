@@ -19,7 +19,7 @@ You can [download](https://github.com/PhilChodrow/data_science_intro/archive/mas
 
 - [Slides](https://philchodrow.github.io/data_science_intro/wrangle_viz/slides.html) ([source](https://philchodrow.github.io/data_science_intro/wrangle_viz/slides.md))
 - [Notes](https://philchodrow.github.io/data_science_intro/wrangle_viz/notes.html) ([source](https://philchodrow.github.io/data_science_intro/wrangle_viz/notes.md))
-- [Script](https://philchodrow.github.io/data_science_intro/wrangle_viz/script.R) ([complete](https://philchodrow.github.io/data_science_intro/wrangle_viz/script_complete.R))
+- [Script](https://philchodrow.github.io/data_science_intro/wrangle_viz/full_script.R) ([complete](https://philchodrow.github.io/data_science_intro/wrangle_viz/full_script.R))
 
 ## Case Study - Daisy
 
