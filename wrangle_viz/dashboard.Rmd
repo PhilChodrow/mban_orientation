@@ -13,20 +13,55 @@ library(flexdashboard)
 library(tidyverse)
 ```
 
-
-
 ```{r data_prep}
-# put your data preparation code here. To get you started, the data preparation we performed in the session previously has already been pasted in. 
+# put your data preparation code here. To get you started, the data preparation we performed in the session previously has already been pasted in. Feel free to add any additional data preparation code needed for your visualizations
 
+listings <- read_csv('../data/listings.csv')
+calendar <- read_csv('../data/calendar.csv')
+
+current_table <- calendar %>% 
+	filter(!is.na(price), 
+		   date < lubridate::today(),
+		   date > lubridate::mdy('6/1/2016')) %>%
+	group_by(listing_id) %>% 
+	summarise(last_active = max(date))
+
+recent_listings <- listings %>% 
+	left_join(current_table, by = c('id' = 'listing_id')) %>% 
+	filter(last_active > lubridate::mdy('6/1/2016'))
+
+summary_table <- recent_listings %>% 
+	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   price_per = price / accommodates,
+		   weekly_price = weekly_price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   weekly_price_per = weekly_price / accommodates)  %>% 
+	group_by(neighbourhood, property_type) %>% 
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
+			  price_per = mean(price_per, na.rm = TRUE),
+			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  capacity = sum(beds)) %>% 
+	ungroup()
 ```
 
 Column {data-width=650}
 -----------------------------------------------------------------------
 
 ### Box 1
-Put the code for your main visualization here. 
-```{r box_1}
 
+```{r box_1}
+# Put the code for your main visualization here. A high-quality main visualization will likely use `color`, `fill`, or `facet_wrap` to make help decision-makers make comparisons between different categories.  
+# 
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
+	geom_point(alpha = .5) + 
+	theme_bw() + 
+	### <b>
+	facet_wrap(~property_type) + 
+	### </b>
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
 ```
 
 Column {data-width=350}
@@ -34,15 +69,23 @@ Column {data-width=350}
 
 ### Box 2
 
-Frequently, visualization for decision-makers are most useful when accompanied by analysis, interpretation, and sometimes a recommendation by the analyst. Feel free to fill in your own commentary on your visualizations in this box or the one below. You can leave the `r` code chunk blank for your commentary box. 
+Frequently, visualization for decision-makers are most useful when accompanied by analysis, interpretation, and sometimes a recommendation by the analyst. Feel free to fill in your own commentary on your visualizations in this box or the one below. You can leave the `R` code chunk blank for your commentary box. 
 
 ```{r box_2}
 
 ```
 
 ### Box 3
-Put the code for a supporting visualization here. This visualization should add context and nuance, but expect the main visualization to convey the bulk of your message. 
-```{r box_3}
 
+```{r box_3}
+# Put the code for a supporting visualization here. This visualization should add context and nuance, but expect the main visualization to convey the bulk of your message. 
+
+summary_table %>% 
+	ggplot() + 
+	###<b>
+	aes(x = reorder(neighbourhood, n), y=n, fill = property_type) + 
+	###</b>
+	coord_flip() + 
+	geom_bar(stat = 'identity') 
 ```
 

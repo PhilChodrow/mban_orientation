@@ -87,13 +87,49 @@ calendar <- read_csv('../data/calendar.csv')
 
 Conceptually, we need to: `filter` to only JP listings, `arrange` the listings by rating, and `select` only the columns we want to see. Let's write some code!  
 
-## Exercise 1: The Biggest Place in Back Bay
+## The Pipe
+
+## Stuff on the pipe here
+
+## Exercise 1: 
+
+Working with your partner, please rewrite the JP code using the pipe operator. Here's the first line to get you started:
+
+```{r, eval = FALSE}
+listings %>% 
+	filter(neighbourhood == 'Jamaica Plain')
+# ...
+```
+
+
+## Exercise 1 Sample Code
+
+```{r, eval = FALSE}
+listings %>% 
+	filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test
+	arrange(desc(review_scores_rating)) %>%           # desc() makes descending order 
+	select(neighbourhood, name, review_scores_rating)
+```
+
+## Exercise 1 Sample Output
+
+
+```{r, echo = FALSE}
+listings %>% 
+	filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test
+	arrange(desc(review_scores_rating)) %>%           # desc() makes descending order 
+	select(neighbourhood, name, review_scores_rating) %>%
+	DT::datatable(options = list(pageLength = 4)) 
+```
+
+
+## Exercise 2: The Biggest Place in Back Bay
 
 You are going to spend a long weekend in Back Bay with 50 of your closest friends.
 
 Working with your partner, modify your code slightly to construct a table of the listings in Back Bay, sorted by the number of people who can stay there. You may need to use `glimpse` to see which columns you'll want to use. 
 
-## Exercise 1: Sample Code
+## Exercise 2: Sample Code
 
 ```{r, eval = FALSE}
 listings %>% 
@@ -102,7 +138,7 @@ listings %>%
 	select(neighbourhood, name, accommodates, price)
 ```
 
-## Exercise 1: Sample Output
+## Exercise 2: Sample Output
 
 ```{r, echo = FALSE}
 listings %>% 
@@ -118,38 +154,71 @@ listings %>%
 2. Adding Columns
 3. Grouping
 
-## `summarise`
 
-## `group_by`
+## Exercise 3 
 
-## `mutate`
 
-## Exercise
+Modify the summary table as follows: 
 
-## Sample Solution: Code
+1. Group by property_type as well as neighborhood. How does this impact the output?
+2. Add a new column to the table with the average rate per person for WEEKLY rentals, using the weekly_price column. 
+3. Add a new column giving the total "capacity" for each neighborhood, given as the total number of beds in rentals in that neighborhood. 
 
-```{r, echo = TRUE}
+## Exercise 3 Sample Code
+
+```{r, warning = FALSE}
 summary_table <- listings %>% 
-	mutate(price = as.numeric(gsub('\\$|,', '', price)),
-		   price_per = price / accommodates) %>% 
-	group_by(neighbourhood) %>% 
+	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   price_per = price / accommodates,
+		   weekly_price = weekly_price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   weekly_price_per = weekly_price / accommodates)  %>% 
+	group_by(neighbourhood, property_type) %>% 
 	summarize(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
-			  price_per = mean(price_per, na.rm = TRUE)) 
+			  price_per = mean(price_per, na.rm = TRUE),
+			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  capacity = sum(beds)) 
 ```
 
-## Sample Solution: Output
+## Exercise 3 Sample Output {.smaller}
 
 ```{r, echo = FALSE}
 summary_table %>%
 	DT::datatable(options = list(pageLength = 5)) %>% 
-	DT::formatRound(c('mean_rating', 'price_per'), 1)
+	DT::formatRound(c('mean_rating', 'price_per', 'weekly_price_per'), 1)
+```
+
+## Exercise 4 {.smaller}
+
+If you check `summary_table`, you'll notice that it has exactly one grouping column: `neighbourhood`. Working with your partner, 
+
+1. Explain why there is just one grouping column when we made two groups in Exercise 3. 
+2. Use `mutate` to construct a `rank` column where the top-ranked row has the highest value of `n` (i.e. most popular type). You might want the `min_rank` function and the `desc` function we used when sorting. What behavior do you observe?
+3. Filter to include only rows of rank 3 or less. 
+3. Sort the rows in descending order by `n` using `arrange`. What behavior do you observe now? See if you can get the table sorted in descending order by rank, while keeping neighbourhoods grouped together. 
+
+## Exercise 4 Sample Code
+
+```{r}
+ranked_summary_table <- summary_table %>% 
+	mutate(rank = min_rank(desc(n))) %>% 
+	filter(rank <= 3) %>% 
+	arrange(neighbourhood, rank)
+```
+
+## Exercise 4 Sample Output {.smaller}
+
+```{r, echo = FALSE}
+ranked_summary_table %>%
+	DT::datatable(options = list(pageLength = 5)) %>% 
+	DT::formatRound(c('mean_rating', 'price_per', 'weekly_price_per'), 1)
 ```
 
 # Keeping Current
 
 1. More practice with `filter` and `summarise`
 2. `join`ing data
+
 
 ## How Current Is This Info?
 
@@ -172,8 +241,6 @@ lubridate::mdy('6/1/2016')
 ```
 
 You can also use `lubridate::today()`. You can use `max()` to get the most recent date.
-
-
 
 ## Sample Solution: Code
 
@@ -317,7 +384,9 @@ listings %>%
 
 ```{r, warning = FALSE, out.width = 500, out.height=300}
 listings %>% 
+	### <b>
 	filter(number_of_reviews < 100) %>%
+	### </b>
 	ggplot() + 
 	aes(x = number_of_reviews, y = review_scores_rating) + 
 	geom_point(alpha = .2) + 
@@ -343,48 +412,202 @@ listings %>%
 	filter(number_of_reviews < 100) %>%
 	ggplot() + 
 	aes(x = number_of_reviews, y = review_scores_rating) + 
+	### <b>
 	geom_point(alpha = .2, color = 'firebrick') + 
+	### </b>
 	theme_bw() + 
 	labs(x='Number of Reviews', y='Review Score',title='Review Volume and Review Quality') 
 ```
 
-## Back to the Case Study
+## Changing It Up {.smaller}
 
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	### <b>
+	aes(x = review_scores_value, 
+		y = review_scores_location, 
+		size = number_of_reviews) + 
+	### </b>
+	geom_point(alpha = .2, color = 'firebrick') + 
+	theme_bw() 
+```
 
+## As a Heatmap {.smaller}
 
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = review_scores_value, 
+		y = review_scores_location, 
+	### <b>
+		fill = number_of_reviews) + 
+	geom_tile() + 
+	### </b>
+	theme_bw() 
+```
 
+## Exercise 6
 
+The following code computes the average price of all listings on each day in the data set:
+```{r, warning = FALSE}
+average_price_table <- calendar %>% 
+	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric()) %>% 
+	group_by(date) %>% 
+	summarise(mean_price = mean(price, na.rm = TRUE))
+```
 
+Use `geom_line()` to visualize these prices with time on the `x`-axis and price on the `y`-axis. 
 
+## Exercise 6 Sample Solution
 
+```{r,  out.width = 500, out.height=300}
+ average_price_table %>% 
+	ggplot() + 
+	aes(x = date, y = mean_price) + 
+	geom_line()
+```
 
-```{r, echo = FALSE}
-summary_table <- listings %>% 
-	mutate(price = as.numeric(gsub('\\$|,', '', price)),
-		   price_per = price / accommodates) %>% 
-	group_by(neighbourhood) %>% 
+## Exercise 7
+
+```{r, warning = FALSE, echo = FALSE}
+
+current_table <- calendar %>% 
+	filter(!is.na(price), 
+		   date < lubridate::today(),
+		   date > lubridate::mdy('6/1/2016')) %>%
+	group_by(listing_id) %>% 
+	summarise(last_active = max(date))
+
+recent_listings <- listings %>% 
+	left_join(current_table, by = c('id' = 'listing_id')) %>% 
+	filter(last_active > lubridate::mdy('6/1/2016'))
+
+summary_table <- recent_listings %>% 
+	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   price_per = price / accommodates,
+		   weekly_price = weekly_price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   weekly_price_per = weekly_price / accommodates)  %>% 
+	group_by(neighbourhood, property_type) %>% 
 	summarize(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
-			  mean_price_per = mean(price_per, na.rm = TRUE)) 
+			  price_per = mean(price_per, na.rm = TRUE),
+			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  capacity = sum(beds)) %>% 
+	ungroup()
 ```
 
-```{r}
-summary_table
+Using the `summary_table` object you created earlier, make a bar chart showing the number of **apartments** by neighbourhood. In this case, the correct `geom` to use is `geom_bar(stat = 'identity')`. 
 
+## Exercise 7 Sample Solution {.smaller}
 
+```{r, warning = FALSE, out.width = 500, out.height = 300}
+summary_table %>% 
+	filter(property_type == 'Apartment') %>% 
+	ggplot() + 
+	aes(x = neighbourhood, y= n) + 
+	geom_bar(stat = 'identity')
 ```
 
+## Let's Clean This Up a Bit {.smaller}
 
+```{r, warning = FALSE, out.width = 500, out.height = 300}
+summary_table %>% 
+	filter(property_type == 'Apartment') %>% 
+	ggplot() + 
+	###<b>
+	aes(x = reorder(neighbourhood, n), y=n) + 
+	coord_flip() + 
+	###</b>
+	geom_bar(stat = 'identity')
+```
 
+# Comparisons: Fill, Color, and Facets
 
+## From Exercise 7 {.smaller}
+```{r, warning = FALSE,  out.width = 500, out.height=300}
+summary_table %>% 
+	ggplot() + 
+	###<b>
+	aes(x = reorder(neighbourhood, n), y=n, fill = property_type) + 
+	###</b>
+	coord_flip() + 
+	geom_bar(stat = 'identity') 
+```
 
+## From Our First Plot {.smaller}
+```{r, warning = FALSE,  out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	### <b>
+	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
+	### </b>
+	geom_point(alpha = .5) + 
+	theme_bw() + 
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
+```
+
+## From Our First Plot {.smaller}
+```{r, warning = FALSE,  out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
+	geom_point(alpha = .5) + 
+	theme_bw() + 
+	### <b>
+	facet_wrap(~property_type) + 
+	### </b>
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
+```
+
+## Optional: Score Types {.smaller}
+
+```{r, warning = FALSE,  out.width = 500, out.height=300}
+listings %>% 
+	select(number_of_reviews, contains("review_scores"), - review_scores_rating) %>% 
+	###<b> 
+	gather(key = type, value = score, -number_of_reviews) %>% 
+	###</b> 
+	ggplot() + 
+	aes(x = factor(score), y = number_of_reviews) + 
+	geom_boxplot() + 
+	facet_wrap(~type)
+```
+
+# Mini-Project
+
+## Project Description
+
+We are going to make a simple business intelligence (BI) dashboard for AirBnB, using the wrangling and visualization skills we have developed in this session. You will use this dashboard to lead a meeting with decision-makers on where to prioritize host recruitment efforts. 
+
+## Instructions {.smaller}
+
+1. Please open `wrangle_viz/dashboard.Rmd`
+2. Click the `knit` button at the top of RStudio and observe the result. If you see a dashboard, then are good to go. 
+3. Modify the dashboard: 
+	- Include your names in the `author` metadata up top
+	- Write code for data preparation and visualizations as appropriate. You should aim to include a main visualization and a supporting one. 
+	- Include all your code in the `R` "code chunks" that begin with ````{r}`
+	- Add commentary in the indicated area
+4. Once you are done, `knit` the dashboard one last time and place it in the shared Dropbox folder. 
+	
+## You are done iff 
+
+1. You have added your names to the dashboard
+2. You have replaced "Box 1", "Box 2", and "Box 3" with informative subtitles
+3. You have created two original visualizations aimed at supporting a clear message about where AirBnB should recruit hosts. 
+4. You have written brief commentary clarifying your message. 
+5. You have submitted your dashboard to the shared Dropbox. 
+
+# Additional Resources
 
 ## Visualization Problems are Wrangling Problems
 
 > "In my experience, the vast majority of graphing agony is due to insufficient data wrangling." - [Jenny Bryan](http://stat545.com/cm006_tibbles-dplyr-ggplot2.html)
-
-
-# Reference (might get folded in)
 
 ## Additional Resources
 

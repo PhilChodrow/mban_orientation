@@ -124,7 +124,7 @@ listings %>% glimpse() # equivalent to glance(listings)
 
 The key point about `%>%` to remember is that it is pronounced "then." So, read the above as: 
 
-> Take `listings`, and then do `glance()` to it. 
+> Take `listings`, and **then** do `glimpse()` to it. 
 
 Generalizing this to a formal structure, 
 
@@ -307,6 +307,27 @@ The single most important way of exploring your data is to *visualize it*. Human
 
 Now let's use `ggplot2` and tidyverse principles to achieve clarity, precision, and efficiency. 
 
-## 
+## Scatterplot
+
+Aesthetics, changing aesthetics, e.g. throw in price and move n_reviews to the size
+
+Constants (e.g. color)
+
+## Other geoms
+
+## Slicing and Dicing
+
+## Reshaping Data
+
+## Labels and Appearance
+
+# Dashboard Mini-Project
+
+We started out with a request from AirBnB to help them identify neighborhoods in which they should consider focusing host-recruitment efforts. 
+
+
+
+
+
 
 
