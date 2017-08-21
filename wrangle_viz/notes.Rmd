@@ -15,18 +15,34 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-# Load the Tidyverse
+# The Case 
 
+AirBnB is a well-known website that allows hosts to rent their homes on a short-term basis to travelers. The company does its best business in cities with large tourism industries, including Boston. While many people become AirBnB hosts through word-of-mouth, the company also has an advertising budget that it can deploy to recruit more hosts in specific areas. AirBnB has asked you, a data analytics consultant, to help them identify neighborhoods in Boston where they should focus their recruitment efforts. They have made available to you a complex,  multi-part data set that you can use to answer this question. 
+
+# What You'll Learn
+
+In most real-world applications, the first steps to addressing a complex problem are to construct summary statistics and exploratory visualizations. These are the tasks on which we'll focus today. Specifically, we'll learn how to:
+
+1. Import a data set
+2. Clean and subset the data
+3. Relate multiple data tables
+4. Compute summary statistics
+5. Visualize key metrics
+
+By the end of the session, you'll use these skills to construct a simple dashboard for AirBnB decision-makers. 
+
+# Diving in
+
+First, we'll need the `tidyverse` packages. 
 ```{r}
 library(tidyverse)
 ```
 
-# Load the Data
-
-The tidyverse provides the `read_csv` function for easily importing data sets in `.csv` format. Functions like `read_tsv`, `read_table`, and `read_delim` will read in alternative formats. 
+Now let's read in our two data sets. The tidyverse provides the `read_csv` function for easily importing data sets in `.csv` format. Functions like `read_tsv`, `read_table`, and `read_delim` will read in alternative formats. 
 
 ```{r}
 listings <- read_csv('../data/listings.csv')
+calendar <- read_csv('../data/calendar.csv')
 ```
 
 # Look Around, Look Around...
@@ -53,50 +69,11 @@ glimpse(listings)
 
 We get a more readable view of the data, including row and column counts, column types, and the first few entries of each column. 
 
-# Leci n'est pas...
 
-Let's start by considering a slightly more complex task. We want to summarise the types of the columns in `listings`. How many `int` columns are there? How many `dbl`s? Etc? 
+# Warm-Up: The Nicest Spots in JP
 
-You don't need to worry about the details of the code at this point, but here's a solution:
-
-```{r}
-table(unlist(map(listings, class)))
-```
-
-In this solution, `map` applies the function `class` to each column of `listings`, `unlist` converts the result into a vector, and `table` does the counting. Functionally, this solution has the form 
-
-```
-h(g(f(x))).
-```
-
-When we want to string together long, complex operations, this *nested* structure will be difficult to read, write, and troubleshoot. The tidyverse provides an alternative syntax that we'll be using throughout our programming today: the *pipe*, written `%>%`. 
-
-![](https://upload.wikimedia.org/wikipedia/en/b/b9/MagrittePipe.jpg)
-
-Simply put: 
-
-> `x %>% f()` is the same as `f(x)`. 
-
-If you are working with a function with multiple arguments, the pipe applies to the first argument: 
-
-> `x %>% g(y)` is the same as `g(x,y)`
-
-Using the pipe, we can rewrite our queries above: 
-
-```{r, eval = FALSE}
-listings %>% head()
-listings %>% colnames()
-listings %>% glimpse()
-listings %>% map(class) %>% unlist() %>% table()
-```
-
-The result is that we can string together simple operations to make complex ones, while keeping our code readable. 
-
-## Filter, Select, Arrange
-
-Now let's start digging into our data. Let's start by taking a simple approach to the following useful question: 
-
-> What are the "nicest" listings in Jamaica Plain?
+Now let's start digging into our data. You have been asked to provide a simple quantitative answer to the following question: 
+> What are the "best" listings in Jamaica Plain?
 
 For any data scientific question, there are usually many good ways to answer it. This time, our approach will be to construct a list of all listings in Jamaica Plain, sorted in descending order by rating. To do this, we'll need to: 
 
@@ -104,49 +81,221 @@ For any data scientific question, there are usually many good ways to answer it.
 2. `Arrange` the rows of the resulting data frame in descending order by rating. 
 3. `Select` a small number of columns so that we don't display irrelevant ones. 
 
-Using the `%>%` syntax and the tidyverse's natural function library, we can write out code that corresponds exactly to this sequence of steps. 
+Let's go ahead and do this. We'll start out with a simple but slightly clunky way, and then see how to dramatically simplify it using some syntactical magic. 
+
+```{r}
+jp_only <- filter(listings, neighbourhood == 'Jamaica Plain')        # logical test
+sorted  <- arrange(jp_only, desc(review_scores_rating))              # desc for descending order
+concise <- select(sorted, neighbourhood, name, review_scores_rating) # show only these three columns
+concise
+```
+
+The steps here are easy to understand -- you don't need to know much about `R` or even programming in order to keep up with what's going on here. A few notes:
+
+1. The first argument of each function is the data on which we want to operate; this is part of the `tidyverse` design philosophy. We'll see why this matters in a moment. 
+2. `filter` requires a logical test, for which `R` uses operators like `==`, `>=`, and `%in%` to check for membership. 
+3. `filter` operates on rows, `select` operates on columns.
+4. `arrange` by default will sort in ascending order, so use `desc` if you need it. 
+5. Due to the magic of so-called "nonstandard evaluation," you should use **unquoted** column names in pipelines like these. That is, `select(listings, "neighbourhood")` is **wrong**: `select(listings, neighbourhood)` is correct. 
+
+## C'est Neci Pas...
+
+![](https://upload.wikimedia.org/wikipedia/en/b/b9/MagrittePipe.jpg)
+
+The code we wrote above was nice and easy to understand, but it was also a bit wasteful. It wastes: 
+
+1. **Headspace** to think of names for the intermediate steps that we don't actually care about. 
+2. **Writing time** to write those names and include them in the function calls.
+3. **Computer memory** to store the intermediate steps. This doesn't matter so much now, but for larger data sets this will rapidly become a problem. 
+
+We could actually address all these problems using nested syntax instead. We just put the results of each function inside the next one, working inside out. 
+
+```{r}
+select(arrange(filter(listings, neighbourhood == 'Jamaica Plain'), desc(review_scores_rating)), neighbourhood, name, review_scores_rating)
+```
+
+This solves the waste issue, but introduces a worse one -- this code is difficult to write and almost impossible to read. Troubleshooting this would be a nightmare. 
+
+So, what can we do? The `tidyverse` offers a nice solution, in the form of the "pipe" operator `%>%`. Let's start with a simple example. 
+
+```{r, eval = FALSE}
+listings %>% glimpse() # equivalent to glance(listings)
+```
+
+The key point about `%>%` to remember is that it is pronounced "then." So, read the above as: 
+
+> Take `listings`, and then do `glance()` to it. 
+
+Generalizing this to a formal structure, 
+
+> `x %>% f()` is the same as `f(x)`. 
+
+If you are working with a function with multiple arguments, the pipe applies to the first argument: 
+
+> `x %>% g(y)` is the same as `g(x,y)`
+
+This example isn't particularly impressive, but let's see what happens when we rewrite our Jamaica Plain code:
 
 ```{r}
 listings %>% 
 	filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test
 	arrange(desc(review_scores_rating)) %>%           # desc() makes descending order 
-	select(neighbourhood, name, review_scores_rating) # show only these three columns
+	select(neighbourhood, name, review_scores_rating)
 ```
 
-You don't really need to know `R` to understand what's going on here: the readable syntax makes it easy to piece together. The main tricks to remember are: 
+Again, read this as:
 
-1. `filter` requires a logical test, for which `R` uses operators like `==`, `>=`, and `%in%` to check for membership. 
-2. `filter` operates on rows, `select` operates on columns.
-3. `arrange` by default will sort in ascending order, so use `desc` if you need it. 
-4. Due to the magic of so-called "nonstandard evaluation," you should use **unquoted** column names in pipelines like these. That is, `listings %>% select("neighborhood")` is **wrong**: `listings %>% select(neighborhood)` is correct. 
+> Take `listings`, and then `filter` it by neighbourhood, then `arrange` the rows, then `select` only the columns we want. 
 
-Just to reinforce the value of the pipe, compare our solution above to the following two alternatives. The first uses nested syntax, while the second stores each stage in an intermediate step. 
+The code actually closely matches the structure of the task you want to perform, which lets you write fast, reliable code easily. Compared to the other two approaches, the pipe allows us to:
 
-```{r, eval = FALSE}
+1. Write less code
+2. Not bother with intermediate objects
+3. Maintain writeability and readability
 
-# illegible
-select(arrange(filter(listings, neighbourhood == 'Jamaica Plain'), desc(review_scores_rating)), neighbourhood, name, review_scores_rating)
+Pretty good! We'll be using the pipe throughout our work in `R`. 
 
-# wastes memory storing intermediate objects, repetitive typing 
-intermediate_1 <- filter(listings, neighbourhood == 'Jamaica Plain')
-intermediate_2 <- arrange(intermediate_1, desc(review_scores_rating))
-select(intermediate_2, neighbourhood, name, review_scores_rating)
+# Case Study: Where Should AirBnB Expand?
+
+So far, we've used functions like `glimpse
+` to inspect our data set, and functions like `filter`, `arrange`, and `select` to view selected parts of it. Now we're going to get into more complex operations, in which we'll construct new data columns and summarise their properties. 
+
+## Elementary Summary Statistics
+
+When analyzing and visualizing our data, we often want to compute *summary statistics*: things like means, medians, sums, and counts. The `summarize` function does just this. First let's count the number of rows:
+
+```{r}
+listings %>%
+	summarize(n = n())
 ```
 
+Next, let's compute the average rating:
 
+```{r}
+listings %>% 
+	summarize(mean_rating = mean(review_scores_rating))
+```
 
+Oops! I need to tell the `mean` function to ignore missing `NA` values: 
 
+```{r}
+listings %>% 
+	summarize(mean_rating = mean(review_scores_rating, na.rm = TRUE))
+```
 
+In fact, we can do both of these summary tasks at the same time:
 
+```{r}
+listings %>%
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE))
+```
 
+So that's all fun, but when analyzing complex data sets, global counts and means are almost never what we want. Instead, we usually break out our summary statistics between different groups. To do this, we interpolate the `group_by` command:
 
-
-
-
+```{r}
+listings %>% 
+	group_by(neighbourhood) %>% 
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE)) 
+```
 
 ## Construct New Columns
 
-## Summary Statistics
+Let's add another important metric to our summary. What is the average price per person of the accomodations? To compute this, we need to  make a `price_per` column, since there's no such column in the `listings` data already. We do have `price` and `accomodates` columns, so this should be easy, right? 
+
+The `mutate` function lets us make a new column and name it. For example, the following code makes a new column giving the number of bathrooms per guest: 
+
+```{r}
+listings <- listings %>% 
+	mutate(bathrooms_per = bathrooms / accommodates)
+```
+
+Now let's make that `price_per` column:
+
+```{r, error=TRUE}
+listings <- listings %>% 
+	mutate(price_per = price / accommodates)
+```
+
+The error message is telling us that one of the two columns `price` and `accommodates` are not actually numbers, so we can't divide them. The problem is `price`: 
+
+```{r}
+class(listings$price)
+```
+
+So, we need to convert `price` into a numberic vector. Unfortunately, this is a bit complex, since `price` includes currency symbols: 
+
+```{r}
+listings$price[1:10 ]
+```
+
+So, we'll use `mutate` and a text manipulation function to achieve the conversion: 
+
+```{r}
+listings %>% 
+	mutate(price = as.numeric(gsub('\\$|,', '', price)),
+		   price_per = price / accommodates)
+```
+
+This code removes the currency symbols, converts the result into a number, and then constructs the `price_per` column as expected. Note a nice aspect of this -- we can construct multiple columns in the same `mutate` call. We can now summarise, just like we did before. 
+
+```{r}
+listings %>% 
+	mutate(price = as.numeric(gsub('\\$|,', '', price)),
+		   price_per = price / accommodates) %>% 
+	group_by(neighbourhood) %>% 
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
+			  mean_price_per = mean(price_per, na.rm = TRUE)) 
+```
+
+## Exercise
+
+You are now able to filter data, construct new columns, and compute grouped summaries. Please construct a summary table, with at least three metrics, that you would use to guide marketing executives through the decision process. You might want to use metrics related to ratings, prices, total accomodation capacity, or other considerations.  
+
+# Keeping Current
+
+We'll do this in the exercise: 
+```{r}
+current_table <- calendar %>% 
+	filter(!is.na(price), 
+		   date < lubridate::today(),
+		   date > lubridate::mdy('6/1/2016')) %>%
+	group_by(listing_id) %>% 
+	summarise(last_active = max(date))
+```
+
+We now get a new column on the listings table, the `last_active` column. 
+```{r}
+listings <- listings %>% 
+	left_join(current_table, by = c('id' = 'listing_id')) %>% 
+	filter(last_active > lubridate::mdy('6/1/2016'))
+```
+
+We can make our summary table using only listings that have posted a valid availability date in the last three months. 
+```{r}
+summary_table <- listings %>% 
+	mutate(price = as.numeric(gsub('\\$|,', '', price)),
+		   price_per = price / accommodates) %>% 
+	group_by(neighbourhood) %>% 
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
+			  mean_price_per = mean(price_per, na.rm = TRUE)) 
+```
+
+# Visual Thinking
+
+
+
+## Exercise
+
+
+```{r}
+
+
+```
+
 
 # Data Visualization
 

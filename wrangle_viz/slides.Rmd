@@ -9,10 +9,23 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "350px", fig.align="center")
+library(tidyverse)
 ```
 
 # Introduction
+
+1. The Case
+2. Learning Goals
+3. The Data Science Process
+4. The Tidyverse
+
+## The Case
+
+- AirBnB is a website that allows hosts to rent their homes to travelers and tourists. 
+- AirBnB can maximize its business by ensuring it has enough listings in different neighborhoods. 
+- AirBnB has asked you, a data analytics consultant, to help them identify neighborhoods in Boston where they should focus on recruitment through advertising and incentives. 
+- They have given you a complex, multi-part data set to answer this question. 
 
 ## What We'll Do This Morning
 
@@ -22,14 +35,12 @@ knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", f
 
 [*David Robinson*](http://varianceexplained.org/r/teach-tidyverse/)
 
-## Why Data Preparation?
+## Exercise 0 
 
-![](http://r4ds.had.co.nz/diagrams/data-science.png)
-
-
-
-
-## The 80/20 Rule
+1. Look left.
+2. Look right.
+3. Pick a partner. 
+4. Give them a professional, yet friendly smile. You are going to need them soon. 
 
 ## FYI: Base `R` 
 
@@ -49,29 +60,324 @@ The Tidyverse is a set of packages that promote code which is:
 
 **When you master the Tidyverse, you spend more time thinking about your problem and less time thinking about your code.** 
 
-# Data Wrangling 
+## The Process of Data Science
 
-## "So your data is..."
+![](http://r4ds.had.co.nz/diagrams/data-science.png)
 
-- Incomplete
-- Inconsistent
-- In many pieces
-- "Shaped funny"
-- ...
+# Getting Started
+
+1. Data Import and Inspection
+2. Data Subsetting
+3. The Pipe
+
+## Our Data Today
+
+AirBnB listings, schedule, and review text for the Boston area, for a time period...that you will check. 
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+listings <- read_csv('../data/listings.csv')
+calendar <- read_csv('../data/calendar.csv')
+```
+
+## Warmup: The Nicest Places in JP
+
+- **Question:** What are the "nicest" places to stay in Jamaica Plain? 
+- **Task:** Construct a table of listings in JP, sorted in descending order by rating. 
+
+Conceptually, we need to: `filter` to only JP listings, `arrange` the listings by rating, and `select` only the columns we want to see. Let's write some code!  
+
+## Exercise 1: The Biggest Place in Back Bay
+
+You are going to spend a long weekend in Back Bay with 50 of your closest friends.
+
+Working with your partner, modify your code slightly to construct a table of the listings in Back Bay, sorted by the number of people who can stay there. You may need to use `glimpse` to see which columns you'll want to use. 
+
+## Exercise 1: Sample Code
+
+```{r, eval = FALSE}
+listings %>% 
+	filter(neighbourhood == 'Back Bay') %>% 
+	arrange(accommodates) %>% 
+	select(neighbourhood, name, accommodates, price)
+```
+
+## Exercise 1: Sample Output
+
+```{r, echo = FALSE}
+listings %>% 
+	filter(neighbourhood == 'Back Bay') %>% 
+	arrange(desc(accommodates)) %>% 
+	select(neighbourhood, name, accommodates, price)  %>%
+	DT::datatable(options = list(pageLength = 4)) 
+```
+
+# Summarising Data
+
+1. Summary Statistics
+2. Adding Columns
+3. Grouping
+
+## `summarise`
+
+## `group_by`
+
+## `mutate`
+
+## Exercise
+
+## Sample Solution: Code
+
+```{r, echo = TRUE}
+summary_table <- listings %>% 
+	mutate(price = as.numeric(gsub('\\$|,', '', price)),
+		   price_per = price / accommodates) %>% 
+	group_by(neighbourhood) %>% 
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
+			  price_per = mean(price_per, na.rm = TRUE)) 
+```
+
+## Sample Solution: Output
+
+```{r, echo = FALSE}
+summary_table %>%
+	DT::datatable(options = list(pageLength = 5)) %>% 
+	DT::formatRound(c('mean_rating', 'price_per'), 1)
+```
+
+# Keeping Current
+
+1. More practice with `filter` and `summarise`
+2. `join`ing data
+
+## How Current Is This Info?
+
+```{r}
+calendar %>% 
+	summarise(earliest = min(date), 
+		   latest = max(date))
+```
+
+Pretty current. But what if we want to focus on listings that have been active in the last three months? 
+
+## Exercise
+
+Construct a table from the `calendar` data giving the listings that had a valid listed date between June 1st, 2016 and today. You determine what "valid" means in this context. 
+
+*Hint:* You can represent a date using the function 
+
+```{r}
+lubridate::mdy('6/1/2016')
+```
+
+You can also use `lubridate::today()`. You can use `max()` to get the most recent date.
 
 
 
+## Sample Solution: Code
+
+```{r,  echo = TRUE}
+current_table <- calendar %>% 
+	filter(!is.na(price), 
+		   date < lubridate::today(),
+		   date > lubridate::mdy('6/1/2016')) %>%
+	group_by(listing_id) %>% 
+	summarise(last_active = max(date))
+```
+
+## Sample Solution: Output
 
 
+```{r, echo = FALSE}
+current_table %>% 
+	DT::datatable(options = list(pageLength = 5))
+```
 
+## Relational Data
 
-# Data Visualization with `ggplot2`
+The information we need is distributed between two tables -- how can we get there? 
+
+We need a key that tells us which `calendar` rows correspond to which `listings`. 
+
+> `listings$id` corresponds to `calendar_listing$id`
+
+## `join` 
+
+The `join` family of functions lets us add columns from one table to another using a key. 
+
+- `x %>% left_join(y)`  : most common, keeps all rows of `x` but not necessarily `y`. 
+- `x %>% right_join(y)` : keeps all rows of `y` but not necessarily `x`.  
+- `x %>% outer_join(y)` : keeps all rows of both `x` and `y`
+- `x %>% full_join(y)` : keeps only rows of `x` that match in `y` and vice versa. 
+
+We'll use `left_join` for this case. 
+
+# Getting Visual
+
+1. Graphical Excellence
+2. The Grammar of Graphics
+3. Wrangling and Visualization
 
 ## Graphical Excellence
 
-> Graphical excellence is the well-designed presentation of interesting data -- a matter of *substance*, of *statistics*, and of *design*. 
+> Graphical excellence is the well-designed presentation of interesting data -- a matter of *substance*, of *statistics*, and of *design*. Graphical excellence consists of complex ideas communicated with clarity, precision, and efficiency. -- *Edward Tufte*
 
-> Graphical excellence consists of complex ideas communicated with clarity, precision, and efficiency. -- *Edward Tufte*
+## The Grammar of Graphics
+
+A **grammar** is a set of components (ingredients) that you can combine to create new things. Many grammars have **required components**: if you're missing one, you're doing it wrong. In baking....
+
+<div class="columns-2">
+
+- **A body** -- typically some kind of flour)
+- **Binder** -- eggs, oil, butter, or applesauce
+- **A rising agent** -- yeast, baking soda, baking powder
+- **Flavoring** -- sugar, salt, chocolate, vanilla
+
+```{r, out.height = 200, fig.retina = NULL, echo = FALSE}
+knitr::include_graphics("http://www.hoteliermiddleeast.com/pictures/640x422/pastry-1-web.jpg")
+```
+
+</div>
+
+## The Grammar of Graphics
+
+- Puts the `gg` in `ggplot2`. 
+- Formulated by Leland Wilkinson.
+- Implemented in code by Hadley Wickham, now part of the `tidyverse`
+
+<div class="columns-2">
+```{r, out.height = 400, fig.retina = NULL, echo = FALSE}
+knitr::include_graphics("http://ecx.images-amazon.com/images/I/41ZIHtc9TJL._SX327_BO1,204,203,200_.jpg")
+```
+
+```{r, out.height = 400, fig.retina = NULL, echo = FALSE}
+knitr::include_graphics("http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama2.png")
+```
+</div>
+
+
+## Ingredients of a data visualization 
+
+- **`Data`**:  almost always a `data_frame` 
+- **`Aes`**thetic mapping: relation of data to chart components.
+- **`Geom`**etry: specific visualization type? E.g. line, bar, heatmap?
+- **`Stat`**istical transformation: how should the data be transformed or aggregated before visualizing?
+- **`Theme`**: how should the non-data parts of the plot look?
+- Misc. other options. 
+
+**Data, aesthetics, and geometries** are the required grammatical components that you always need to specify. 
+
+## First Plot {.smaller}
+
+Does getting **lots** of reviews usually mean you get **good** reviews? 
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot()
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating)
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point()
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) 
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) + 
+	theme_bw()
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) + 
+	theme_bw() 
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) + 
+	theme_bw() + 
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2, color = 'firebrick') + 
+	theme_bw() + 
+	labs(x='Number of Reviews', y='Review Score',title='Review Volume and Review Quality') 
+```
+
+## Back to the Case Study
+
+
+
+
+
+
+
+
+
+```{r, echo = FALSE}
+summary_table <- listings %>% 
+	mutate(price = as.numeric(gsub('\\$|,', '', price)),
+		   price_per = price / accommodates) %>% 
+	group_by(neighbourhood) %>% 
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
+			  mean_price_per = mean(price_per, na.rm = TRUE)) 
+```
+
+```{r}
+summary_table
+
+
+```
+
+
+
+
+
 
 ## Visualization Problems are Wrangling Problems
 
@@ -80,9 +386,13 @@ The Tidyverse is a set of packages that promote code which is:
 
 # Reference (might get folded in)
 
+## Additional Resources
+
+- Data Wrangling [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
 ## Map of the Tidyverse
 
-```{r}
+```{r, echo = FALSE, out.width = "700px"}
 knitr::include_graphics("https://rviews.rstudio.com/post/2017-06-09-What-is-the-tidyverse_files/tidyverse1.png")
 ```
 

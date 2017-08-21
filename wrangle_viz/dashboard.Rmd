@@ -1,0 +1,48 @@
+---
+title: "AirBnB Supply Dashboard"
+author: "By Anonymous Analyst Extraordinaire"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: united
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+```
+
+
+
+```{r data_prep}
+# put your data preparation code here. To get you started, the data preparation we performed in the session previously has already been pasted in. 
+
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Box 1
+Put the code for your main visualization here. 
+```{r box_1}
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Box 2
+
+Frequently, visualization for decision-makers are most useful when accompanied by analysis, interpretation, and sometimes a recommendation by the analyst. Feel free to fill in your own commentary on your visualizations in this box or the one below. You can leave the `r` code chunk blank for your commentary box. 
+
+```{r box_2}
+
+```
+
+### Box 3
+Put the code for a supporting visualization here. This visualization should add context and nuance, but expect the main visualization to convey the bulk of your message. 
+```{r box_3}
+
+```
+
