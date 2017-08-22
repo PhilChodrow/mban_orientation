@@ -4,87 +4,219 @@ author: "Daisy Zhuo"
 date: "8/15/2017"
 output: 
   ioslides_presentation:
-    logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
     css: ../slide_style.css
 ---
 
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
+knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "250px", fig.align="center")
 ```
 
 # Introduction
 
 ## What We'll Do This Afternoon
-
-- Form hypothesis for machine learning
 - Introducing basic machine learning methods
-- Continue working with the data to a format good for machine learning
-- Implement some in R
+- Form hypothesis for machine learning
+- Continue wrangling the data for machine learning
+- Implement some ML in R
 
 ## Why Machine Learning?
 - Prediction
 - Pattern recognition 
 - Interpretation and diagnosis
-- ...
+- Make some money on ![drawing](https://www.kaggle.com/static/images/site-logo.png)
+```{r, echo = FALSE, out.width = "500px"}
+knitr::include_graphics("kaggle.png")
+```
+
+
+
+## Examples
+- Risk prediction for cancer
+- IBM Watson
+- Image recognition
+- Netflix recommender system
+
+
+## Machine Learning in R
+- Many other languages can do ML (Matlab, Python, Julia, etc.)
+- R bridges statistics and machine learning
+- Active community developing and updating packages constantly (11265 packages)!
+![](http://www.kdnuggets.com/wp-content/uploads/top-20-r-packages-machine-learning-downloads.jpg)
+- Powerful data manipulation and graphics tools as you saw earlier
 
 ## Types of machine learning
 
 - Supervised learning: learn a function to map predictor variables ($\mathbf{X}$) to response variables ($\mathbf{Y}$)
-  - Linear models
-  - SVM, CART, random forest
-  - Neural networks
+    - Linear models
+    - SVM, CART, random forest
+    - Neural networks
 - Unsupervised learning: learn the structure of data points
-  - Clustering (k-means, hierarchical clustering)
-  - Anomaly detection
+    - Clustering (k-means, hierarchical clustering)
+    - Anomaly detection
 - Semi-supervised learning
 
 ## Model selection and evaluation
-> - Model evaluation
-  - Perform on a separate set (train/test split)
-  - Regression: $R^2$, MSE
-  - Classification: Accuracy, confusion table, AUC
-> - Model selection
-  - Cross validation (train/validation/test split)
-  - Selection criterion
+- Model evaluation
+    - Perform on a separate set (train/test split)
+    - Regression: $R^2$, MSE
+    - Classification: Accuracy, confusion table, AUC
+- Model selection
+    - Cross validation (train/validation/test split)
+    - Selection criterion
 
 
 
 # Case Study - Regression
-## Generating hypotheses
+## Read in the data 
+- Read in the data and format the *price* as a numeric:
+```{r, message=FALSE, warning=FALSE}
+listings = read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
+library(tidyverse)	
+listings = listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))
+```
+
+## Exercise 1: Generating hypotheses
 
 - Take 15 minutes to come up with your predictive models for the price, keep the following in mind:
-  - Which factors influence price?
-  - Should it be linear?
-  - Should variables be transformed?
-  - Advanced: additional data to be joined on?
+    - Which factors influence price?
+    - Should the relationship be linear?
+    - Should variables be transformed?
+    - Advanced: additional data to be joined on? [put an example to the case study]
 - Use visualization, data summary from the morning to explore
+
+[Use tidyr for some ggplot visualization]
+[Prework: add the code chunk to the README.md]
+
+## Example visualization
+```{r, warning=FALSE, out.width = "500px", out.height = "300px",}
+listings_for_lm = listings %>%	
+  filter(accommodates <= 10, price <=1000)	
+ggplot(listings_for_lm)+
+  aes(x=accommodates, y=price, color=cancellation_policy, size=review_scores_rating)+
+  geom_point(alpha = 0.2)+
+  facet_wrap(~cancellation_policy,ncol=4)
+```
+
+## First linear model
+Given data $X_t$ and $y_t$, linear regression solves the following problem:
+$$	
+\min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2,	
+$$	
+which is also known as **ordinary least square** regression since it minimizes the sum of squared errors.
+
 
 ## First linear model
 - Before running the model, recall we need to split the data first:
-```r
-library(modelr)
-listings_for_lm = listings_for_lm %>% 	
+```{r, message=FALSE, warning=FALSE}
+library(modelr) 
+listings_part = listings_for_lm %>% 	
   resample_partition(c(train=0.7,test=0.3))	
 ```
 
 - Use the lm command. Example:
-```r
-mylm = lm(price ~ (your variable of choice),data=listings_for_lm$train)
+```{r, message=FALSE, warning=FALSE}
+lm_price_by_acc = lm(price ~ accommodates,data=listings_part$train)
 ```
 
-- To look at the model, use the summary command:
-```r
-summary(mylm)	
+## Look at model summary
+```{r, warning=FALSE}
+summary(lm_price_by_acc)	
 ```
 
-## Evaluating first model
+## Exercise 2: Evaluating first model
 - How would you visualize the model fit? Spend 10 minutes to come up with your visualizations
+- Some hints:
+    - You can use `as.data.frame()` to convert a resample object such as `listings_part$train` to a data frame
+    - `add_predictions()` function from `modelr` package might be useful
+    - `add_residuals()` can be useful too
+
+## Quantify first model performance
+
+- Root Mean-squared Error (RMSE): $\sqrt{\sum_{t=1}^n (\hat{y}_t - y_t)^2/n}$	
+- Mean Absolute Error (MAE): $\sum_{t=1}^n |\hat{y}_t - y_t|/n$	
+- Coefficient of determination (R2): $1-\frac{\sum_{t=1}^n (\hat{y}_t - y_t)^2}{\sum_{t=1}^n (\bar{y}_t - y_t)^2}$
+    - $\hat{y}_t$ is the predicted value for observation $t$
+    - $y_t$ is the actual value
+    - $\bar{y}_t$ is the mean value
+- Pay attention to *in-sample* vs. *out-of-sample*!
+
+## You can get them easily with `modelr`
+```{r, warning = FALSE}
+rmse(lm_price_by_acc,listings_part$test)	
+mae(lm_price_by_acc,listings_part$test)	
+rsquare(lm_price_by_acc,listings_part$test)	
+```
+
+## Summary of procedure 
+1.  We asked the questions: How does listing price depend on the number of people it accommodates? How well does accommodation size predict price? 
+1. Since we were interested in prediction, we reserved part of our data as a test set. 
+1. We then chose to use a linear model to answer these questions, and found the corresponding function `lm()`, which takes: 
+    1. Data on the response and predictor variables, usually through a `formula` object	
+    2. Model parameters (in the case of `lm()`, we used all the default values)	
+    
+## Summary of procedure 
+1. `R` then automatically found the "best" linear model by computing the least squares estimate, and returned a `lm` object, which was a list including information about	
+    1. Fitted coefficients	
+    2. Residuals	
+    3. Statistical significance	
+    4. ...
+
+
+## Add more variables
+- We can build more interesting model formulas in `R`:
+    - Predictors are separated with a `+`	
+    - Use `.` on the right-hand side to include all predictors in a given data frame
+    - Use `.-x` to include all predictors except `x`	
+    - To include interactions between variables, use the `*` symbol. For example: `y ~ x + z + x*z`
+    - To exclude the intercept term, include `-1` or `+0` on the right-hand side	
+- For more detailed info, see [documentation on R formula](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/formula.html)
 
 
 ## Add more variables
 - Inspect the "amenities" column. Need some data cleaning to make it useful!
+- Run the cleaning code in the script:
+```{r, echo = FALSE, warning = FALSE}
+listings = listings %>%
+  filter(!grepl("translation missing",amenities)) %>%
+  mutate(amenities=gsub("[{}]|\"|[()]|-","",amenities)) %>%
+  mutate(amenities=gsub(" |/","_",amenities)) %>%
+  mutate(amenities=gsub("24","x24",amenities))
+
+# Then, split the strings by amenity and create new column
+splitting = strsplit(listings$amenities,",")
+all_amenities = Reduce(union,splitting)
+for (i in all_amenities){
+  listings[paste("amenity_",i,sep="")] = grepl(i,listings$amenities)
+}
+```
+
+## Exercise 2: Build your next model
+- Work with your partner, build the next linear model with multiple variables.
+    - Clean the data first if necessary (remove missing observations, etc.)
+    - Remember the formula syntax
+    - Use some of the amenity variables we just created
+    - Consider interactions and transformation of variables
+    - Don't forget to do the train/test split
+- Generate model performance measures and compare with our first model
+- Visualize data and results
 
 ## LASSO
+- When a model overfits, we can add a term to the optimization problem that we're solving when fitting a model
+    - the term penalizes models that get too fancy without enough data
+- Recall the classical linear regression we've worked with looks like	
+$$	
+\min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2,	
+$$	
+but penalized regression looks like	
+$$	
+\min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2 + \lambda ||\beta||.	
+$$	
+
+#' There are two types of flexibility within this framework that I'll mention:	
+
+#' * Choice of norm, a structural decision, and	
+#' * Choice of $\lambda$, a parametric decision.	
 
 ## Comparing models
 

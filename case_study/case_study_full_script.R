@@ -1,5 +1,7 @@
-
-#' # Statistical Modelling and Machine Learning in R
+# ----------------------------------------------
+# CASE STUDY - MACHINE LEARNING IN R
+# ----------------------------------------------
+# In this section, we'll read in the data, and take a look at it. 
 
 #' ## Regression	
 #' Within the world of supervised learning, we can divide tasks into two parts. In settings where the response variable is continuous we call the modelling *regression*, and when the response is categorical we call it *classification*. We will begin with regression to understand what factors influence price in the AirBnB data set.	
@@ -10,8 +12,6 @@
 listings = read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
 library(tidyverse)	
 
-
-#' ### Linear Regression	
 #' As a review, we need to change the price column to a numeric form.
 
 listings = listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))	
@@ -21,6 +21,14 @@ summary(listings$price) # Check to make sure things worked
 #' Now, which variables may be predictive of price? We can use `names(listings)` to get a look at all the variable names.	
 
 #' #### Data Preparation	
+# ----------------------------------------------
+# EXERCISE 1: LOOK AT DATA
+# ----------------------------------------------
+
+
+# ----------------------------------------------
+# SOLUTION
+# ----------------------------------------------
 #' Let's begin by looking at the relationship between `listings$accommodates` and `listings$price`. As a first look:	
 
 ggplot(listings, aes(x=accommodates, y=price))+geom_point()
@@ -35,15 +43,21 @@ listings_for_lm = listings %>%
 ggplot(listings_for_lm, aes(x=accommodates, y=price))+geom_point()
 
 
-#' 
+#' let's try adding some other variables
+ggplot(listings_for_lm)+
+  aes(x=accommodates, y=price, color=cancellation_policy, size=review_scores_rating)+
+  geom_point(alpha = 0.2)+
+  facet_wrap(~cancellation_policy,ncol=4)
 
+# -----------------------------------------------------------------
+# Linear Regression
+# -----------------------------------------------------------------
 
-
-#' You may argue that it's still a bit messy, but let's see what we can do with a linear model. Since we care about prediction accuracy, we'll reserve a portion of our data to be a test set. There are lots of ways to do this. We'll use the `modelr` package, which is part of the `tidyverse`.	
+#' Since we care about prediction accuracy, we'll reserve a portion of our data to be a test set. There are lots of ways to do this. We'll use the `modelr` package, which is part of the `tidyverse`.	
 
 
 library(modelr) # Comes with tidyverse installation, but doesn't automatically load with the library(tidyverse) call	
-listings_for_lm = listings_for_lm %>% 	
+listings_part = listings_for_lm %>% 	
   resample_partition(c(train=0.7,test=0.3))	
 
 #' The object `listings_for_lm` is now a list with two elements: `train` and `test`.	
@@ -51,7 +65,7 @@ listings_for_lm = listings_for_lm %>%
 #' #### Model Fitting	
 #' In R, we specify a model structure and then use the corresponding function to tell R to optimize for the best-fitting model. For linear regression, the function is `lm()`:	
 
-lm_price_by_acc = lm(price ~ accommodates,data=listings_for_lm$train) # We'll talk more about the '~' notation soon	
+lm_price_by_acc = lm(price ~ accommodates,data=listings_part$train) # We'll talk more about the '~' notation soon	
 
 
 #' Let's check out the lm_price_by_acc object:	
@@ -70,10 +84,20 @@ summary(lm_price_by_acc)
 
 #' There we go, this is more useful! First, let's look at the section under "Coefficients". Notice that R automatically adds an intercept term unless you tell it not to (we'll see how to do this later). In the "estimate" column, we see that the point estimates for the linear model here say that the price is \$55.20 plus \$37.79 for every person accommodated. Notice the '***' symbols at the end of the "(Intercept)" and "accommodates" rows. These indicate that according to a statistical t-test, both coefficients are extremely significantly different than zero, so things are okay from an inference perspective.	
 
-#' #### Model Evaluation	
-#' As another check on inference quality, let's plot the fitted line. There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here.	
 
-as.data.frame(listings_for_lm$train) %>%	
+
+# -----------------------------------------------------------------
+# Model evaluation
+# -----------------------------------------------------------------
+# ----------------------------------------------
+# EXERCISE 2: VISUALIZE MODEL PERFORMANCE
+# ----------------------------------------------
+# ----------------------------------------------
+# SOLUTION
+# ----------------------------------------------
+#' As a check on inference quality, let's plot the fitted line. There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here.	
+
+as.data.frame(listings_part$train) %>%	
   add_predictions(lm_price_by_acc) %>%	
   ggplot(aes(x=accommodates)) +	
   geom_point(aes(y=price)) +	
@@ -82,14 +106,14 @@ as.data.frame(listings_for_lm$train) %>%
 
 #' Nice. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. This is helpful to make sure that the residual uncertainty looks like random noise rather than an unidentified trend.	
 
-as.data.frame(listings_for_lm$train) %>%	
+as.data.frame(listings_part$train) %>%	
   add_residuals(lm_price_by_acc,var="resid") %>%	
   ggplot(aes(x=accommodates,y=resid)) + geom_point()	
 
 
 #' Since we have finitely many values, maybe box plots tell a better story:	
 
-as.data.frame(listings_for_lm$train) %>%	
+as.data.frame(listings_part$train) %>%	
   add_residuals(lm_price_by_acc,var="resid") %>%	
   group_by(as.factor(accommodates)) %>%	
   ggplot(aes(x=as.factor(accommodates),y=resid)) + geom_boxplot()	
@@ -99,106 +123,35 @@ as.data.frame(listings_for_lm$train) %>%
 
 #' Let's now take a look at out-of-sample performance. We'll plot the predictions versus the actuals as we did before, but this time for the test data.	
 
-as.data.frame(listings_for_lm$test) %>%	
+as.data.frame(listings_part$test) %>%	
   add_predictions(lm_price_by_acc) %>%	
   ggplot(aes(x=accommodates)) +	
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
 
-#' Now, what if we wanted to *quantify* how well the model predicts these out-of-sample values? There are several metrics to aggregate the prediction error. We'll look at two:	
-
-#' *Root Mean-squared Error (RMSE): $\sqrt{\sum_{t=1}^n (\hat{y}_t - y_t)^2/n}$	
-
-#' *Mean Absolute Error (MAE): $\sum_{t=1}^n |\hat{y}_t - y_t|/n$	
-
-#' In both, $\hat{y}_t$ is the predicted value for test observation $t$, $y_t$ is the actual value, and $n$ is the size of the test set.	
+#' Now, what if we wanted to *quantify* how well the model predicts these out-of-sample values? There are several metrics to aggregate the prediction error. We'll look at RMSE, MAE, and Rsquared.
 
 #' You could do this pretty easily by hand, and we'll do so later on, but `modelr` has built-in functions to do this for you:	
 
-rmse(lm_price_by_acc,listings_for_lm$test)	
-mae(lm_price_by_acc,listings_for_lm$test)	
+rmse(lm_price_by_acc,listings_part$test)	
+mae(lm_price_by_acc,listings_part$test)	
+rsquare(lm_price_by_acc,listings_part$test)	
 
 #' These don't help much on their own, but they come in handy when comparing different models, which we'll do next after a quick review.	
 
-#' #### Summary and More about Formulas	
-#' First, let's review the pattern, because it can be generalized to a whole bunch of more complex models. We asked the questions: How does listing price depend on the number of people it accommodates? How well does accommodation size predict price? Since we were interested in prediction, we reserved part of our data as a test set. We then chose to use a linear model to answer these questions, and found the corresponding function `lm()`. This function, and modelling functions in general, takes as arguments	
-
-#' * Data on the response and predictor variables, usually through a `formula` object	
-#' * Model parameters (in the case of `lm()`, we used all the default values)	
-
-#' R then automatically found the "best" linear model by computing the least squares estimate, and returned a `lm` object, which was a list including information about	
-
-#' * Fitted coefficients	
-#' * Residuals	
-#' * Statistical significance	
-#' * And more...	
-
 #' We interacted with the model to evaluate goodness-of-fit and out-of-sample performance. In our case, we used the `modelr` and `dplyr` framework to do this cleanly.	
 
-#' We didn't say too much about the `price ~ accommodates` syntax. Many modelling functions in R take `formula`s as arguments, together with a `data` argument. The `data` argument specifies the data frame, and the `formula` argument tells the model which are the responses and which are the predictors. We'll play around with formulas in the exercises, but here are a few helpful pointers:	
-
-#' * The `~` separates the response (on the left) from the predictors (on the right)	
-#' * Predictors are separated with a `+`	
-#' * Use `.` on the right-hand side to include all predictors in a given data frame	
-#' * You can also use `.-x` to include all predictors except `x`	
-#' * To include interactions between variables, use the `*` symbol. For example: `y ~ x + z + x*z` expresses the form: "regress `y` on `x`, `z`, and on `x` interacted with `z`	
-#' * To exclude the intercept term, include `-1` or `+0` on the right-hand side	
-
-#' For more detailed info, see https://stat.ethz.ch/R-manual/R-devel/library/stats/html/formula.html.	
-
-#' ### Other Models - Splines	
-#' Now that we've identified the pattern, let's look at another type of model: splines. Without going into all the mathematical details, splines are (roughly) one way of fitting a higher-degree polynomial to the data. Let's look at what happens when we allow a quadratic and cubic fit in the price by accomodation size setting.	
-
-library(splines)	
-lm2 = lm(price ~ ns(accommodates,2),data=listings_for_lm$train)	
-lm3 = lm(price ~ ns(accommodates,3),data=listings_for_lm$train)	
-
-
-#' We can again look inside these model objects using `summary()`:	
-
-summary(lm2)	
-
-
-#' We can also plot the out-of-sample performance of each separately:	
-
-as.data.frame(listings_for_lm$test) %>%	
-  add_predictions(lm2) %>%	
-  ggplot(aes(x=accommodates)) +	
-  geom_point(aes(y=price)) +	
-  geom_line(aes(y=pred), color='red')	
-
-
-#' To plot the linear, quadratic, and cubic models all at once, we'll use `gather_predictions()`. This function makes a big long column of predictions, with another column to tell which model generated which prediction (so that the data is in *long* or *tidy* format):	
-
-
-as.data.frame(listings_for_lm$test) %>%	
-  gather_predictions(lm_price_by_acc,lm2,lm3) %>%	
-  ggplot(aes(x=accommodates)) +	
-  geom_point(aes(y=price)) +	
-  geom_line(aes(y=pred,group=model,color=model))	
-
-
-#' In this case, all the models look reasonable. Let's compare the RMSE and MAE:	
-
-rmse(lm_price_by_acc,listings_for_lm$test)	
-rmse(lm2,listings_for_lm$test)	
-rmse(lm3,listings_for_lm$test)	
-	
-mae(lm_price_by_acc,listings_for_lm$test)	
-mae(lm2,listings_for_lm$test)	
-mae(lm3,listings_for_lm$test)	
-
-#' All values are roughly the same. The higher-order models give a bit of advantage, but not much. The fact that we only gain slightly from a more complex model isn't surprising, given that we only have data for 10 distinct values of the `accommodates` variable. In fact, in some cases more complex models perform *worse* since they overfit to the data in the training set.	
-
-#' ## Model Selection and Tuning: Penalized Regression	
+# -----------------------------------------------------------------
+# Adding More Variables
+# -----------------------------------------------------------------
 #' Let's work a bit harder on predicting price, this time using more than one predictor. In fact, we'll add a bunch of predictors to the model and see what happens.	
 
 #' As one set of predictors, the column listings$amenities looks interesting:	
 
 listings %>% select(amenities) %>% head()	
 
-#' This could be good predictive information if we can separate out which listing has which amenity. Our goal here is to turn the amenities column into many columns, one for each amenity, and with logical values indicating whether each listing has each amenity. This is just a bit tricky, so I've written a function called `clean_amenities` that will do this for us. We need to `source()` the file that has this function in it, and then we'll call it on the `listings` data frame.	
+#' This could be good predictive information if we can separate out which listing has which amenity. Our goal here is to turn the amenities column into many columns, one for each amenity, and with logical values indicating whether each listing has each amenity. This is just a bit tricky with some text manipulation. You can just include the code below and trust me on it.
 
 listings = listings %>%
   filter(!grepl("translation missing",amenities)) %>%
@@ -213,7 +166,12 @@ for (i in all_amenities){
   listings[paste("amenity_",i,sep="")] = grepl(i,listings$amenities)
 }
 
-
+# ----------------------------------------------
+# EXERCISE 3: BUILD NEW LINEAR MODELS
+# ----------------------------------------------
+# ----------------------------------------------
+# SOLUTION
+# ----------------------------------------------
 #' In total, we'll use all of these predictors:	
 
 #' * accommodates	
@@ -252,7 +210,6 @@ big_formula = as.formula(paste("price ~ accommodates + accommodates*room_type + 
 
 #' Now we can use the `lm()` function:	
 
-
 big_price_lm = lm(big_formula,data=listings_big_lm$train)	
 
 #' We won't look at the summary because there are so many predictors. What happens when we compare in-sample and out-of-sample prediction performance?	
@@ -262,22 +219,10 @@ rmse(big_price_lm,listings_big_lm$test) # Out-of-sample
 
 #' We've got an overfitting problem here, meaning that the training error is smaller than the test error. The model is too powerful for the amount of data we have. Note that R recognizes this by giving warnings about a "rank-deficient fit."	
 
-#' ### Regularized/Penalized Regression	
+# -----------------------------------------------------------------
+# LASSO (Penalized regression)
+# -----------------------------------------------------------------
 #' But is there still a way to use the info from all these variables without overfitting? Yes! One way to do this is by regularized, or penalized, regression.	
-
-#' Mathematically, we add a term to the optimization problem that we're solving when fitting a model, a term which penalizes models that get too fancy without enough data. If we call $\beta$ the coefficient vector that we'd like to learn about for linear regression, then the regular regression we've worked with looks like	
-#' $$	
-#' \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2,	
-#' $$	
-#' but penalized regression looks like	
-#' $$	
-#' \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2 + \lambda ||\beta||.	
-#' $$	
-
-#' There are two types of flexibility within this framework that I'll mention:	
-
-#' * Choice of norm, a structural decision, and	
-#' * Choice of $\lambda$, a parametric decision.	
 
 #' Two natural choices of norm are the Euclidean 1- and 2-norms. When we use the 2-norm, it's often called "ridge regression." We'll focus today on the 1-norm, or "LASSO regression". On a very simple level, both types of regression shrink all the elements of the unconstrained $\beta$ vector towards zero, some more than others in a special way. LASSO shrinks the coefficients so that some are equal to zero. This feature is nice because it helps us interpret the model by getting rid of the effects of many of the variables.	
 
