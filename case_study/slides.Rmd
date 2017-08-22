@@ -175,7 +175,7 @@ rsquare(lm_price_by_acc,listings_part$test)
 
 ## Add more variables
 - Inspect the "amenities" column. Need some data cleaning to make it useful!
-- Run the cleaning code in the script:
+- Run the cleaning code included in the script.
 ```{r, echo = FALSE, warning = FALSE}
 listings = listings %>%
   filter(!grepl("translation missing",amenities)) %>%
@@ -192,7 +192,7 @@ for (i in all_amenities){
 ```
 
 ## Exercise 2: Build your next model
-- Work with your partner, build the next linear model with multiple variables.
+- Work with your partner, build your next linear model with multiple variables.
     - Clean the data first if necessary (remove missing observations, etc.)
     - Remember the formula syntax
     - Use some of the amenity variables we just created
@@ -201,25 +201,121 @@ for (i in all_amenities){
 - Generate model performance measures and compare with our first model
 - Visualize data and results
 
+## Example model
+```{r, echo=FALSE, warning = FALSE, message = FALSE}
+listings_big = listings %>%	
+  filter(!is.na(review_scores_rating),	
+         accommodates <= 10,	
+         property_type %in% c("Apartment","House","Bed & Breakfast","Condominium","Loft","Townhouse"),	
+         !(neighbourhood_cleansed %in% c("Leather District","Longwood Medical Area")),	
+         price <= 1000) %>%	
+  select(price,accommodates,room_type,property_type,review_scores_rating,neighbourhood_cleansed,starts_with("amenity"))	
+	
+listings_big_lm = listings_big %>%	
+  resample_partition(c(train=0.7,test=0.3))	
+
+
+all_amenities = as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
+amenities_string = paste(all_amenities,collapse="+")	
+amenities_string # Taking a look to make sure things worked	
+```
+
+
 ## LASSO
 - When a model overfits, we can add a term to the optimization problem that we're solving when fitting a model
     - the term penalizes models that get too fancy without enough data
-- Recall the classical linear regression we've worked with looks like	
+- Recall our classical linear regression looks like	
 $$	
 \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2,	
 $$	
-but penalized regression looks like	
+- penalized regression looks like	
 $$	
 \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2 + \lambda ||\beta||.	
 $$	
 
-#' There are two types of flexibility within this framework that I'll mention:	
+## LASSO
+- Two natural choices of norm are the Euclidean 1- and 2-norms:
+    - 2-norm: "ridge regression" 
+    - 1-norm: "LASSO regression"
+- Both types shrink all the elements of the unconstrained $\beta$ vector towards zero, some more than others in a special way. LASSO shrinks the coefficients so that some are equal to zero. 
+- LASSO is incredibly popular, cited by 20,000+ papers!
+- To do LASSO, we'll use the `glmnet` package. 
 
-#' * Choice of norm, a structural decision, and	
-#' * Choice of $\lambda$, a parametric decision.	
 
-## Comparing models
+## LASSO
+- The syntax is a bit different:
+```{r, message=FALSE, warning=FALSE}
+library(glmnet)
+x = model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=as.data.frame(listings_big_lm$train))	
+y = as.vector(as.data.frame(listings_big_lm$train)$price)	
+lasso_price = glmnet(x,y)	
+```
 
+
+## LASSO - interpret outputs
+Running `glmnet` gives the results for a range of $\lambda$ values. We can take a closer look at one: 
+```{r, message=TRUE, warning=TRUE}
+lasso_price$lambda[20]	
+lasso_price$beta[which(lasso_price$beta[,20] != 0),20]	
+```
+
+
+## LASSO - interpret outputs
+```{r, message=FALSE, warning=TRUE, out.width = "400px", out.height = "350px"}
+plot.glmnet(lasso_price,xvar="lambda")	
+```
+- Each line is one variable. As lambda shrinks, the model adds more and more nonzero coefficients.
+
+
+
+## Cross Validation
+- We just trained many models, but should not choose one by comparing their performance in test set (why?)
+- But we can do cross-validation
+    - Only train on some of the training 
+    - Save the rest of training to evaluate (validation set)
+    - A final test set to evaluate performance once we've settled on a model	
+- More economic way to use data: *k-fold cross-validation*
+    - Divide the training data into groups called *folds*
+    - For each fold repeat the train-validate procedure
+    - Average the performance of each model on each fold and pick the best one.	
+- A common *resampling* method. 
+
+## Cross Validation, Illustrated
+![](https://sebastianraschka.com/images/faq/evaluate-a-model/k-fold.png)
+
+
+## Cross Validation in Action
+The glmnet package has a very handy function called `cv.glmnet()` which does the entire process automatically. 
+
+- The relevant arguments are:
+    - x, the matrix of predictors	
+    - y, the response variable	
+    - nfolds, the number of ways to split the training set (defaults to 10)	
+    - type.measure, the metric of prediction quality. It defaults to mean squared error, the square of RMSE, for linear regression	
+
+
+
+## Cross Validation in Action
+```{r}
+lasso_price_cv = cv.glmnet(x,y)	
+lasso_price_cv$lambda.min
+plot.cv.glmnet(lasso_price_cv)	
+```
+
+## Evaluate Cross Validated Model
+```{r, echo=FALSE}
+x_all = model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=listings_big) # Matrix form for combined test and training data	
+```
+
+```{r}
+lasso.pred = predict.cv.glmnet(lasso_price_cv,newx=x_all, s="lambda.min")
+
+listings_big %>%	
+  mutate(is_test = 1:nrow(listings_big) %in% listings_big_lm$test$idx,	
+         pred = lasso.pred) %>%	
+  group_by(is_test) %>%	
+  summarize(rmse = sqrt(1/length(price)*sum((price-pred)^2)))	
+```
 
 
 # Case Study - Classification
@@ -229,14 +325,26 @@ $$
 
 
 ## Logistic regression
-- Use the glm function for generalized linear models
-```r
-l.glm = glm(amenity_Elevator_in_Building ~ price,family="binomial",data=listings_glm$train)
-summary(l.glm)
+- Part of the class of generalized linear models (GLMs)
+- These models take the linear fit and map it through a non-linear function. 
+- For logistic regression, it uses the logistic function $f(x) = \frac{e^x}{1+e^x}$, which looks like this:	
+```{r, echo=FALSE, message=TRUE}
+xs = seq(-10,10,0.25)	
+ys = exp(xs)/(1+exp(xs))	
+plot(xs,ys)	
 ```
 
+
+
+
 ## Additional Resources
-> - [The Elements of Statistical Learning]("https://web.stanford.edu/~hastie/ElemStatLearn/")
+> - [R for Data Science](http://r4ds.had.co.nz/), an online book on modeling via r’s `tidyverse` package.
+> - [The Elements of Statistical Learning](https://web.stanford.edu/~hastie/ElemStatLearn), by Hastie, Tibshirani, and Friedman
+> - MIT courses, including
+      - 15.680 (Machine Learning: Algorithms, Applications, and Computation),
+      - 15.071 (“The Analytics Edge”, an application and coding-based analytics course),
+      - 6.867 (EECS’s introductory Machine Learning course)
+      - 9.520 (A theory course about regularized machine learning methods)
 
 ## The End
 Special thanks to Clark Pixton, Colin Pawlowski, and Jerry Kung for previous course materials.

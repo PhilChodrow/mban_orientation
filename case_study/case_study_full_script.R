@@ -57,6 +57,7 @@ ggplot(listings_for_lm)+
 
 
 library(modelr) # Comes with tidyverse installation, but doesn't automatically load with the library(tidyverse) call	
+set.seed(1234)
 listings_part = listings_for_lm %>% 	
   resample_partition(c(train=0.7,test=0.3))	
 
@@ -224,8 +225,6 @@ rmse(big_price_lm,listings_big_lm$test) # Out-of-sample
 # -----------------------------------------------------------------
 #' But is there still a way to use the info from all these variables without overfitting? Yes! One way to do this is by regularized, or penalized, regression.	
 
-#' Two natural choices of norm are the Euclidean 1- and 2-norms. When we use the 2-norm, it's often called "ridge regression." We'll focus today on the 1-norm, or "LASSO regression". On a very simple level, both types of regression shrink all the elements of the unconstrained $\beta$ vector towards zero, some more than others in a special way. LASSO shrinks the coefficients so that some are equal to zero. This feature is nice because it helps us interpret the model by getting rid of the effects of many of the variables.	
-
 #' To do LASSO, we'll use the `glmnet` package. Of note, this package doesn't work very elegantly with the `tidyverse` since it uses matrix representations of the data rather than data frame representations. However, it does what it does quite well, and will give us a chance to see some base R code. Let's load the package and check out the function `glmnet()`. We can see the documentation from the command line using `?glmnet`.	
 
 library(glmnet)	
@@ -246,7 +245,7 @@ lasso_price = glmnet(x,y)
 summary(lasso_price)	
 
 
-#' It does give us some info, though. Notice that "lambda" is a vector of length 88. The `glmnet()` function has defined 88 different values of lambda and found the corresponding optimal beta vector for each one! We have 88 different models here. Let's look at some of the coefficients for the different models. We'll start with one where lambda is really high:	
+#' It does give us some info, though. Notice that "lambda" is a vector of length 100. The `glmnet()` function has defined 100 different values of lambda and found the corresponding optimal beta vector for each one! We have 100 different models here. Let's look at some of the coefficients for the different models. We'll start with one where lambda is really high:	
 
 lasso_price$lambda[1]	
 nnzero(lasso_price$beta[,1]) # How many coefficients are nonzero?	
@@ -268,30 +267,16 @@ plot.glmnet(lasso_price,xvar="lambda")
 
 #' Here, each line is one variable. The plot is quite messy with so many variables, but it gives us the idea. As lambda shrinks, the model adds more and more nonzero coefficients.	
 
-#' ### Cross Validation	
+# -----------------------------------------------------------------
+# Cross Validation
+# -----------------------------------------------------------------
 #' How do we choose which of the 88 models to use? Or in other words, how do we "tune" the $\lambda$ parameter? We'll use a similar idea to the training-test set split called cross-validation.	
-
-#' The idea behind cross-validation is this: what if we trained our family of models (in this case 88) on only some of the training data and left out some other data points? Then we could use those other data points to figure out which of the lambdas works best out-of-sample. So we'd have a training set for training all the models, a validation set for choosing the best one, and a test set to evaluate performance once we've settled on a model.	
-
-#' There's just one other trick: since taking more samples reduces noise, could we somehow take more validation set samples? Here's where *cross*-validation comes in. We divide the training data into groups called *folds*, and then for each fold repeat the train-validate procedure on the remaining training data and then use the current fold as a validation set. We then average the performance of each model on each fold and pick the best one.	
-
-#' This is a very common *resampling* method that applies in lots and lots of settings. Lucky for us the glmnet package has a very handy function called `cv.glmnet()` which does the entire process automatically. Let's look at the function arguments using `?cv.glmnet`.	
-
-#' The relevant arguments for us right now are	
-
-#' * x, the matrix of predictors	
-
-#' * y, the response variable	
-
-#' * nfolds, the number of ways to split the training set (defaults to 10)	
-
-#' * type.measure, the metric of prediction quality. It defaults to mean squared error, the square of RMSE, for linear regression	
 
 #' Let's do the cross-validation:	
 
 lasso_price_cv = cv.glmnet(x,y)	
 summary(lasso_price_cv) # What does the model object look like?	
-
+lasso_price_cv$lambda.min
 
 #' Notice the "lambda.min". This is the best lambda as determined by the cross validation. "lambda.1se" is the largest lambda such that the "error is within 1 standard error of the minimum."	
 
@@ -299,15 +284,16 @@ summary(lasso_price_cv) # What does the model object look like?
 
 plot.cv.glmnet(lasso_price_cv)	
 
-#' The first vertical dotted line shows `lambda.min`, and the second is `lambda.1se`. The figure illustrates that we cross-validate to find the "sweet spot" where there's not too much bias (high lambda) and not too much noise (low lambda). The left-hand side of this graph is flatter than we'd sometimes see, meaning that the unpenalized model may not be too bad. However, increasing lambda increases interpretability at close to no loss in prediction accuracy!	
+#' The first vertical dotted line shows `lambda.min`, and the second is `lambda.1se`. The figure illustrates that we cross-validate to find the "sweet spot" where there's not too much bias (high lambda) and not too much noise (low lambda).
 
 #' Let's again compare training and test error. Since the `predict()` function for `glmnet` objects uses matrices, we can't use the `rmse` function like we did before.	
-
 x_all = model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=listings_big) # Matrix form for combined test and training data	
 	
+lasso.pred = predict.cv.glmnet(lasso_price_cv,newx=x_all, s="lambda.min")
+
 listings_big %>%	
   mutate(is_test = 1:nrow(listings_big) %in% listings_big_lm$test$idx,	
-         pred = as.vector(predict.cv.glmnet(lasso_price_cv,newx=x_all))) %>%	
+         pred = lasso.pred) %>%	
   group_by(is_test) %>%	
   summarize(rmse = sqrt(1/length(price)*sum((price-pred)^2)))	
 
@@ -315,15 +301,15 @@ listings_big %>%
 
 #' One more note on cross-validation: the `glmnet` package has built-in functionality for cross-validation. In situations where that's not the case, `modelr::crossv_kfold()` will prepare data for cross validation in a nice way.	
 
-#' ## Classification	
+
+
+# -----------------------------------------------------------------
+# Classification
+# -----------------------------------------------------------------
 #' So far we've looked at models which predict a continuous response variable. There are many related models which predict categorical outcomes, such as whether an email is spam or not, or which digit a handwritten number is. We'll take a brief look at two of these: logistic regression and classification trees.	
 
 #' ### Logistic Regression	
-#' Logistic regression is part of the class of generalized linear models (GLMs), which build directly on top of linear regression. These models take the linear fit and map it through a non-linear function. For logistic regression this function is the logistic function, $f(x) = \exp(x)/(1+\exp(x))$, which looks like this:	
 
-xs = seq(-10,10,0.25)	
-ys = exp(xs)/(1+exp(xs))	
-plot(xs,ys)	
 
 
 #' Since the function stays between zero and one, it can be interpreted as a mapping from predictor values to a probability of being in one of two classes.	
@@ -349,8 +335,6 @@ as.data.frame(listings_glm$train) %>%
   ggplot(aes(x=price)) + geom_line(aes(y=pred)) + geom_point(aes(y=amenity_Elevator_in_Building + 0))	
 
 
-#' One way to get a more informative plot is by using the `logi.hist.plot()` function in the `popbio` package.	
-
 #' In the meantime, we can explore out-of-sample performance. Ultimately, we want to predict whether or not a listing has an elevator. However, logistic regression gives us something a bit different: a probability that each listing has an elevator. This gives us flexibility in the way we predict. The most natural thing would be to predict that any listing with predicted probability above 0.5 *has* an elevator, and any listing with predicted probability below 0.5 *does not have* an elevator. But what if I use a wheelchair and I want to be really confident that there's going to be an elevator? I may want to use a cutoff value of 0.9 rather than 0.5. In fact, we could choose any cutoff value and have a corresponding prediction model.	
 
 #' There's a really nice metric that measures the quality of all cutoffs simultaneously: *AUC*, for "Area Under the receiver operating characteristic Curve." That's a mouthful, but the idea is simpler: For every cutoff, we'll plot the *false positive rate* against the *true positive rate* and then take the area under this curve. (A *positive* in our case is a listing that has an elevator. So a *true positive* is a listing that we predict has an elevator and really does have an elevator, while a *false positive* is a listing that we predict has an elevator and does *not* actually have an elevator.)	
@@ -374,27 +358,4 @@ performance(pred_obj,'auc') # AUC - a scalar measure of performance
 #' In our case, this model gives an AUC of 0.7. The worst possible is 0.5 - random guessing. We're definitely better than random here, and could likely improve by adding more predictors.	
 
 #' We've covered basic logistic regression, but just as with linear regression there are many, many extensions. For example, we could add higher-order predictor terms via splines. We could also do LASSO logistic regression if we wanted to use many predictors, using the `glmnet` package.	
-
-#' ### Classification Trees	
-#' We will briefly explore classification trees (often referred to as CART, for Classification And Regression Trees), and then in the second half of the session we'll take a deeper dive.	
-
-#' A (binary) classification tree makes predictions by grouping similar observations and then assigning a probability to each group using the proportion of observations within that group that belong to the positive class. Groups can be thought of as nodes on a tree, and tree branches correspond to logical criteria on the predictor variables. There's a lot of neat math that goes into building the trees, but we won't get into that today. For now let's get familiarized by looking at a simple example. We need the `rpart` library.	
-
-library(rpart)	
-
-
-#' The model construction step follows the same established pattern. We use the modelling function `rpart()`, which takes a formula and a data frame (and optional parameters) as arguments.	
-
-l.rpart = rpart(amenity_Elevator_in_Building ~ price + neighbourhood_cleansed,data=listings_glm$train)	
-summary(l.rpart)	
-
-
-#' This is another case when the `summary()` function is less helpful. We can, however, plot the resulting tree:	
-
-library(rpart.plot)	
-prp(l.rpart)	
-
-
-#' The neighbourhood_cleansed variable names are a bit hard to read, but other than that the model is clear and simple. While logistic regression is a continuous, global method, classification trees is a piecewise constant, local method. In the next section we'll look at a much fancier classification tree and discuss performance evaluation.	
-
 
