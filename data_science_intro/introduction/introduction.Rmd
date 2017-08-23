@@ -1,0 +1,154 @@
+---
+title: "Welcome"
+subtitle: "Introduction and Motivation"
+author: "Phil Chodrow and Daisy Zhuo"
+date: "8/15/2017"
+output: 
+  ioslides_presentation:
+    logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
+    css: ../slide_style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
+```
+## What Is Data Science?
+
+```{r, fig.align="center", out.width = "400px", out.height = "400px"}
+knitr::include_graphics('https://static1.squarespace.com/static/5150aec6e4b0e340ec52710a/t/51525c33e4b0b3e0d10f77ab/1364352052403/Data_Science_VD.png?format=1500w')
+```
+
+*Image credit: [Drew Conway Data Consulting](http://drewconway.com/zia/2013/3/26/the-data-science-venn-diagram)*
+
+## The Data Scientific Process
+
+```{r, fig.align="center", out.width = "700px", out.height = "300px"}
+knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
+```
+
+*Image credit: Hadley Wickham*
+
+
+
+## Why Not Spreadsheets? {.smaller}
+
+<div class="columns-2">
+
+```{r, out.height = "440px", out.width = "350px"}
+knitr::include_graphics('http://www.excel-easy.com/data-analysis/images/tables/excel-table.png')
+```
+
+- **Flexibility:** Can you do the analysis you want?
+	- Limited statistics
+	- No contemporary ML
+	- Limited visualizations
+- **Reproducibility:** Can you share it with others?
+	- Platform limited 
+	- Can't version control
+	- Difficult to inspect code
+- **Scalability:** Can you do it quickly on large data sets? 
+	- Excel can handle ~1M rows
+
+</div>
+
+
+## Why Statistical Programming? {.smaller}
+
+<div class="columns-2">
+
+```{r, out.height = "460px", out.width = "350px"}
+knitr::include_graphics('https://img.tutorialgateway.org/2016/11/R-ggplot2-Jitter-8.png')
+```
+
+
+- **Flexibility:** Can you do the analysis you want?
+	- "There's a package for that"
+	- Access to cutting-edge methods
+	- Custom analysis and visualization
+- **Reproducibility:** Can you share it with others?
+	- Cross-platform, often FOSS 
+	- Can version-control with `git`
+	- Easy to inspect code
+- **Scalability:** Can you do it quickly on large data sets? 
+	- `R` and `python` can work with ~10M rows easily, lots of solutions for larger data sets
+
+</div>
+
+## Why `R`?
+
+```{r}
+# knitr::include_graphics('https://www.activestate.com/sites/default/files/styles/blog_image/public/r-vs-python-blog.jpg?itok=SHOP2mku')
+```
+
+- `R` is **the best** language in the world for **learning** data science.
+- `R` is **one of the best** languages in the world for **doing** data science. 
+- `R` is best-in-class on data wrangling, visualization, and reproducibility.
+- `python` is arguably stronger on machine learning and production deployment.
+- `R` tends to be preferred in academia and among "statisticians," while `python` is more popular among "computer scientists" and "data scientists"
+- Most practicing data scientists know and use both. 
+
+## Some Cool `R` Tricks
+
+- [Literate Documents](http://timelyportfolio.github.io/rCharts_nyt_home_price/)
+- [These slides]() are written in `RMarkdown`, a language for literate programming
+- [Interactive Dashboards](https://gallery.shinyapps.io/genome_browser/) with Shiny
+- [More Dashboards](http://jkunst.com/flexdashboard-highcharter-examples/pokemon/)
+- [Blogs and Websites](https://philchodrow.github.io/2017/06/19/info-segregation-2/)
+
+
+## Goals for Today
+
+> - You are not going to become an `R` expert in one day
+> - But...
+> - You will know **basic concepts** and **vocabulary** of data science, and **how to get help** when you're lost. 
+
+## The Most Useful Programming Skill
+
+<div class="columns-2">
+```{r}
+knitr::include_graphics('http://searchengineland.com/figz/wp-content/seloads/2010/05/delete_facebook-500x438.png')
+```
+
+**Google Search**
+
+```{r}
+knitr::include_graphics('https://i.stack.imgur.com/0kaFC.png')
+```
+
+**StackOverflow**
+</div>
+
+## Who Are We? {.smaller}
+
+<div class="columns-2">
+
+```{r, out.height = "310px", out.width="270px"}
+knitr::include_graphics('https://philchodrow.github.io/assets/images/bio-photo.jpg')
+```
+
+**Phil Chodrow**
+
+Structure and dynamics of complex systems; statistics; network science; science of cities.
+
+```{r, out.height = "310px", out.width="310px"}
+knitr::include_graphics('http://www.mit.edu/~zhuo/images/me-square.jpg')
+```
+
+**Daisy Zhuo**
+
+Machine learning and optimization; causal inference in health care; personalized medicine. 
+
+</div>
+
+
+## Plan for the Day
+
+- **Data Wrangling and Visualization**, *Phil* 
+	- 3hrs, with breaks
+- **Lunch**
+- **Case Study: Synthesis + Elementary Machine Learning**, *Daisy*
+	- 3hrs, with breaks
+
+
+
+
