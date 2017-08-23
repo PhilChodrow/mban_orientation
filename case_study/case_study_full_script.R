@@ -9,12 +9,12 @@
 #' Let's start by loading the data (after first setting the correct working directory). We'll use the 'listings.csv' file for now. Since we'll be wrangling and visualizing, we'll also load the `tidyverse` package. (Instead of `tidyverse`, it also works to load `tidyr`, `dplyr`, and `ggplot2` as we saw last session.)	
 
 
-listings = read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
+listings <-read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
 library(tidyverse)	
 
 #' As a review, we need to change the price column to a numeric form.
 
-listings = listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))	
+listings <-listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))	
 summary(listings$price) # Check to make sure things worked	
 
 
@@ -25,7 +25,6 @@ summary(listings$price) # Check to make sure things worked
 # EXERCISE 1: LOOK AT DATA
 # ----------------------------------------------
 
-
 # ----------------------------------------------
 # SOLUTION
 # ----------------------------------------------
@@ -35,7 +34,7 @@ ggplot(listings, aes(x=accommodates, y=price))+geom_point()
 
 #' Looks like there are some outliers on both axes. There are fancier ways to deal with this statistically, but for today let's just get rid of the outliers and fit a model on the cleaner data:	
 
-listings_for_lm = listings %>%	
+listings_for_lm <-listings %>%	
   filter(accommodates <= 10, price <=1000)	
 
 #' Let's take another look:	
@@ -57,16 +56,17 @@ ggplot(listings_for_lm)+
 
 
 library(modelr) # Comes with tidyverse installation, but doesn't automatically load with the library(tidyverse) call	
-set.seed(1234)
-listings_part = listings_for_lm %>% 	
+set.seed(1)  # Keep the random partition the same for multiple runs
+listings_part <-listings_for_lm %>% 	
   resample_partition(c(train=0.7,test=0.3))	
+listings_part
 
 #' The object `listings_for_lm` is now a list with two elements: `train` and `test`.	
 
 #' #### Model Fitting	
 #' In R, we specify a model structure and then use the corresponding function to tell R to optimize for the best-fitting model. For linear regression, the function is `lm()`:	
 
-lm_price_by_acc = lm(price ~ accommodates,data=listings_part$train) # We'll talk more about the '~' notation soon	
+lm_price_by_acc <-lm(price ~ accommodates,data=listings_part$train) # We'll talk more about the '~' notation soon	
 
 
 #' Let's check out the lm_price_by_acc object:	
@@ -154,17 +154,17 @@ listings %>% select(amenities) %>% head()
 
 #' This could be good predictive information if we can separate out which listing has which amenity. Our goal here is to turn the amenities column into many columns, one for each amenity, and with logical values indicating whether each listing has each amenity. This is just a bit tricky with some text manipulation. You can just include the code below and trust me on it.
 
-listings = listings %>%
+listings <-listings %>%
   filter(!grepl("translation missing",amenities)) %>%
   mutate(amenities=gsub("[{}]|\"|[()]|-","",amenities)) %>%
   mutate(amenities=gsub(" |/","_",amenities)) %>%
   mutate(amenities=gsub("24","x24",amenities))
 
 # Then, split the strings by amenity and create new column
-splitting = strsplit(listings$amenities,",")
-all_amenities = Reduce(union,splitting)
+splitting <-strsplit(listings$amenities,",")
+all_amenities <-Reduce(union,splitting)
 for (i in all_amenities){
-  listings[paste("amenity_",i,sep="")] = grepl(i,listings$amenities)
+  listings[paste("amenity_",i,sep="")] <-grepl(i,listings$amenities)
 }
 
 # ----------------------------------------------
@@ -189,7 +189,7 @@ for (i in all_amenities){
 
 #' First, let's clean up the data by getting rid of missing values and outliers. For categorical variables, we will remove all categories with only a few observations. Finally, we'll separate again into training and test sets.	
 
-listings_big = listings %>%	
+listings_big <- listings %>%	
   filter(!is.na(review_scores_rating),	
          accommodates <= 10,	
          property_type %in% c("Apartment","House","Bed & Breakfast","Condominium","Loft","Townhouse"),	
@@ -197,21 +197,21 @@ listings_big = listings %>%
          price <= 1000) %>%	
   select(price,accommodates,room_type,property_type,review_scores_rating,neighbourhood_cleansed,starts_with("amenity"))	
 	
-listings_big_lm = listings_big %>%	
+listings_big_lm <- listings_big %>%	
   resample_partition(c(train=0.7,test=0.3))	
 
 
 #' To get R to learn the model, we need to pass it a formula. We don't want to write down all those amenity variables by hand. Luckily, we can use the `paste()` function to string all the variable names together, and then the `as.formula()` function to translate a string into a formula.	
 
-all_amenities = as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
-amenities_string = paste(all_amenities,collapse="+")	
+all_amenities <- as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
+amenities_string <- paste(all_amenities,collapse="+")	
 amenities_string # Taking a look to make sure things worked	
 	
-big_formula = as.formula(paste("price ~ accommodates + accommodates*room_type + property_type + neighbourhood_cleansed + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating",amenities_string,sep="+"))	
+big_formula <- as.formula(paste("price ~ accommodates + accommodates*room_type + property_type + neighbourhood_cleansed + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating",amenities_string,sep="+"))	
 
 #' Now we can use the `lm()` function:	
 
-big_price_lm = lm(big_formula,data=listings_big_lm$train)	
+big_price_lm <- lm(big_formula,data=listings_big_lm$train)	
 
 #' We won't look at the summary because there are so many predictors. What happens when we compare in-sample and out-of-sample prediction performance?	
 
@@ -235,9 +235,9 @@ library(glmnet)
 #' Notice also that there's a way to specify lambda manually. Since we haven't discussed choosing lambda yet, let's just accept the default for now and see what we get.	
 
 
-x = model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=as.data.frame(listings_big_lm$train))	
-y = as.vector(as.data.frame(listings_big_lm$train)$price)	
-lasso_price = glmnet(x,y)	
+x <- model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=as.data.frame(listings_big_lm$train))	
+y <- as.vector(as.data.frame(listings_big_lm$train)$price)	
+lasso_price <- glmnet(x,y)	
 
 
 #' This time the `summary()` function isn't quite as useful:	
@@ -273,8 +273,8 @@ plot.glmnet(lasso_price,xvar="lambda")
 #' How do we choose which of the 88 models to use? Or in other words, how do we "tune" the $\lambda$ parameter? We'll use a similar idea to the training-test set split called cross-validation.	
 
 #' Let's do the cross-validation:	
-
-lasso_price_cv = cv.glmnet(x,y)	
+set.seed(1)
+lasso_price_cv <- cv.glmnet(x,y)	
 summary(lasso_price_cv) # What does the model object look like?	
 lasso_price_cv$lambda.min
 
@@ -287,15 +287,15 @@ plot.cv.glmnet(lasso_price_cv)
 #' The first vertical dotted line shows `lambda.min`, and the second is `lambda.1se`. The figure illustrates that we cross-validate to find the "sweet spot" where there's not too much bias (high lambda) and not too much noise (low lambda).
 
 #' Let's again compare training and test error. Since the `predict()` function for `glmnet` objects uses matrices, we can't use the `rmse` function like we did before.	
-x_all = model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=listings_big) # Matrix form for combined test and training data	
+x_all <- model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=listings_big) # Matrix form for combined test and training data	
 	
-lasso.pred = predict.cv.glmnet(lasso_price_cv,newx=x_all, s="lambda.min")
+lasso.pred <- predict.cv.glmnet(lasso_price_cv,newx=x_all, s="lambda.min")
 
 listings_big %>%	
   mutate(is_test = 1:nrow(listings_big) %in% listings_big_lm$test$idx,	
          pred = lasso.pred) %>%	
   group_by(is_test) %>%	
-  summarize(rmse = sqrt(1/length(price)*sum((price-pred)^2)))	
+  summarize(rmse <- sqrt(1/length(price)*sum((price-pred)^2)))	
 
 #' The overfitting problem has gotten better, but hasn't yet gone away completely. I added a bunch variables for dramatic effect that we could probably screen out before running the LASSO if we really wanted a good model.	
 
@@ -311,27 +311,25 @@ listings_big %>%
 #' Since the function stays between zero and one, it can be interpreted as a mapping from predictor values to a probability of being in one of two classes.	
 
 #' Let's read in the Titanic data
-train <- read.csv('../data/titanic_train.csv', stringsAsFactors = F)
-test  <- read.csv('../data/titanic_test.csv', stringsAsFactors = F)
+titanic <- read.csv('../data/titanic.csv', stringsAsFactors = F)
 
-# full  <- bind_rows(train, test) # bind training & test data
+#' check data
+str(titanic)
 
-# check data
-str(train)
-
-# First we'll look at the relationship between age & survival
-train %>% 
+#' First we'll look at the relationship between age & survival
+titanic %>% 
   ggplot(aes(Age, fill = factor(Survived))) + 
   geom_histogram() + 
   facet_grid(.~Sex)
 
-# Now we look at it against Sibling/Spouse
-train %>% 
+#' Now we look at it against Sibling/Spouse
+titanic %>% 
   ggplot(aes(x = SibSp, fill = factor(Survived))) +
   geom_bar(stat='count', position='dodge') +
   scale_x_continuous(breaks=c(1:11))
 
-train %>% 
+#' Another way to view it
+titanic %>% 
   select(Survived, SibSp, Parch) %>% 
   gather(Type, Number, 2:3) %>% 
   group_by(Number, Type) %>% 
@@ -341,56 +339,55 @@ train %>%
   facet_grid(.~Type) +
   scale_x_continuous(breaks=c(1:11))
 
-# Pclass and sex on survival probability
-train %>% group_by(Sex, Pclass) %>% 
+#' Pclass and sex on survival probability
+titanic %>% group_by(Sex, Pclass) %>% 
   summarize(Surv_prob = sum(Survived)/n()) %>%
   ggplot(aes(x=Pclass, y=Sex, fill=Surv_prob))+
   geom_tile()
 
-# run logistic regression on Sex, Sibling/Spouse, Parent/children, Pclass,and age
-l.glm = glm(Survived ~ Sex + SibSp + Parch + Age,family="binomial",data=train)	
-summary(l.glm)	
+#' Let's do some simple feature engineering. 
+#' Others have done sophisticated things with names, etc...
+titanic <-titanic %>% 
+  mutate(withFamily = ifelse(SibSp > 0 | Parch > 0, 1, 0),
+         AgeGroup = ifelse(is.na(Age), "NA", 
+                    ifelse(Age < 18, "Young", 
+                    ifelse(Age < 45, "Mid-aged", "Old"))),
+         AgeGroup = factor(AgeGroup, levels=c("NA", "Young", "Mid-aged", "Old")))
 
 
-listings_glm = listings %>% 	
-  filter(property_type == "Apartment",	
-         price <= 500) %>%	
-  resample_partition(c(train=0.7,test=0.3))	
+### Parititon to train and test
+set.seed(1)
+titanic_part <- titanic %>%
+  resample_partition(c(test = 0.3, train = 0.7))
 
+#' Run logistic regression on Sex, Sibling/Spouse, Parent/children, Pclass,and age
 
 #' Instead of the `lm()` function, we'll now use `glm()`, but the syntax is almost exactly the same:	
 
-l.glm = glm(amenity_Elevator_in_Building ~ price,family="binomial",data=listings_glm$train)	
+l.glm <-glm(Survived ~ Sex + Pclass + SibSp + Parch + withFamily + AgeGroup,family="binomial",data=titanic_part$train)	
 summary(l.glm)	
 
-
-#' Again, we can add predictions to the data frame and plot these along with the actuals, although the result doesn't look nearly as clean:	
-
-l.pred = predict(l.glm,newdata=listings_glm$test,type="response")
-as.data.frame(listings_glm$test) %>%	
-  mutate(pred = l.pred) %>%	
-  ggplot(aes(x=price)) + geom_line(aes(y=pred)) + geom_point(aes(y=amenity_Elevator_in_Building + 0))	
-
+#' Make predictions:
+l.pred <-predict(l.glm,newdata=titanic_part$test,type="response")
 
 #' In the meantime, we can explore out-of-sample performance. We can compute the accuracy and AUC.
-table(l.pred > 0.5, as.data.frame(listings_glm$test)$amenity_Elevator_in_Building)
-
+test_survived <- as.data.frame(titanic_part$test)$Survived
+conf_table <- table(l.pred > 0.5, test_survived)
+sum(diag(conf_table))/sum(conf_table)
 
 #' The `ROCR` package is one implementation that allows us to plot ROC curves and calculate AuC. Here's an example (make sure to install the packages first using `install.packages("ROCR"))`:	
 
 library(ROCR)	
-preds = predict(l.glm,as.data.frame(listings_glm$test),type="response")	
-test_elevators = as.data.frame(listings_glm$test)$amenity_Elevator_in_Building	
-pred_obj = prediction(preds,test_elevators) # Creating a prediction object for ROCR	
-perf = performance(pred_obj,'tpr','fpr')	
-plot(perf) # ROC curve	
-performance(pred_obj,'auc') # AUC - a scalar measure of performance	
+pred_obj <-prediction(l.pred,test_survived) # Creating a prediction object for ROCR	
+perf <-performance(pred_obj,'tpr','fpr')	
+plot(perf, colorize = T)      # ROC curve	
+performance(pred_obj,'auc')   # AUC - a scalar measure of performance	
 	
 
 
 #' As you can see, the `performance()` function in the `ROCR` package is versatile and allows you to calculate and plot a bunch of different performance metrics.	
 
-#' In our case, this model gives an AUC of 0.7. The worst possible is 0.5 - random guessing. We're definitely better than random here, and could likely improve by adding more predictors.	
+#' In our case, this model gives an AUC of 0.81. The worst possible is 0.5 - random guessing. We're definitely better than random here, and could likely improve by adding more predictors.	
 
 #' We've covered basic logistic regression, but just as with linear regression there are many, many extensions. For example, we could add higher-order predictor terms via splines. We could also do LASSO logistic regression if we wanted to use many predictors, using the `glmnet` package.	
 

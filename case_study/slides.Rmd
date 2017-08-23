@@ -9,26 +9,28 @@ output:
 
 
 ```{r setup, include=FALSE}
+library(gridExtra)
+library(DT)
 knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "250px", fig.align="center")
 ```
 
 # Introduction
 
 ## What We'll Do This Afternoon
-- Introducing basic machine learning methods
-- Form hypothesis for machine learning
+- Introducing basic machine learning concepts and methods
+- Form hypotheses through exploratory data analysis 
 - Continue wrangling the data for machine learning
 - Implement some ML in R
+    - Regression
+    - Classification
+    
 
-## Why Machine Learning?
-- Prediction
-- Pattern recognition 
-- Interpretation and diagnosis
-- Make some money on ![drawing](https://www.kaggle.com/static/images/site-logo.png)
-```{r, echo = FALSE, out.width = "500px"}
-knitr::include_graphics("kaggle.png")
-```
-
+## Why Machine Learning?{#myImagePage}
+> - Predictions
+> - Pattern recognition 
+> - Interpretation
+> - Make some ![Image](https://media.acecash.com/~/media/ACE/Images/hand-money-il.ashx?h=476&w=475&la=en&hash=63863FCCBAA5FD68D870EEC6C653211BAC6C27BF) on ![Image](https://www.kaggle.com/static/images/site-logo.png)
+[Link](https://www.kaggle.com/competitions)
 
 
 ## Examples
@@ -36,30 +38,32 @@ knitr::include_graphics("kaggle.png")
 - IBM Watson
 - Image recognition
 - Netflix recommender system
+- ...
 
 
 ## Machine Learning in R
 - Many other languages can do ML (Matlab, Python, Julia, etc.)
 - R bridges statistics and machine learning
-- Active community developing and updating packages constantly (11265 packages)!
+- Powerful data manipulation and graphics tools 
+- Active community developing packages (11265+)!
 ![](http://www.kdnuggets.com/wp-content/uploads/top-20-r-packages-machine-learning-downloads.jpg)
-- Powerful data manipulation and graphics tools as you saw earlier
+
 
 ## Types of machine learning
 
-- Supervised learning: learn a function to map predictor variables ($\mathbf{X}$) to response variables ($\mathbf{Y}$)
+- *Supervised learning*: learn a function to map predictor variables ($\mathbf{X}$) to response variables ($\mathbf{Y}$)
     - Linear models
     - SVM, CART, random forest
     - Neural networks
-- Unsupervised learning: learn the structure of data points
+- *Unsupervised learning*: learn the structure of data points
     - Clustering (k-means, hierarchical clustering)
     - Anomaly detection
-- Semi-supervised learning
+- *Semi-supervised learning*
 
 ## Model selection and evaluation
 - Model evaluation
     - Perform on a separate set (train/test split)
-    - Regression: $R^2$, MSE
+    - Regression: $R^2$, RMSE, MAE
     - Classification: Accuracy, confusion table, AUC
 - Model selection
     - Cross validation (train/validation/test split)
@@ -71,9 +75,9 @@ knitr::include_graphics("kaggle.png")
 ## Read in the data 
 - Read in the data and format the *price* as a numeric:
 ```{r, message=FALSE, warning=FALSE}
-listings = read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
+listings <- read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
 library(tidyverse)	
-listings = listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))
+listings <- listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))
 ```
 
 ## Exercise 1: Generating hypotheses
@@ -82,15 +86,13 @@ listings = listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))
     - Which factors influence price?
     - Should the relationship be linear?
     - Should variables be transformed?
-    - Advanced: additional data to be joined on? [put an example to the case study]
+    - Advanced: additional data to be joined on?
 - Use visualization, data summary from the morning to explore
 
-[Use tidyr for some ggplot visualization]
-[Prework: add the code chunk to the README.md]
 
 ## Example visualization
 ```{r, warning=FALSE, out.width = "500px", out.height = "300px",}
-listings_for_lm = listings %>%	
+listings_for_lm <- listings %>%	
   filter(accommodates <= 10, price <=1000)	
 ggplot(listings_for_lm)+
   aes(x=accommodates, y=price, color=cancellation_policy, size=review_scores_rating)+
@@ -99,7 +101,7 @@ ggplot(listings_for_lm)+
 ```
 
 ## First linear model
-Given data $X_t$ and $y_t$, linear regression solves the following problem:
+Given data $x_t$ and $y_t$, linear regression solves the following problem:
 $$	
 \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2,	
 $$	
@@ -107,19 +109,21 @@ which is also known as **ordinary least square** regression since it minimizes t
 
 
 ## First linear model
-- Before running the model, recall we need to split the data first:
-```{r, message=FALSE, warning=FALSE}
+- Before running the model, we need to split the data first:
+```{r, message=TRUE, warning=FALSE}
 library(modelr) 
-listings_part = listings_for_lm %>% 	
+set.seed(1)
+listings_part <- listings_for_lm %>% 	
   resample_partition(c(train=0.7,test=0.3))	
+listings_part
 ```
 
-- Use the lm command. Example:
+- Now we can use the lm command on the training:
 ```{r, message=FALSE, warning=FALSE}
-lm_price_by_acc = lm(price ~ accommodates,data=listings_part$train)
+lm_price_by_acc <- lm(price ~ accommodates,data=listings_part$train)
 ```
 
-## Look at model summary
+## Look at model summary{.smaller}
 ```{r, warning=FALSE}
 summary(lm_price_by_acc)	
 ```
@@ -135,7 +139,7 @@ summary(lm_price_by_acc)
 
 - Root Mean-squared Error (RMSE): $\sqrt{\sum_{t=1}^n (\hat{y}_t - y_t)^2/n}$	
 - Mean Absolute Error (MAE): $\sum_{t=1}^n |\hat{y}_t - y_t|/n$	
-- Coefficient of determination (R2): $1-\frac{\sum_{t=1}^n (\hat{y}_t - y_t)^2}{\sum_{t=1}^n (\bar{y}_t - y_t)^2}$
+- Coefficient of determination ($R^2$): $1-\frac{\sum_{t=1}^n (\hat{y}_t - y_t)^2}{\sum_{t=1}^n (\bar{y}_t - y_t)^2}$
     - $\hat{y}_t$ is the predicted value for observation $t$
     - $y_t$ is the actual value
     - $\bar{y}_t$ is the mean value
@@ -175,23 +179,24 @@ rsquare(lm_price_by_acc,listings_part$test)
 
 ## Add more variables
 - Inspect the "amenities" column. Need some data cleaning to make it useful!
-- Run the cleaning code included in the script.
+- Run the cleaning code included in the script. 
+    - Using regular expressions and `grep/gsub` is very useful for cleaning strings. For more details, see [documentation on grep/gsub](https://stat.ethz.ch/R-manual/R-devel/library/base/html/grep.html)
 ```{r, echo = FALSE, warning = FALSE}
-listings = listings %>%
+listings <- listings %>%
   filter(!grepl("translation missing",amenities)) %>%
   mutate(amenities=gsub("[{}]|\"|[()]|-","",amenities)) %>%
   mutate(amenities=gsub(" |/","_",amenities)) %>%
   mutate(amenities=gsub("24","x24",amenities))
 
 # Then, split the strings by amenity and create new column
-splitting = strsplit(listings$amenities,",")
-all_amenities = Reduce(union,splitting)
+splitting <- strsplit(listings$amenities,",")
+all_amenities <- Reduce(union,splitting)
 for (i in all_amenities){
-  listings[paste("amenity_",i,sep="")] = grepl(i,listings$amenities)
+  listings[paste("amenity_",i,sep="")] <- grepl(i,listings$amenities)
 }
 ```
 
-## Exercise 2: Build your next model
+## Exercise 3: Build your next model
 - Work with your partner, build your next linear model with multiple variables.
     - Clean the data first if necessary (remove missing observations, etc.)
     - Remember the formula syntax
@@ -202,8 +207,23 @@ for (i in all_amenities){
 - Visualize data and results
 
 ## Example model
-```{r, echo=FALSE, warning = FALSE, message = FALSE}
-listings_big = listings %>%	
+We use the following variables in the lm:
+```
+- accommodates	
+- property_type	
+- review_scores_rating	
+- neighbourhood_cleansed	
+- accommodates*room_type	
+- property_type*neighbourhood_cleansed 	
+- review_scores_rating*neighbourhood_cleansed 	
+- accommodates*review_scores_rating	
+- All columns created from the amenities column	
+```
+
+How does the model performance look? Is there a big discrepancy between the *in-sample* and *out-of-sample* performance?
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+listings_big <- listings %>%	
   filter(!is.na(review_scores_rating),	
          accommodates <= 10,	
          property_type %in% c("Apartment","House","Bed & Breakfast","Condominium","Loft","Townhouse"),	
@@ -211,24 +231,38 @@ listings_big = listings %>%
          price <= 1000) %>%	
   select(price,accommodates,room_type,property_type,review_scores_rating,neighbourhood_cleansed,starts_with("amenity"))	
 	
-listings_big_lm = listings_big %>%	
+listings_big_lm <- listings_big %>%	
   resample_partition(c(train=0.7,test=0.3))	
 
 
-all_amenities = as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
-amenities_string = paste(all_amenities,collapse="+")	
-amenities_string # Taking a look to make sure things worked	
+all_amenities <- as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
+amenities_string <- paste(all_amenities,collapse="+")	
 ```
 
 
+## Overfitting
+Overfitting kills a seemingly good model!
+```{r, echo=FALSE, message=TRUE, warning=FALSE, out.width = "500px", out.height = "400px"}
+x <- seq(-3, 3, 0.1)
+y <- x^2 + rnorm(length(x))
+myplotdata <- data.frame(x, y, ytrue=x^2, ybad=mean(x))
+p1 <- ggplot(myplotdata, aes(x=x, y=y))+geom_point()
+p2 <- ggplot(myplotdata, aes(x=x, y=y))+geom_point()+geom_line(aes(y=ytrue), color="blue")
+p3 <- ggplot(myplotdata, aes(x=x, y=y))+geom_point()+geom_line(aes(y=ybad), color="orange")
+p4 <- ggplot(myplotdata, aes(x=x, y=y))+geom_point()+geom_line(color="red")
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+
+
 ## LASSO
-- When a model overfits, we can add a term to the optimization problem that we're solving when fitting a model
+- When a model overfits, one solution is to add a term to the optimization problem
     - the term penalizes models that get too fancy without enough data
 - Recall our classical linear regression looks like	
 $$	
 \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2,	
 $$	
-- penalized regression looks like	
+- Penalized regression looks like	
 $$	
 \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2 + \lambda ||\beta||.	
 $$	
@@ -242,17 +276,17 @@ $$
 - To do LASSO, we'll use the `glmnet` package. 
 
 
-## LASSO
-- The syntax is a bit different:
+## LASSO {.smaller}
+- The syntax is a bit different from `lm()`, requiring the matrix `x` and vector `y` as inputs:
 ```{r, message=FALSE, warning=FALSE}
 library(glmnet)
-x = model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=as.data.frame(listings_big_lm$train))	
-y = as.vector(as.data.frame(listings_big_lm$train)$price)	
-lasso_price = glmnet(x,y)	
+x <- model.matrix(data=as.data.frame(listings_big_lm$train), ~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating)	
+y <- as.vector(as.data.frame(listings_big_lm$train)$price)	
+lasso_price <- glmnet(x,y)	
 ```
 
 
-## LASSO - interpret outputs
+## LASSO - interpret outputs {.smaller}
 Running `glmnet` gives the results for a range of $\lambda$ values. We can take a closer look at one: 
 ```{r, message=TRUE, warning=TRUE}
 lasso_price$lambda[20]	
@@ -270,11 +304,11 @@ plot.glmnet(lasso_price,xvar="lambda")
 
 ## Cross Validation
 - We just trained many models, but should not choose one by comparing their performance in test set (why?)
-- But we can do cross-validation
+- But we can do *cross-validation*
     - Only train on some of the training 
     - Save the rest of training to evaluate (validation set)
     - A final test set to evaluate performance once we've settled on a model	
-- More economic way to use data: *k-fold cross-validation*
+- More economic way to use data: *k-fold* cross-validation
     - Divide the training data into groups called *folds*
     - For each fold repeat the train-validate procedure
     - Average the performance of each model on each fold and pick the best one.	
@@ -288,27 +322,28 @@ plot.glmnet(lasso_price,xvar="lambda")
 The glmnet package has a very handy function called `cv.glmnet()` which does the entire process automatically. 
 
 - The relevant arguments are:
-    - x, the matrix of predictors	
-    - y, the response variable	
-    - nfolds, the number of ways to split the training set (defaults to 10)	
-    - type.measure, the metric of prediction quality. It defaults to mean squared error, the square of RMSE, for linear regression	
+    - `x`, the matrix of predictors	
+    - `y`, the response variable	
+    - `nfolds`, the number of ways to split the training set (defaults to 10)	
+    - `type.measure`, the metric of prediction quality. It defaults to mean squared error, the square of RMSE, for linear regression	
 
 
 
 ## Cross Validation in Action
 ```{r}
-lasso_price_cv = cv.glmnet(x,y)	
+set.seed(1)
+lasso_price_cv <- cv.glmnet(x,y)	
 lasso_price_cv$lambda.min
 plot.cv.glmnet(lasso_price_cv)	
 ```
 
-## Evaluate Cross Validated Model
+## Evaluate Cross-Validated Model
 ```{r, echo=FALSE}
-x_all = model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=listings_big) # Matrix form for combined test and training data	
+x_all <- model.matrix(~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating,data=listings_big) # Matrix form for combined test and training data	
 ```
 
 ```{r}
-lasso.pred = predict.cv.glmnet(lasso_price_cv,newx=x_all, s="lambda.min")
+lasso.pred <- predict.cv.glmnet(lasso_price_cv,newx=x_all, s="lambda.min")
 
 listings_big %>%	
   mutate(is_test = 1:nrow(listings_big) %in% listings_big_lm$test$idx,	
@@ -317,45 +352,119 @@ listings_big %>%
   summarize(rmse = sqrt(1/length(price)*sum((price-pred)^2)))	
 ```
 
+Ain't bad, but still need better feature selection methods than LASSO. Stay tuned for sparse regressions in 15.680.
 
 # Case Study - Classification
+## Classification
+- For classification, the $y$ variable is a binary $\{0, 1\}$ variable or a categorical variable.
+    - Binary classification (cat vs. dog)
+    - Multi-class classification (hand-written digit recognition)
+- We are going to focus on binary classification today
+
+
 ## Logistic Regression
 - Part of the class of generalized linear models (GLMs)
 - These models take the linear fit and map it through a non-linear function. 
 - For logistic regression, it uses the logistic function $f(x) = \frac{e^x}{1+e^x}$, which looks like this:	
 ```{r, echo=FALSE, message=TRUE}
-xs = seq(-10,10,0.25)	
-ys = exp(xs)/(1+exp(xs))	
-plot(xs,ys)	
+xs <- seq(-10,10,0.25)	
+ys <- exp(xs)/(1+exp(xs))	
+mydata <- data.frame(xs, ys)
+ggplot(mydata, aes(x=xs, y=ys)) + geom_point() + geom_line()
 ```
 
 ## Logistic Regression in R
 The syntax is similar to linear regression, with `binomial` for the family parameter.
 ```
-l.glm = glm(y ~ x,family="binomial",data=mydata$train)	
+l.glm <- glm(y ~ x,family="binomial",data=mydata$train)	
 summary(l.glm)	
 ```
 
-## Exercise 4: Generating Hypotheses
-- Now think about a binary variable that you might find interesting to predict
-- Come up with a model to explain the variable
+## Titanic Survival {.smaller}
+- Let's look at the titanic dataset:
 
+```{r, message=FALSE}
+titanic <- read.csv('../data/titanic.csv', stringsAsFactors = F)
+```
+
+```{r, echo=FALSE}
+titanic  %>%
+	DT::datatable(extensions = 'FixedColumns',
+  options = list(
+  dom = 't',
+  scrollX = TRUE,
+  scrollCollapse = TRUE
+))  
+```
+
+## Exercise 4: Predict who survives
+Take 20 minutes, working with your partner, construct a logistic regression model to predict `Survived` variables. 
+
+- Visualize data to generate hypothesis
+- Transform data to engineer additional features
+
+## Example Solution {.smaller}
+```{r, echo=FALSE}
+titanic <-titanic %>% 
+  mutate(withFamily = ifelse(SibSp > 0 | Parch > 0, 1, 0),
+         AgeGroup = ifelse(is.na(Age), "NA", 
+                    ifelse(Age < 18, "Young", 
+                    ifelse(Age < 45, "Mid-aged", "Old"))),
+         AgeGroup = factor(AgeGroup, levels=c("NA", "Young", "Mid-aged", "Old")))
+
+set.seed(1)
+titanic_part <- titanic %>%
+  resample_partition(c(test = 0.3, train = 0.7))
+
+l.glm <-glm(Survived ~ Sex + Pclass + SibSp + Parch + withFamily + AgeGroup,family="binomial",data=titanic_part$train)	
+summary(l.glm)	
+```
 
 ## Classification Evaluation
-Classification problems are evaluated by 
-- Accuracy
+When we make a prediction (survived or not), it is often evaluated on:
+
 - True positive rate
 - False positive rate
-- ...
-- Area under the curve
+- Accuracy
 
-Since the output is a probability, we will need a threshold for the first metrics. Let's try using 0.5.
+Since the output is a probability, we will need a threshold for the first metrics. Let's try using 0.5:
+
 
 ## Classification Evaluation
-AUC on the other hand measures the quality of all cutoffs simultaneously. Let's look at the curve (receiver operating characteristic Curve, or ROC) first:
+```{r}
+l.pred <-predict(l.glm,newdata=titanic_part$test,type="response")
+test_survived <- as.data.frame(titanic_part$test)$Survived
+conf_table <- table(l.pred > 0.5, test_survived); conf_table
+sum(diag(conf_table))/sum(conf_table)
+```
 
+## Classification Evaluation {.smaller}
+- But these metrics depend on the particular threshold. 
+- Area under the curve (AUC) measures the quality of all cutoffs simultaneously. 
+- Receiver operating characteristic Curve, or ROC:
+```{r, warning=FALSE, message=FALSE}
+library(ROCR)	
+pred_obj <-prediction(l.pred,test_survived) # Creating a prediction object for ROCR	
+perf <-performance(pred_obj,'tpr','fpr')	
+plot(perf, colorize = T)      # ROC curve
+```
 
 As the cutoff shrinks down from 1 to 0, the rate of total positives will increase.
+
+## Classification Evaluation
+To get the area under the curve, it is one line away:
+```{r, warning=FALSE, message=FALSE}
+performance(pred_obj,'auc')@y.values
+```
+
+
+## Extensions
+Similar to linear regression, there are many extensions to logistic regression:
+
+- do LASSO logistic regression if there are many predictors, using the `glmnet` package
+- add higher-order predictor terms via splines
+
+> There are many other classification ML methods such as CART, random forest, optimal trees, neural networks that you will be learning in the machine learning course.
 
 
 ## Additional Resources
