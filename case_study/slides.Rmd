@@ -319,12 +319,7 @@ listings_big %>%
 
 
 # Case Study - Classification
-## Generating hypotheses
-- Now think about a binary variable that you might find interesting to predict
-- Come up with a model to explain the variable
-
-
-## Logistic regression
+## Logistic Regression
 - Part of the class of generalized linear models (GLMs)
 - These models take the linear fit and map it through a non-linear function. 
 - For logistic regression, it uses the logistic function $f(x) = \frac{e^x}{1+e^x}$, which looks like this:	
@@ -334,7 +329,33 @@ ys = exp(xs)/(1+exp(xs))
 plot(xs,ys)	
 ```
 
+## Logistic Regression in R
+The syntax is similar to linear regression, with `binomial` for the family parameter.
+```
+l.glm = glm(y ~ x,family="binomial",data=mydata$train)	
+summary(l.glm)	
+```
 
+## Exercise 4: Generating Hypotheses
+- Now think about a binary variable that you might find interesting to predict
+- Come up with a model to explain the variable
+
+
+## Classification Evaluation
+Classification problems are evaluated by 
+- Accuracy
+- True positive rate
+- False positive rate
+- ...
+- Area under the curve
+
+Since the output is a probability, we will need a threshold for the first metrics. Let's try using 0.5.
+
+## Classification Evaluation
+AUC on the other hand measures the quality of all cutoffs simultaneously. Let's look at the curve (receiver operating characteristic Curve, or ROC) first:
+
+
+As the cutoff shrinks down from 1 to 0, the rate of total positives will increase.
 
 
 ## Additional Resources

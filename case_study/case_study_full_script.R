@@ -306,15 +306,51 @@ listings_big %>%
 # -----------------------------------------------------------------
 # Classification
 # -----------------------------------------------------------------
-#' So far we've looked at models which predict a continuous response variable. There are many related models which predict categorical outcomes, such as whether an email is spam or not, or which digit a handwritten number is. We'll take a brief look at two of these: logistic regression and classification trees.	
-
-#' ### Logistic Regression	
-
-
+#' So far we've looked at models which predict a continuous response variable. There are many related models which predict categorical outcomes, such as whether an email is spam or not, or which digit a handwritten number is. We'll take a brief look at example of this: logistic regression.	
 
 #' Since the function stays between zero and one, it can be interpreted as a mapping from predictor values to a probability of being in one of two classes.	
 
-#' Let's apply this model to the `listings` data. Let's try to predict which listings have elevators in the building by price. To make sure we're asking a sensible question, we'll only consider apartments. We'll also filter out price outliers.	
+#' Let's read in the Titanic data
+train <- read.csv('../data/titanic_train.csv', stringsAsFactors = F)
+test  <- read.csv('../data/titanic_test.csv', stringsAsFactors = F)
+
+# full  <- bind_rows(train, test) # bind training & test data
+
+# check data
+str(train)
+
+# First we'll look at the relationship between age & survival
+train %>% 
+  ggplot(aes(Age, fill = factor(Survived))) + 
+  geom_histogram() + 
+  facet_grid(.~Sex)
+
+# Now we look at it against Sibling/Spouse
+train %>% 
+  ggplot(aes(x = SibSp, fill = factor(Survived))) +
+  geom_bar(stat='count', position='dodge') +
+  scale_x_continuous(breaks=c(1:11))
+
+train %>% 
+  select(Survived, SibSp, Parch) %>% 
+  gather(Type, Number, 2:3) %>% 
+  group_by(Number, Type) %>% 
+  summarize(Surv_prob = sum(Survived)/n()) %>%
+  ggplot(aes(x = Number, y = Surv_prob, fill=Type)) +
+  geom_bar(stat='identity', position='dodge') +
+  facet_grid(.~Type) +
+  scale_x_continuous(breaks=c(1:11))
+
+# Pclass and sex on survival probability
+train %>% group_by(Sex, Pclass) %>% 
+  summarize(Surv_prob = sum(Survived)/n()) %>%
+  ggplot(aes(x=Pclass, y=Sex, fill=Surv_prob))+
+  geom_tile()
+
+# run logistic regression on Sex, Sibling/Spouse, Parent/children, Pclass,and age
+l.glm = glm(Survived ~ Sex + SibSp + Parch + Age,family="binomial",data=train)	
+summary(l.glm)	
+
 
 listings_glm = listings %>% 	
   filter(property_type == "Apartment",	
@@ -330,16 +366,15 @@ summary(l.glm)
 
 #' Again, we can add predictions to the data frame and plot these along with the actuals, although the result doesn't look nearly as clean:	
 
-as.data.frame(listings_glm$train) %>%	
-  mutate(pred = predict(l.glm,data=listings_glm$train,type="response")) %>%	
+l.pred = predict(l.glm,newdata=listings_glm$test,type="response")
+as.data.frame(listings_glm$test) %>%	
+  mutate(pred = l.pred) %>%	
   ggplot(aes(x=price)) + geom_line(aes(y=pred)) + geom_point(aes(y=amenity_Elevator_in_Building + 0))	
 
 
-#' In the meantime, we can explore out-of-sample performance. Ultimately, we want to predict whether or not a listing has an elevator. However, logistic regression gives us something a bit different: a probability that each listing has an elevator. This gives us flexibility in the way we predict. The most natural thing would be to predict that any listing with predicted probability above 0.5 *has* an elevator, and any listing with predicted probability below 0.5 *does not have* an elevator. But what if I use a wheelchair and I want to be really confident that there's going to be an elevator? I may want to use a cutoff value of 0.9 rather than 0.5. In fact, we could choose any cutoff value and have a corresponding prediction model.	
+#' In the meantime, we can explore out-of-sample performance. We can compute the accuracy and AUC.
+table(l.pred > 0.5, as.data.frame(listings_glm$test)$amenity_Elevator_in_Building)
 
-#' There's a really nice metric that measures the quality of all cutoffs simultaneously: *AUC*, for "Area Under the receiver operating characteristic Curve." That's a mouthful, but the idea is simpler: For every cutoff, we'll plot the *false positive rate* against the *true positive rate* and then take the area under this curve. (A *positive* in our case is a listing that has an elevator. So a *true positive* is a listing that we predict has an elevator and really does have an elevator, while a *false positive* is a listing that we predict has an elevator and does *not* actually have an elevator.)	
-
-#' As the cutoff shrinks down from 1 to 0, the rate of total positives will increase. If the rate of true positives increases faster than the rate of false positives, this is one indication that the model is good. This is what AUC measures.	
 
 #' The `ROCR` package is one implementation that allows us to plot ROC curves and calculate AuC. Here's an example (make sure to install the packages first using `install.packages("ROCR"))`:	
 
