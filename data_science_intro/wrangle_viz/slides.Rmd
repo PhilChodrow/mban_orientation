@@ -648,20 +648,31 @@ We are going to make a simple business intelligence (BI) dashboard for AirBnB, u
 
 # Additional Resources
 
-## Visualization Problems are Wrangling Problems
-
-> "In my experience, the vast majority of graphing agony is due to insufficient data wrangling." - [Jenny Bryan](http://stat545.com/cm006_tibbles-dplyr-ggplot2.html)
-
-## Additional Resources
-
-- Data Wrangling [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
-
 ## Map of the Tidyverse
 
 ```{r, echo = FALSE, out.width = "700px"}
 knitr::include_graphics("https://rviews.rstudio.com/post/2017-06-09-What-is-the-tidyverse_files/tidyverse1.png")
 ```
 
+## Guides and Cheatsheets
+
+- Data Wrangling [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+- `ggplot2` [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+- [The `R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/), by Winston Chang
+
+## Books and Courses
+
+- Jenny Bryan's fabulous [course website](http://stat545.com/) on introductory, reproducible data analysis with `R`
+- [R for Data Science](http://r4ds.had.co.nz/), a book on the Tidyverse by Hadley Wickham and Garrett Grolemund
+- Modules 2-4 of ["Computing in Optimization and Statistics"](https://philchodrow.github.io/cos_2017/) (15.S60) covers similar material in more breadth and depth.
+- 
+
+## Other Topics in `R`
+
+- [Reproducible research](https://simplystatistics.org/2015/12/11/instead-of-research-on-reproducibility-just-do-reproducible-research/) with [RMarkdown](http://rmarkdown.rstudio.com/)
+- Interactive data applications with [Shiny](https://shiny.rstudio.com/)
+- Automate long data science pipelines with GNU [make](http://stat545.com/automation04_make-activity.html)
+- Develop your own `R` [packages](http://r-pkgs.had.co.nz/)
 
 
 
