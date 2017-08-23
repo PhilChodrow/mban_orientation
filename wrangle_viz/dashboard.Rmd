@@ -61,7 +61,8 @@ listings %>%
 	### <b>
 	facet_wrap(~property_type) + 
 	### </b>
-	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') + 
+	guides(color = FALSE)
 ```
 
 Column {data-width=350}
@@ -86,6 +87,8 @@ summary_table %>%
 	aes(x = reorder(neighbourhood, n), y=n, fill = property_type) + 
 	###</b>
 	coord_flip() + 
-	geom_bar(stat = 'identity') 
+	geom_bar(stat = 'identity') +
+	xlab('Neighborhood') + 
+	ylab('Number of Listings')
 ```
 
