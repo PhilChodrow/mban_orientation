@@ -19,7 +19,7 @@ You can [download](https://github.com/PhilChodrow/data_science_intro/archive/mas
 
 ## Introduction - Daisy + Phil
 
-- [Slides](https://philchodrow.github.io/data_science_intro/introduction/introduction.html) ([source](https://philchodrow.github.io/data_science_intro/introduction/introduction.md))
+- [Slides](https://philchodrow.github.io/data_science_intro/introduction/introduction.html) ([source](https://philchodrow.github.io/data_science_intro/introduction/introduction.Rmd))
 
 ## Data Wrangling and Visualization - Phil
 
