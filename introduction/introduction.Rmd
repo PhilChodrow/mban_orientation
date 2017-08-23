@@ -130,14 +130,13 @@ knitr::include_graphics('https://philchodrow.github.io/assets/images/bio-photo.j
 
 Structure and dynamics of complex systems; statistics; network science; science of cities.
 
-```{r, out.height = "310px", out.width="270px"}
-# Daisy, please pick a bio photo you like and add some notes about your research areas. 
-knitr::include_graphics('http://www.lolhome.com/img_big/emo-goat.jpg')
+```{r, out.height = "310px", out.width="310px"}
+knitr::include_graphics('http://www.mit.edu/~zhuo/images/me-square.jpg')
 ```
 
-**Daisy Zhuo**: 
+**Daisy Zhuo**
 
-COOL STUFF
+Machine learning and optimization; causal inference in health care; personalized medicine. 
 
 </div>
 
