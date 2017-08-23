@@ -23,9 +23,9 @@ install.packages(c('tidyverse', 'knitr', 'flexdashboard' 'glmnet', 'ROCR'))
 
 ### Test for Wrangling and Visualization 
 
-[Download](https://philchodrow.github.io/data_science_intro/preassignment/preassignment1.Rmd) and open the file `wrangle_viz/preassignment_1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). The "Knit" button is the one circled in [this image](http://cinf401.artifice.cc/images/workflow-25.png).
+[Download](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.Rmd) and open the file `wrangle_viz/preassignment_1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). The "Knit" button is the one circled in [this image](http://cinf401.artifice.cc/images/workflow-25.png).
 
-After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/data_science_intro/preassignment/preassignment1.html).  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. 
+After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.html).  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. 
 
 ### Test for Case Study 
 
