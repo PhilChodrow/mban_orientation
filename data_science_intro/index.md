@@ -2,6 +2,8 @@
 title: Introduction to Data Science in R
 ---
 
+# Introduction to Data Science in R
+
 *Instructors: Daisy Zhuo and [Phil Chodrow](https://philchodrow.github.io/)*
 
 This is the repository for a day-long intensive crash-course on data science in R. Data science is rarely cut-and-dried; each analysis typically provides answers but also raises new questions. This makes the data scientific process fundamentally cyclical:
