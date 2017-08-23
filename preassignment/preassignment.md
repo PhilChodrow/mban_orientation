@@ -17,4 +17,48 @@ install.packages(c('tidyverse', 'knitr', 'flexdashboard' 'glmnet', 'ROCR'))
 
 ## 3. Test Packages
 
-- **Test for Wrangling and Visualization**: Open the file `wrangle_viz/preassignment_1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/data_science_intro/wrangle_viz/preassignment_1.html).  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. 
+### Test for Wrangling and Visualization 
+
+[Download](https://philchodrow.github.io/data_science_intro/preassignment/preassignment_1.Rmd) and open the file `wrangle_viz/preassignment_1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). The "Knit" button is the one circled in [this image](http://cinf401.artifice.cc/images/workflow-25.png).
+
+After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/data_science_intro/preassignment/preassignment_1.html).  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. 
+
+### Test for Case Study 
+
+Type or copy/paste the code below into the RStudio console window. 
+
+```
+library(ROCR)
+data(ROCR.simple)
+pred <- prediction( ROCR.simple$predictions, ROCR.simple$labels)
+perf <- performance(pred,"tpr","fpr")
+plot(perf)
+
+library(glmnet)
+set.seed(1)
+x=matrix(rnorm(100*20),100,10)
+y=rnorm(100)
+fit1=glmnet(x,y)
+coef(fit1,s=0.01)
+```
+
+You should see a plot appear in the Plots pane, and the following output appear in the console window. 
+
+```
+11 x 1 sparse Matrix of class "dgCMatrix"
+                       1
+(Intercept) -0.158258850
+V1           0.098817343
+V2           0.165398212
+V3           0.116463429
+V4           0.058015887
+V5           .          
+V6          -0.016297388
+V7          -0.022790678
+V8          -0.173383945
+V9           0.006271685
+V10          0.053314144
+```
+
+
+

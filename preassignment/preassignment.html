@@ -1053,6 +1053,37 @@ MathJax.Hub.Config({
 <pre><code>install.packages(c('tidyverse', 'knitr', 'flexdashboard' 'glmnet', 'ROCR'))
 </code></pre></p>
 <h2 id="3-test-packages"><a name="user-content-3-test-packages" href="#3-test-packages" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>3. Test Packages</h2>
-<ul>
-<li><strong>Test for Wrangling and Visualization</strong>: Open the file <code>wrangle_viz/preassignment_1.rmd</code> in RStudio. Click the &ldquo;Knit&rdquo; button at the top of the source editor, or press <code>cmd + shift + k</code> (<code>ctrl + shift + k</code> on Windows). After a few moments, RStudio should pop up with a new window containing a dashboard that looks like <a href="https://philchodrow.github.io/data_science_intro/wrangle_viz/preassignment_1.html">this</a>.  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. </li>
-</ul></article></body></html>
+<h3 id="test-for-wrangling-and-visualization"><a name="user-content-test-for-wrangling-and-visualization" href="#test-for-wrangling-and-visualization" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Test for Wrangling and Visualization</h3>
+<p><a href="https://philchodrow.github.io/data_science_intro/preassignment/preassignment_1.Rmd">Download</a> and open the file <code>wrangle_viz/preassignment_1.rmd</code> in RStudio. Click the &ldquo;Knit&rdquo; button at the top of the source editor, or press <code>cmd + shift + k</code> (<code>ctrl + shift + k</code> on Windows). The &ldquo;Knit&rdquo; button is the one circled in <a href="http://cinf401.artifice.cc/images/workflow-25.png">this image</a>.</p>
+<p>After a few moments, RStudio should pop up with a new window containing a dashboard that looks like <a href="https://philchodrow.github.io/data_science_intro/preassignment/preassignment_1.html">this</a>.  If your dashboard matches the example, move on to the next step. If not, please email the instructors with the error message you received. </p>
+<h3 id="test-for-case-study"><a name="user-content-test-for-case-study" href="#test-for-case-study" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Test for Case Study</h3>
+<p>Type or copy/paste the code below into the RStudio console window. </p>
+<pre><code>library(ROCR)
+data(ROCR.simple)
+pred &lt;- prediction( ROCR.simple$predictions, ROCR.simple$labels)
+perf &lt;- performance(pred,&quot;tpr&quot;,&quot;fpr&quot;)
+plot(perf)
+
+library(glmnet)
+set.seed(1)
+x=matrix(rnorm(100*20),100,10)
+y=rnorm(100)
+fit1=glmnet(x,y)
+coef(fit1,s=0.01)
+</code></pre>
+
+<p>You should see a plot appear in the Plots pane, and the following output appear in the console window. </p>
+<pre><code>11 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+                       1
+(Intercept) -0.158258850
+V1           0.098817343
+V2           0.165398212
+V3           0.116463429
+V4           0.058015887
+V5           .          
+V6          -0.016297388
+V7          -0.022790678
+V8          -0.173383945
+V9           0.006271685
+V10          0.053314144
+</code></pre></article></body></html>
