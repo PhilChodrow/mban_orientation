@@ -16,7 +16,7 @@ title: Preassignment
 
 In the RStudio console, type 
 ```
-install.packages(c('tidyverse', 'knitr', 'flexdashboard' 'glmnet', 'ROCR', 'nycflights13'))
+install.packages(c('tidyverse', 'knitr', 'flexdashboard', 'glmnet', 'ROCR', 'nycflights13'))
 ```
 
 ## 3. Test Packages
