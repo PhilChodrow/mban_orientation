@@ -1,7 +1,7 @@
 # Introduction to Optimization
 *Instructors: Jack Dunn and Daisy Zhuo*
 
-This is the repository for a day-long intensive crash-course on optimization and `Julia`. 
+This is the repository for a day-long intensive crash-course on optimization, `Julia`, and `JuMP`. 
 
 The course aims to familiarize students with the concept and implementation of optimization. The course outline is as follow:
 
@@ -12,16 +12,16 @@ The course aims to familiarize students with the concept and implementation of o
 2. Overview of Optimization in Practice
     1. Optimization Solvers
     2. Algebraic Modeling Languages 
-3. Intro to Julia
+3. Intro to `Julia`
 
 *Break*
 
-4. Intro to JuMP
+4. Intro to `JuMP`
 5. Guide to MIO modeling and solvers
 
 
 # Software
-We will be using the following software tools duing the class:
+We will be using the following software tools duing the class. The installation instructions are in the preassignment in the next section.
 1.	`Julia` - the programming language.
 2.	`IJulia` - a popular environment for writing and sharing Julia code.
 3.	`Gurobi` – a powerful commercial optimization solver
