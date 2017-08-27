@@ -4,7 +4,8 @@
 This is the repository for a day-long intensive crash-course on optimization and `Julia`. 
 
 The course aims to familiarize students with the concept and implementation of optimization. The course outline is as follow:
-(Morning)
+
+
 1. Introduction to Optimization 
     1. General Optimization
     2. Linear Optimization
@@ -12,7 +13,9 @@ The course aims to familiarize students with the concept and implementation of o
     1. Optimization Solvers
     2. Algebraic Modeling Languages 
 3. Intro to Julia
-(Afternoon)
+
+*Break*
+
 4. Intro to JuMP
 5. Guide to MIO modeling and solvers
 
@@ -27,6 +30,6 @@ We will be using the following software tools duing the class:
 
 # Prerequisites and Preassignment
 
-This training does not require any specific theoretical background. To participate in the session, please make sure that you complete the [preassignment]() beforehand. 
+This training does not require any specific theoretical background. To participate in the session, please make sure that you complete the [preassignment](https://github.com/PhilChodrow/mban_orientation/raw/master/optimization_intro/preassignment/optimization-preassignment.pdf) beforehand. 
 
 
