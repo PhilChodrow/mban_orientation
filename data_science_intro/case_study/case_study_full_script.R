@@ -48,9 +48,17 @@ ggplot(listings_for_lm)+
   geom_point(alpha = 0.2)+
   facet_wrap(~cancellation_policy,ncol=4)
 
+# ---- end of example solutions to Exercise 1 -----
+
 # -----------------------------------------------------------------
 # Linear Regression
 # -----------------------------------------------------------------
+
+#' You can add a linear fit to a scatter plot easily by adding geom_smooth with method="lm"
+
+ggplot(listings, aes(x=accommodates, y=price))+geom_point()+geom_smooth(method="lm")
+
+#' What if we need to quantify the linear fit, check it statistical significance, extend to multiple variables, and make predictions? A more rigorous statistical procedure is therefore needed.
 
 #' Since we care about prediction accuracy, we'll reserve a portion of our data to be a test set. There are lots of ways to do this. We'll use the `modelr` package, which is part of the `tidyverse`.	
 
@@ -93,19 +101,24 @@ summary(lm_price_by_acc)
 # ----------------------------------------------
 # EXERCISE 2: VISUALIZE MODEL PERFORMANCE
 # ----------------------------------------------
+
+# There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. 	
+
+listing_with_pred =  as.data.frame(listings_part$train) %>%	
+  add_predictions(lm_price_by_acc) %>%	
+  add_residuals(lm_price_by_acc,var="resid") 
+
 # ----------------------------------------------
 # SOLUTION
 # ----------------------------------------------
-#' As a check on inference quality, let's plot the fitted line. There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here.	
-
-as.data.frame(listings_part$train) %>%	
-  add_predictions(lm_price_by_acc) %>%	
+#' As a check on inference quality, let's plot the fitted line. 
+listing_with_pred %>%
   ggplot(aes(x=accommodates)) +	
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
 
-#' Nice. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. This is helpful to make sure that the residual uncertainty looks like random noise rather than an unidentified trend.	
+#' Nice. This is helpful to make sure that the residual uncertainty looks like random noise rather than an unidentified trend.	
 
 as.data.frame(listings_part$train) %>%	
   add_residuals(lm_price_by_acc,var="resid") %>%	
@@ -117,8 +130,7 @@ as.data.frame(listings_part$train) %>%
 as.data.frame(listings_part$train) %>%	
   add_residuals(lm_price_by_acc,var="resid") %>%	
   group_by(as.factor(accommodates)) %>%	
-  ggplot(aes(x=as.factor(accommodates),y=resid)) + geom_boxplot()	
-
+  ggplot(aes(x=as.factor(accommodates),y=resid)) + geom_boxplot()
 
 #' Things are pretty centered around zero, with the exception of 9- & 10-person accommodations. Maybe the model doesn't apply so well here and we could refine it in a later modelling iteration.	
 
@@ -130,7 +142,8 @@ as.data.frame(listings_part$test) %>%
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
-
+# ---- end of example solutions to Exercise 2 -----
+ 
 #' Now, what if we wanted to *quantify* how well the model predicts these out-of-sample values? There are several metrics to aggregate the prediction error. We'll look at RMSE, MAE, and Rsquared.
 
 #' You could do this pretty easily by hand, and we'll do so later on, but `modelr` has built-in functions to do this for you:	

@@ -101,15 +101,28 @@ ggplot(listings_for_lm)+
 ```
 
 ## First linear model
-Given data $x_t$ and $y_t$, linear regression solves the following problem:
+A linear model assumes the following structure:
+$$	
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p + \epsilon
+$$	
+Given data $x_t$ and $y_t$, it finds the $\beta$ by solving the following problem:
 $$	
 \min_\beta \sum_{t=1}^n (y_t-x_t^T\beta)^2,	
 $$	
 which is also known as **ordinary least square** regression since it minimizes the sum of squared errors.
 
 
-## First linear model
-- Before running the model, we need to split the data first:
+## First linear model, visualized
+A single-variable linear fit of `price` on `accommodates` looks like this:
+
+```{r}
+ggplot(listings, aes(x=accommodates, y=price))+
+  geom_point()+
+  geom_smooth(method="lm")
+```
+
+## First linear model in R
+- Before running the model, recall we need to split data first:
 ```{r, message=TRUE, warning=FALSE}
 library(modelr) 
 set.seed(1)
@@ -130,10 +143,18 @@ summary(lm_price_by_acc)
 
 ## Exercise 2: Evaluating first model
 - How would you visualize the model fit? Spend 10 minutes to come up with your visualizations
-- Some hints:
-    - You can use `as.data.frame()` to convert a resample object such as `listings_part$train` to a data frame
-    - `add_predictions()` function from `modelr` package might be useful
-    - `add_residuals()` can be useful too
+- Let's first run the following:
+```{r, message=FALSE, warning=FALSE}
+listing_with_pred =  as.data.frame(listings_part$train) %>%	
+  add_predictions(lm_price_by_acc) %>%	
+  add_residuals(lm_price_by_acc,var="resid")
+```
+- Explanations:
+    - `as.data.frame()` converts a resample object such as `listings_part$train` to a data frame
+    - `add_predictions()` function from `modelr` package adds predicted values to a data frame
+    - `add_residuals()` adds the model residual to the data frame
+   
+
 
 ## Quantify first model performance
 
@@ -153,7 +174,9 @@ rsquare(lm_price_by_acc,listings_part$test)
 ```
 
 ## Summary of procedure 
-1.  We asked the questions: How does listing price depend on the number of people it accommodates? How well does accommodation size predict price? 
+1.  We asked the questions: 
+    1. How does listing price depend on the number of people it accommodates? 
+    2. How well does accommodation size predict price? 
 1. Since we were interested in prediction, we reserved part of our data as a test set. 
 1. We then chose to use a linear model to answer these questions, and found the corresponding function `lm()`, which takes: 
     1. Data on the response and predictor variables, usually through a `formula` object	
@@ -165,7 +188,8 @@ rsquare(lm_price_by_acc,listings_part$test)
     2. Residuals	
     3. Statistical significance	
     4. ...
-
+2. With the `lm` object, we can add predictions and residuals to training and testing data, *diagnose* and *evaluate* model
+3. If we see red flags during diagnosis, iterate to resolve the issue
 
 ## Add more variables
 - We can build more interesting model formulas in `R`:
@@ -280,7 +304,9 @@ $$
 - The syntax is a bit different from `lm()`, requiring the matrix `x` and vector `y` as inputs:
 ```{r, message=FALSE, warning=FALSE}
 library(glmnet)
-x <- model.matrix(data=as.data.frame(listings_big_lm$train), ~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating)	
+x <- model.matrix(data=as.data.frame(listings_big_lm$train), 
+    ~ .-price + accommodates*room_type + property_type*neighbourhood_cleansed + 
+      review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating)	
 y <- as.vector(as.data.frame(listings_big_lm$train)$price)	
 lasso_price <- glmnet(x,y)	
 ```
@@ -292,13 +318,6 @@ Running `glmnet` gives the results for a range of $\lambda$ values. We can take 
 lasso_price$lambda[20]	
 lasso_price$beta[which(lasso_price$beta[,20] != 0),20]	
 ```
-
-
-## LASSO - interpret outputs
-```{r, message=FALSE, warning=TRUE, out.width = "400px", out.height = "350px"}
-plot.glmnet(lasso_price,xvar="lambda")	
-```
-- Each line is one variable. As lambda shrinks, the model adds more and more nonzero coefficients.
 
 
 
