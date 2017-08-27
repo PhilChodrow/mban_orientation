@@ -34,6 +34,6 @@ This training does not require any specific theoretical background. However, all
 
 # Preassignment
 
-To participate in the session, please make sure that you complete the [preassignment](https://philchodrow.github.io/data_science_intro/preassignment/preassignment.html) beforehand. 
+To participate in the session, please make sure that you complete the [preassignment](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment.html) beforehand. 
 
 
