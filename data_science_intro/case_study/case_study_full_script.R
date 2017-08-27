@@ -180,6 +180,17 @@ for (i in all_amenities){
   listings[paste("amenity_",i,sep="")] <-grepl(i,listings$amenities)
 }
 
+#' Before building the model, let's clean up the data by getting rid of missing values and outliers. For categorical variables, we will remove all categories with only a few observations. Finally, we'll separate again into training and test sets.	
+
+listings_big <- listings %>%	
+  filter(!is.na(review_scores_rating),	
+         accommodates <= 10,	
+         property_type %in% c("Apartment","House","Bed & Breakfast","Condominium","Loft","Townhouse"),	
+         !(neighbourhood_cleansed %in% c("Leather District","Longwood Medical Area")),	
+         price <= 1000) %>%	
+  select(price,accommodates,room_type,property_type,review_scores_rating,neighbourhood_cleansed,starts_with("amenity"))	
+
+
 # ----------------------------------------------
 # EXERCISE 3: BUILD NEW LINEAR MODELS
 # ----------------------------------------------
@@ -200,27 +211,21 @@ for (i in all_amenities){
 
 #' Note that whenever we include a non-numeric (or categorical) variable, R is going to create one indicator variable for all but one unique value of the variable. We'll see this in the output of `lm()`.	
 
-#' First, let's clean up the data by getting rid of missing values and outliers. For categorical variables, we will remove all categories with only a few observations. Finally, we'll separate again into training and test sets.	
-
-listings_big <- listings %>%	
-  filter(!is.na(review_scores_rating),	
-         accommodates <= 10,	
-         property_type %in% c("Apartment","House","Bed & Breakfast","Condominium","Loft","Townhouse"),	
-         !(neighbourhood_cleansed %in% c("Leather District","Longwood Medical Area")),	
-         price <= 1000) %>%	
-  select(price,accommodates,room_type,property_type,review_scores_rating,neighbourhood_cleansed,starts_with("amenity"))	
-	
-listings_big_lm <- listings_big %>%	
-  resample_partition(c(train=0.7,test=0.3))	
-
-
 #' To get R to learn the model, we need to pass it a formula. We don't want to write down all those amenity variables by hand. Luckily, we can use the `paste()` function to string all the variable names together, and then the `as.formula()` function to translate a string into a formula.	
 
 all_amenities <- as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
 amenities_string <- paste(all_amenities,collapse="+")	
 amenities_string # Taking a look to make sure things worked	
-	
+
+
 big_formula <- as.formula(paste("price ~ accommodates + accommodates*room_type + property_type + neighbourhood_cleansed + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating",amenities_string,sep="+"))	
+
+
+#' Don't forget to split the data before running `lm()`:
+
+listings_big_lm <- listings_big %>%	
+  resample_partition(c(train=0.7,test=0.3))	
+
 
 #' Now we can use the `lm()` function:	
 
@@ -232,6 +237,8 @@ rmse(big_price_lm,listings_big_lm$train) # In-sample
 rmse(big_price_lm,listings_big_lm$test) # Out-of-sample	
 
 #' We've got an overfitting problem here, meaning that the training error is smaller than the test error. The model is too powerful for the amount of data we have. Note that R recognizes this by giving warnings about a "rank-deficient fit."	
+
+# ---- end of example solutions to Exercise 3 -----
 
 # -----------------------------------------------------------------
 # LASSO (Penalized regression)
@@ -323,11 +330,21 @@ listings_big %>%
 
 #' Since the function stays between zero and one, it can be interpreted as a mapping from predictor values to a probability of being in one of two classes.	
 
+#' In this example, we will be working with the Titanic data where the survival status of passengers, as well as other information such as class, demographics, and fare are provided.
+
 #' Let's read in the Titanic data
 titanic <- read.csv('../data/titanic.csv', stringsAsFactors = F)
 
 #' check data
 str(titanic)
+
+
+# ----------------------------------------------
+# EXERCISE 3: EXPLORE AND BUILD MODEL
+# ----------------------------------------------
+# ----------------------------------------------
+# SOLUTION
+# ----------------------------------------------
 
 #' First we'll look at the relationship between age & survival
 titanic %>% 
@@ -339,17 +356,6 @@ titanic %>%
 titanic %>% 
   ggplot(aes(x = SibSp, fill = factor(Survived))) +
   geom_bar(stat='count', position='dodge') +
-  scale_x_continuous(breaks=c(1:11))
-
-#' Another way to view it
-titanic %>% 
-  select(Survived, SibSp, Parch) %>% 
-  gather(Type, Number, 2:3) %>% 
-  group_by(Number, Type) %>% 
-  summarize(Surv_prob = sum(Survived)/n()) %>%
-  ggplot(aes(x = Number, y = Surv_prob, fill=Type)) +
-  geom_bar(stat='identity', position='dodge') +
-  facet_grid(.~Type) +
   scale_x_continuous(breaks=c(1:11))
 
 #' Pclass and sex on survival probability
