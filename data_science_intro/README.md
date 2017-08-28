@@ -34,43 +34,6 @@ This training does not require any specific theoretical background. However, all
 
 # Preassignment
 
-To participate in the session, please make sure that you complete the [preassignment](https://philchodrow.github.io/data_science_intro/preassignment/preassignment.html) beforehand. 
-
-
-- **Test for Machine Learning**: in the RStudio console, type:
-```
-library(ROCR)
-data(ROCR.simple)
-pred <- prediction( ROCR.simple$predictions, ROCR.simple$labels)
-perf <- performance(pred,"tpr","fpr")
-plot(perf)
-
-library(glmnet)
-set.seed(1)
-x=matrix(rnorm(100*20),100,10)
-y=rnorm(100)
-fit1=glmnet(x,y)
-coef(fit1,s=0.01)
-```
-
-You should see a plot in the Plots view and the following in the console without error or warnings:
-```
-11 x 1 sparse Matrix of class "dgCMatrix"
-                       1
-(Intercept) -0.158258850
-V1           0.098817343
-V2           0.165398212
-V3           0.116463429
-V4           0.058015887
-V5           .          
-V6          -0.016297388
-V7          -0.022790678
-V8          -0.173383945
-V9           0.006271685
-V10          0.053314144
-```
-
-
-
+To participate in the session, please make sure that you complete the [preassignment](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment.html) beforehand. 
 
 

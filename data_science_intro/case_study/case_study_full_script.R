@@ -48,9 +48,17 @@ ggplot(listings_for_lm)+
   geom_point(alpha = 0.2)+
   facet_wrap(~cancellation_policy,ncol=4)
 
+# ---- end of example solutions to Exercise 1 -----
+
 # -----------------------------------------------------------------
 # Linear Regression
 # -----------------------------------------------------------------
+
+#' You can add a linear fit to a scatter plot easily by adding geom_smooth with method="lm"
+
+ggplot(listings, aes(x=accommodates, y=price))+geom_point()+geom_smooth(method="lm")
+
+#' What if we need to quantify the linear fit, check it statistical significance, extend to multiple variables, and make predictions? A more rigorous statistical procedure is therefore needed.
 
 #' Since we care about prediction accuracy, we'll reserve a portion of our data to be a test set. There are lots of ways to do this. We'll use the `modelr` package, which is part of the `tidyverse`.	
 
@@ -93,19 +101,24 @@ summary(lm_price_by_acc)
 # ----------------------------------------------
 # EXERCISE 2: VISUALIZE MODEL PERFORMANCE
 # ----------------------------------------------
+
+# There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. 	
+
+listing_with_pred =  as.data.frame(listings_part$train) %>%	
+  add_predictions(lm_price_by_acc) %>%	
+  add_residuals(lm_price_by_acc,var="resid") 
+
 # ----------------------------------------------
 # SOLUTION
 # ----------------------------------------------
-#' As a check on inference quality, let's plot the fitted line. There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here.	
-
-as.data.frame(listings_part$train) %>%	
-  add_predictions(lm_price_by_acc) %>%	
+#' As a check on inference quality, let's plot the fitted line. 
+listing_with_pred %>%
   ggplot(aes(x=accommodates)) +	
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
 
-#' Nice. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. This is helpful to make sure that the residual uncertainty looks like random noise rather than an unidentified trend.	
+#' Nice. This is helpful to make sure that the residual uncertainty looks like random noise rather than an unidentified trend.	
 
 as.data.frame(listings_part$train) %>%	
   add_residuals(lm_price_by_acc,var="resid") %>%	
@@ -117,8 +130,7 @@ as.data.frame(listings_part$train) %>%
 as.data.frame(listings_part$train) %>%	
   add_residuals(lm_price_by_acc,var="resid") %>%	
   group_by(as.factor(accommodates)) %>%	
-  ggplot(aes(x=as.factor(accommodates),y=resid)) + geom_boxplot()	
-
+  ggplot(aes(x=as.factor(accommodates),y=resid)) + geom_boxplot()
 
 #' Things are pretty centered around zero, with the exception of 9- & 10-person accommodations. Maybe the model doesn't apply so well here and we could refine it in a later modelling iteration.	
 
@@ -130,7 +142,8 @@ as.data.frame(listings_part$test) %>%
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
-
+# ---- end of example solutions to Exercise 2 -----
+ 
 #' Now, what if we wanted to *quantify* how well the model predicts these out-of-sample values? There are several metrics to aggregate the prediction error. We'll look at RMSE, MAE, and Rsquared.
 
 #' You could do this pretty easily by hand, and we'll do so later on, but `modelr` has built-in functions to do this for you:	
@@ -167,6 +180,17 @@ for (i in all_amenities){
   listings[paste("amenity_",i,sep="")] <-grepl(i,listings$amenities)
 }
 
+#' Before building the model, let's clean up the data by getting rid of missing values and outliers. For categorical variables, we will remove all categories with only a few observations. Finally, we'll separate again into training and test sets.	
+
+listings_big <- listings %>%	
+  filter(!is.na(review_scores_rating),	
+         accommodates <= 10,	
+         property_type %in% c("Apartment","House","Bed & Breakfast","Condominium","Loft","Townhouse"),	
+         !(neighbourhood_cleansed %in% c("Leather District","Longwood Medical Area")),	
+         price <= 1000) %>%	
+  select(price,accommodates,room_type,property_type,review_scores_rating,neighbourhood_cleansed,starts_with("amenity"))	
+
+
 # ----------------------------------------------
 # EXERCISE 3: BUILD NEW LINEAR MODELS
 # ----------------------------------------------
@@ -187,27 +211,21 @@ for (i in all_amenities){
 
 #' Note that whenever we include a non-numeric (or categorical) variable, R is going to create one indicator variable for all but one unique value of the variable. We'll see this in the output of `lm()`.	
 
-#' First, let's clean up the data by getting rid of missing values and outliers. For categorical variables, we will remove all categories with only a few observations. Finally, we'll separate again into training and test sets.	
-
-listings_big <- listings %>%	
-  filter(!is.na(review_scores_rating),	
-         accommodates <= 10,	
-         property_type %in% c("Apartment","House","Bed & Breakfast","Condominium","Loft","Townhouse"),	
-         !(neighbourhood_cleansed %in% c("Leather District","Longwood Medical Area")),	
-         price <= 1000) %>%	
-  select(price,accommodates,room_type,property_type,review_scores_rating,neighbourhood_cleansed,starts_with("amenity"))	
-	
-listings_big_lm <- listings_big %>%	
-  resample_partition(c(train=0.7,test=0.3))	
-
-
 #' To get R to learn the model, we need to pass it a formula. We don't want to write down all those amenity variables by hand. Luckily, we can use the `paste()` function to string all the variable names together, and then the `as.formula()` function to translate a string into a formula.	
 
 all_amenities <- as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
 amenities_string <- paste(all_amenities,collapse="+")	
 amenities_string # Taking a look to make sure things worked	
-	
+
+
 big_formula <- as.formula(paste("price ~ accommodates + accommodates*room_type + property_type + neighbourhood_cleansed + property_type*neighbourhood_cleansed + review_scores_rating*neighbourhood_cleansed + accommodates*review_scores_rating",amenities_string,sep="+"))	
+
+
+#' Don't forget to split the data before running `lm()`:
+
+listings_big_lm <- listings_big %>%	
+  resample_partition(c(train=0.7,test=0.3))	
+
 
 #' Now we can use the `lm()` function:	
 
@@ -219,6 +237,8 @@ rmse(big_price_lm,listings_big_lm$train) # In-sample
 rmse(big_price_lm,listings_big_lm$test) # Out-of-sample	
 
 #' We've got an overfitting problem here, meaning that the training error is smaller than the test error. The model is too powerful for the amount of data we have. Note that R recognizes this by giving warnings about a "rank-deficient fit."	
+
+# ---- end of example solutions to Exercise 3 -----
 
 # -----------------------------------------------------------------
 # LASSO (Penalized regression)
@@ -310,11 +330,21 @@ listings_big %>%
 
 #' Since the function stays between zero and one, it can be interpreted as a mapping from predictor values to a probability of being in one of two classes.	
 
+#' In this example, we will be working with the Titanic data where the survival status of passengers, as well as other information such as class, demographics, and fare are provided.
+
 #' Let's read in the Titanic data
 titanic <- read.csv('../data/titanic.csv', stringsAsFactors = F)
 
 #' check data
 str(titanic)
+
+
+# ----------------------------------------------
+# EXERCISE 4: EXPLORE ON YOUR OWN
+# ----------------------------------------------
+# ----------------------------------------------
+# SOLUTION
+# ----------------------------------------------
 
 #' First we'll look at the relationship between age & survival
 titanic %>% 
@@ -326,17 +356,6 @@ titanic %>%
 titanic %>% 
   ggplot(aes(x = SibSp, fill = factor(Survived))) +
   geom_bar(stat='count', position='dodge') +
-  scale_x_continuous(breaks=c(1:11))
-
-#' Another way to view it
-titanic %>% 
-  select(Survived, SibSp, Parch) %>% 
-  gather(Type, Number, 2:3) %>% 
-  group_by(Number, Type) %>% 
-  summarize(Surv_prob = sum(Survived)/n()) %>%
-  ggplot(aes(x = Number, y = Surv_prob, fill=Type)) +
-  geom_bar(stat='identity', position='dodge') +
-  facet_grid(.~Type) +
   scale_x_continuous(breaks=c(1:11))
 
 #' Pclass and sex on survival probability
