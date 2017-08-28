@@ -29,8 +29,9 @@ knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "250px", fi
 > - Predictions
 > - Pattern recognition 
 > - Interpretation
-> - Make some ![Image](https://media.acecash.com/~/media/ACE/Images/hand-money-il.ashx?h=476&w=475&la=en&hash=63863FCCBAA5FD68D870EEC6C653211BAC6C27BF) on ![Image](https://www.kaggle.com/static/images/site-logo.png)
-[Link](https://www.kaggle.com/competitions)
+> - Use predictions for prescriptions (tomorrow)
+> - Make some ![Image](https://media.acecash.com/~/media/ACE/Images/hand-money-il.ashx?h=476&w=475&la=en&hash=63863FCCBAA5FD68D870EEC6C653211BAC6C27BF) on
+[Kaggle](https://www.kaggle.com/competitions)
 
 
 ## Examples
