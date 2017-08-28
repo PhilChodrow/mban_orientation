@@ -29,8 +29,7 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 ## Data Wrangling and Visualization - Phil
 
 - [Slides](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/slides.html) ([source](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/slides.Rmd))
-- [Notes](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/notes.html) ([source](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/notes.Rmd))
-- [Script](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/full_script.R) ([complete](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/full_script.R))
+- [Script](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/full_script.R))
 
 ## Case Study - Daisy
 
