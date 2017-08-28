@@ -36,7 +36,7 @@ This training does not require any specific theoretical background. To participa
 
 You can [download](https://github.com/PhilChodrow/mban_orientation/archive/master.zip) all the course materials as a `.zip` file, or access individual materials through the links below. 
 
-- [Slides](https://philchodrow.github.io/mban_orientation/data_science_intro/introduction/introduction.html) ([source](https://philchodrow.github.io/mban_orientation/data_science_intro/introduction/introduction.Rmd))
+- [Slides](https://philchodrow.github.io/mban_orientation/optimization_intro/slides.pdf)
 
 - [Notebook 0 - Data Manipulation](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb)
 - [Notebook 1 - Intro to JuMP](https://philchodrow.github.io/mban_orientation/optimization_intro/1 - Intro to JuMP.ipynb)
