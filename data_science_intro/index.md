@@ -32,4 +32,5 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 - [Script](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/full_script.R))
 
 ## Case Study - Daisy
-
+- [Slides](https://philchodrow.github.io/mban_orientation/data_science_intro/case_study/slides.html)
+- [Script](https://philchodrow.github.io/mban_orientation/data_science_intro/case_study/student_script.R)
