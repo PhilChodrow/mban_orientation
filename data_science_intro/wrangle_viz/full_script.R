@@ -163,7 +163,7 @@ summary_table <- listings %>%
 	summarize(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
 			  price_per = mean(price_per, na.rm = TRUE),
-			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  weekly_price_per = mean(weekly_price_per, na.rm = TRUE),
 			  capacity = sum(beds)) 
 
 # -----------------------------------------------------
@@ -233,7 +233,7 @@ summary_table <- recent_listings %>%
 	summarize(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
 			  price_per = mean(price_per, na.rm = TRUE),
-			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  weekly_price_per = mean(weekly_price_per, na.rm = TRUE),
 			  capacity = sum(beds)) 
 
 # -----------------------------------------------------------------
