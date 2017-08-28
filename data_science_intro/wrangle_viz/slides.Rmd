@@ -1,7 +1,7 @@
 ---
 title: "Data Wrangling and Visualization"
 author: "Phil Chodrow"
-date: "8/15/2017"
+date: "Tuesday, August 29th, 2017"
 output: 
   ioslides_presentation:
     logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
@@ -36,7 +36,9 @@ library(tidyverse)
 
 ## The Process of Data Science
 
-![](http://r4ds.had.co.nz/diagrams/data-science.png)
+```{r, fig.align="center", out.width = "700px", out.height = "300px", echo = FALSE}
+knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
+```
 
 
 ## FYI: Base `R` and the Tidyverse
@@ -61,15 +63,6 @@ library(tidyverse)
 > 3. Pick a partner. 
 > 4. Give them a professional, yet friendly smile. You are going to need them soon. 
 
-## Our Data Today
-
-AirBnB listings, schedule, and review text for the Boston area, for a time period...that you will check. 
-
-```{r, message=FALSE, warning=FALSE}
-library(tidyverse)
-listings <- read_csv('../data/listings.csv')
-calendar <- read_csv('../data/calendar.csv')
-```
 
 ## Case Study, Part 1
 
@@ -77,32 +70,12 @@ calendar <- read_csv('../data/calendar.csv')
 2. Import and inspect the data
 3. Warmup: The Nicest Places in JP
 
-<!-- ## Warmup: The Nicest Places in JP -->
+```{r, message=FALSE, warning=FALSE, echo = FALSE}
+library(tidyverse)
+listings <- read_csv('../data/listings.csv')
+calendar <- read_csv('../data/calendar.csv')
+```
 
-<!-- - **Question:** What are the "nicest" places to stay in Jamaica Plain?  -->
-<!-- - **Task:** Construct a table of listings in JP, sorted in descending order by rating.  -->
-
-<!-- Conceptually, we need to: `filter` to only JP listings, `arrange` the listings by rating, and `select` only the columns we want to see. Let's write some code!   -->
-
-<!-- ## Two Subpar Solutions  -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- # wasteful -->
-<!-- jp_only <- filter(listings, neighbourhood == 'Jamaica Plain') -->
-<!-- sorted  <- arrange(jp_only, desc(review_scores_rating)) -->
-<!-- concise <- select(sorted, neighbourhood, name, review_scores_rating)  -->
-<!-- concise -->
-<!-- ``` -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- # unreadable -->
-<!-- select( -->
-<!-- 	arrange( -->
-<!-- 		filter(listings, neighbourhood == 'Jamaica Plain'),  -->
-<!-- 		desc(review_scores_rating) -->
-<!-- 		),  -->
-<!-- 	neighbourhood, name, review_scores_rating) -->
-<!-- ``` -->
 
 ## The Pipe
 
@@ -111,8 +84,8 @@ knitr::include_graphics('https://d21ii91i3y6o6h.cloudfront.net/gallery_images/fr
 ```
 
 > - `x %>% f(y)` is equivalent to `f(x,y)`
-> - "Take `x`, and then do `f(...,y)` to it"
-> - `x %>% f(y) %>% g(z) %>% ` $ \equiv$ `g(f(x,y),z)` 
+> - "Take `x`, and **then** do `f(...,y)` to it"
+> - `x %>% f(y) %>% g(z)` $ \equiv$ `g(f(x,y),z)` 
 
 ## Some Simple Examples
 
@@ -129,60 +102,6 @@ listings %>% select(contains('review_scores'))
 listings %>% select(contains('review_scores')) %>% colnames()
 ```
 
-<!-- ## Exercise 1:  -->
-
-<!-- Working with your partner, please rewrite the JP code using the pipe operator. Here's the first line to get you started: -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- listings %>%  -->
-<!-- 	filter(neighbourhood == 'Jamaica Plain') -->
-<!-- # ... -->
-<!-- ``` -->
-
-<!-- ## Exercise 1 Sample Code {.smaller} -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- listings %>%  -->
-<!-- 	filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test -->
-<!-- 	arrange(desc(review_scores_rating)) %>%           # desc() makes descending order  -->
-<!-- 	select(neighbourhood, name, review_scores_rating) -->
-<!-- ``` -->
-
-<!-- ## Exercise 1 Sample Output -->
-
-<!-- ```{r, echo = FALSE} -->
-<!-- listings %>%  -->
-<!-- 	filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test -->
-<!-- 	arrange(desc(review_scores_rating)) %>%           # desc() makes descending order  -->
-<!-- 	select(neighbourhood, name, review_scores_rating) %>% -->
-<!-- 	DT::datatable(options = list(pageLength = 4))  -->
-<!-- ``` -->
-
-
-<!-- ## Exercise 2: The Biggest Place in Back Bay -->
-
-<!-- You are going to spend a long weekend in Back Bay with 50 of your closest friends. -->
-
-<!-- Working with your partner, modify your code slightly to construct a table of the listings in Back Bay, sorted by the number of people who can stay there. You may need to use `glimpse` to see which columns you'll want to use.  -->
-
-<!-- ## Exercise 2: Sample Code -->
-
-<!-- ```{r, eval = FALSE} -->
-<!-- listings %>%  -->
-<!-- 	filter(neighbourhood == 'Back Bay') %>%  -->
-<!-- 	arrange(accommodates) %>%  -->
-<!-- 	select(neighbourhood, name, accommodates, price) -->
-<!-- ``` -->
-
-<!-- ## Exercise 2: Sample Output -->
-
-<!-- ```{r, echo = FALSE} -->
-<!-- listings %>%  -->
-<!-- 	filter(neighbourhood == 'Back Bay') %>%  -->
-<!-- 	arrange(desc(accommodates)) %>%  -->
-<!-- 	select(neighbourhood, name, accommodates, price)  %>% -->
-<!-- 	DT::datatable(options = list(pageLength = 4))  -->
-<!-- ``` -->
 
 # Summarising Data
 
@@ -204,6 +123,7 @@ knitr::include_graphics("https://www.edwardtufte.com/tufte/graphics/minard_lg.gi
 - `data %>% mutate(new_col = formula(old_col1, old_col2)` creates new columns.
 - `data %>% group_by(col)` groups data for breakout summaries.
 - `data %>% summarise(measure = formula(col1, col2))` computes summary statistics.
+- `data %>% group_by(col) %>% summarise(measure = formula(col1, col2))` computes summary statistics by levels.
 
 Let's test these out in the case study. 
 

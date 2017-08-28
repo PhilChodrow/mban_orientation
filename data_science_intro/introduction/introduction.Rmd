@@ -1,8 +1,8 @@
 ---
-title: "Welcome"
-subtitle: "Introduction and Motivation"
+title: "Introduction to Data Science in R"
+# subtitle: "Introduction and Motivation"
 author: "Phil Chodrow and Daisy Zhuo"
-date: "8/15/2017"
+date: "Tuesday, August 29th, 2017"
 output: 
   ioslides_presentation:
     logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
@@ -12,6 +12,13 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
 ```
+
+## Main Questions
+
+> 1. What is data science?
+> 2. What are the stages of the data scientific method? 
+> 3. How can we perform those stages using the `R` statistical programming language?
+
 ## What Is Data Science?
 
 ```{r, fig.align="center", out.width = "400px", out.height = "400px"}
@@ -42,7 +49,7 @@ knitr::include_graphics('http://www.excel-easy.com/data-analysis/images/tables/e
 	- Limited statistics
 	- No contemporary ML
 	- Limited visualizations
-- **Reproducibility:** Can you share it with others?
+- **Reproducibility:** Can you share it with others, including future you?
 	- Platform limited 
 	- Can't version control
 	- Difficult to inspect code
@@ -60,12 +67,11 @@ knitr::include_graphics('http://www.excel-easy.com/data-analysis/images/tables/e
 knitr::include_graphics('https://img.tutorialgateway.org/2016/11/R-ggplot2-Jitter-8.png')
 ```
 
-
 - **Flexibility:** Can you do the analysis you want?
 	- "There's a package for that"
 	- Access to cutting-edge methods
 	- Custom analysis and visualization
-- **Reproducibility:** Can you share it with others?
+- **Reproducibility:** Can you share it with others, including future you?
 	- Cross-platform, often FOSS 
 	- Can version-control with `git`
 	- Easy to inspect code
@@ -93,7 +99,7 @@ knitr::include_graphics('https://img.tutorialgateway.org/2016/11/R-ggplot2-Jitte
 - [These slides]() are written in `RMarkdown`, a language for literate programming
 - [Interactive Dashboards](https://gallery.shinyapps.io/genome_browser/) with Shiny
 - [More Dashboards](http://jkunst.com/flexdashboard-highcharter-examples/pokemon/)
-- [Blogs and Websites](https://philchodrow.github.io/2017/06/19/info-segregation-2/)
+- [Blogs and Websites](https://philchodrow.github.io/post/2017-06-19-info-segregation-2/)
 
 
 ## Goals for Today
@@ -123,12 +129,12 @@ knitr::include_graphics('https://i.stack.imgur.com/0kaFC.png')
 <div class="columns-2">
 
 ```{r, out.height = "310px", out.width="270px"}
-knitr::include_graphics('https://philchodrow.github.io/assets/images/bio-photo.jpg')
+knitr::include_graphics('https://philchodrow.github.io/img/portrait.jpg')
 ```
 
 **Phil Chodrow**
 
-Structure and dynamics of complex systems; statistics; network science; science of cities.
+Network dynamics and inference; statistics; science of cities; computational social science. 
 
 ```{r, out.height = "310px", out.width="310px"}
 knitr::include_graphics('http://www.mit.edu/~zhuo/images/me-square.jpg')

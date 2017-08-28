@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Welcome</title>
+  <title>Introduction to Data Science in R</title>
 
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -20,9 +20,8 @@
     var SLIDE_CONFIG = {
       // Slide settings
       settings: {
-                title: 'Welcome',
-                        subtitle: 'Introduction and Motivation',
-                useBuilds: true,
+                title: 'Introduction to Data Science in R',
+                        useBuilds: true,
         usePrettify: true,
         enableSlideAreas: true,
         enableTouch: true,
@@ -97,7 +96,7 @@
     }
   </style>
 
-  <link href="data:text/css;charset=utf-8,%2Egdbar%20img%20%7B%0Awidth%3A%20300px%20%21important%3B%0Aheight%3A%20150px%20%21important%3B%0Amargin%3A%208px%208px%3B%0A%7D%0A%2Egdbar%20%7B%0Awidth%3A%20400px%20%21important%3B%0Aheight%3A%20170px%20%21important%3B%0A%7D%0Aslides%20%3E%20slide%3Anot%28%2Enobackground%29%3Abefore%20%7B%0Awidth%3A%20150px%3B%0Aheight%3A%2075px%3B%0Abackground%2Dsize%3A%20150px%2075px%3B%0A%7D" rel="stylesheet" type="text/css" />
+  <link href="data:text/css;charset=utf-8,%2Egdbar%20img%20%7B%0Awidth%3A%20300px%20%21important%3B%0Aheight%3A%20150px%20%21important%3B%0Amargin%3A%208px%208px%3B%0A%7D%0A%2Egdbar%20%7B%0Awidth%3A%20400px%20%21important%3B%0Aheight%3A%20170px%20%21important%3B%0A%7D%0Aslides%20%3E%20slide%3Anot%28%2Enobackground%29%3Abefore%20%7B%0Awidth%3A%200px%3B%0Aheight%3A%200px%3B%0Abackground%2Dsize%3A%200px%200px%3B%0A%7D" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -112,11 +111,19 @@
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">8/15/2017</p>
+            <p style="margin-top: 6px; margin-left: -2px;">Tuesday, August 29th, 2017</p>
           </hgroup>
   </slide>
 
-<slide class=''><hgroup><h2>What Is Data Science?</h2></hgroup><article  id="what-is-data-science">
+<slide class=''><hgroup><h2>Main Questions</h2></hgroup><article  id="main-questions">
+
+<ol class = 'build'>
+<li>What is data science?</li>
+<li>What are the stages of the data scientific method?</li>
+<li>How can we perform those stages using the <code>R</code> statistical programming language?</li>
+</ol>
+
+</article></slide><slide class=''><hgroup><h2>What Is Data Science?</h2></hgroup><article  id="what-is-data-science">
 
 <p><img src="https://static1.squarespace.com/static/5150aec6e4b0e340ec52710a/t/51525c33e4b0b3e0d10f77ab/1364352052403/Data_Science_VD.png?format=1500w" width="400px" height="400px" style="display: block; margin: auto;" /></p>
 
@@ -141,7 +148,7 @@
 <li>No contemporary ML</li>
 <li>Limited visualizations</li>
 </ul></li>
-<li><strong>Reproducibility:</strong> Can you share it with others?
+<li><strong>Reproducibility:</strong> Can you share it with others, including future you?
 
 <ul>
 <li>Platform limited</li>
@@ -168,7 +175,7 @@
 <li>Access to cutting-edge methods</li>
 <li>Custom analysis and visualization</li>
 </ul></li>
-<li><strong>Reproducibility:</strong> Can you share it with others?
+<li><strong>Reproducibility:</strong> Can you share it with others, including future you?
 
 <ul>
 <li>Cross-platform, often FOSS</li>
@@ -200,7 +207,7 @@
 <li><a href='' title=''>These slides</a> are written in <code>RMarkdown</code>, a language for literate programming</li>
 <li><a href='https://gallery.shinyapps.io/genome_browser/' title=''>Interactive Dashboards</a> with Shiny</li>
 <li><a href='http://jkunst.com/flexdashboard-highcharter-examples/pokemon/' title=''>More Dashboards</a></li>
-<li><a href='https://philchodrow.github.io/2017/06/19/info-segregation-2/' title=''>Blogs and Websites</a></li>
+<li><a href='https://philchodrow.github.io/post/2017-06-19-info-segregation-2/' title=''>Blogs and Websites</a></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Goals for Today</h2></hgroup><article  id="goals-for-today">
@@ -225,11 +232,11 @@
 </article></slide><slide class=''><hgroup><h2>Who Are We?</h2></hgroup><article  id="who-are-we" class="smaller">
 
 <div class="columns-2">
-<p><img src="https://philchodrow.github.io/assets/images/bio-photo.jpg" width="270px" height="310px" style="display: block; margin: auto;" /></p>
+<p><img src="https://philchodrow.github.io/img/portrait.jpg" width="270px" height="310px" style="display: block; margin: auto;" /></p>
 
 <p><strong>Phil Chodrow</strong></p>
 
-<p>Structure and dynamics of complex systems; statistics; network science; science of cities.</p>
+<p>Network dynamics and inference; statistics; science of cities; computational social science.</p>
 
 <p><img src="http://www.mit.edu/~zhuo/images/me-square.jpg" width="310px" height="310px" style="display: block; margin: auto;" /></p>
 
