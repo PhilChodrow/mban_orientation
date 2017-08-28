@@ -104,7 +104,7 @@ summary(lm_price_by_acc)
 
 # There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. 	
 
-listing_with_pred =  as.data.frame(listings_part$train) %>%	
+listing_with_pred <-  as.data.frame(listings_part$train) %>%	
   add_predictions(lm_price_by_acc) %>%	
   add_residuals(lm_price_by_acc,var="resid") 
 
