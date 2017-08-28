@@ -29,8 +29,10 @@ summary(listings$price) # Check to make sure things worked
 # SOLUTION
 # ----------------------------------------------
 #' Let's begin by looking at the relationship between `listings$accommodates` and `listings$price`. As a first look:	
-
-ggplot(listings, aes(x=accommodates, y=price))+geom_point()
+listings %>%
+  ggplot() +
+  aes(x=accommodates, y=price) +
+  geom_point()
 
 #' Looks like there are some outliers on both axes. There are fancier ways to deal with this statistically, but for today let's just get rid of the outliers and fit a model on the cleaner data:	
 
@@ -38,14 +40,17 @@ listings_for_lm <-listings %>%
   filter(accommodates <= 10, price <=1000)	
 
 #' Let's take another look:	
-
-ggplot(listings_for_lm, aes(x=accommodates, y=price))+geom_point()
+listings_for_lm %>%
+  ggplot() + 
+  aes(x=accommodates, y=price) +
+  geom_point() 
 
 
 #' let's try adding some other variables
-ggplot(listings_for_lm)+
-  aes(x=accommodates, y=price, color=cancellation_policy, size=review_scores_rating)+
-  geom_point(alpha = 0.2)+
+listings_for_lm %>%
+  ggplot() +
+  aes(x=accommodates, y=price, color=cancellation_policy, size=review_scores_rating) +
+  geom_point(alpha = 0.2) +
   facet_wrap(~cancellation_policy,ncol=4)
 
 # ---- end of example solutions to Exercise 1 -----
@@ -55,8 +60,11 @@ ggplot(listings_for_lm)+
 # -----------------------------------------------------------------
 
 #' You can add a linear fit to a scatter plot easily by adding geom_smooth with method="lm"
-
-ggplot(listings, aes(x=accommodates, y=price))+geom_point()+geom_smooth(method="lm")
+listings %>%
+  ggplot() +
+  aes(x=accommodates, y=price) +
+  geom_point() +
+  geom_smooth(method="lm")
 
 #' What if we need to quantify the linear fit, check it statistical significance, extend to multiple variables, and make predictions? A more rigorous statistical procedure is therefore needed.
 
@@ -113,24 +121,27 @@ listing_with_pred =  as.data.frame(listings_part$train) %>%
 # ----------------------------------------------
 #' As a check on inference quality, let's plot the fitted line. 
 listing_with_pred %>%
-  ggplot(aes(x=accommodates)) +	
+  ggplot() +	
+  aes(x=accommodates) + 
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
 
 #' Nice. This is helpful to make sure that the residual uncertainty looks like random noise rather than an unidentified trend.	
 
-as.data.frame(listings_part$train) %>%	
-  add_residuals(lm_price_by_acc,var="resid") %>%	
-  ggplot(aes(x=accommodates,y=resid)) + geom_point()	
+listing_with_pred %>%	
+  ggplot() + 
+  aes(x=accommodates,y=resid) + 
+  geom_point()	
 
 
 #' Since we have finitely many values, maybe box plots tell a better story:	
 
-as.data.frame(listings_part$train) %>%	
-  add_residuals(lm_price_by_acc,var="resid") %>%	
+listing_with_pred %>%	
   group_by(as.factor(accommodates)) %>%	
-  ggplot(aes(x=as.factor(accommodates),y=resid)) + geom_boxplot()
+  ggplot() + 
+  aes(x=as.factor(accommodates),y=resid) + 
+  geom_boxplot()
 
 #' Things are pretty centered around zero, with the exception of 9- & 10-person accommodations. Maybe the model doesn't apply so well here and we could refine it in a later modelling iteration.	
 
@@ -138,7 +149,8 @@ as.data.frame(listings_part$train) %>%
 
 as.data.frame(listings_part$test) %>%	
   add_predictions(lm_price_by_acc) %>%	
-  ggplot(aes(x=accommodates)) +	
+  ggplot() +	
+  aes(x=accommodates) + 
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
@@ -348,20 +360,23 @@ str(titanic)
 
 #' First we'll look at the relationship between age & survival
 titanic %>% 
-  ggplot(aes(Age, fill = factor(Survived))) + 
+  ggplot() + 
+  aes(Age, fill = factor(Survived)) +
   geom_histogram() + 
   facet_grid(.~Sex)
 
 #' Now we look at it against Sibling/Spouse
 titanic %>% 
-  ggplot(aes(x = SibSp, fill = factor(Survived))) +
+  ggplot() +
+  aes(x = SibSp, fill = factor(Survived)) + 
   geom_bar(stat='count', position='dodge') +
   scale_x_continuous(breaks=c(1:11))
 
 #' Pclass and sex on survival probability
 titanic %>% group_by(Sex, Pclass) %>% 
   summarize(Surv_prob = sum(Survived)/n()) %>%
-  ggplot(aes(x=Pclass, y=Sex, fill=Surv_prob))+
+  ggplot() +
+  aes(x=Pclass, y=Sex, fill=Surv_prob) +
   geom_tile()
 
 #' Let's do some simple feature engineering. 

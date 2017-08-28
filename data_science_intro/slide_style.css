@@ -14,3 +14,8 @@ slides > slide:not(.nobackground):before {
   height: 75px;
   background-size: 150px 75px;
 }
+
+#myImagePage img {
+  width: 100px;
+  height: 100px;
+}
