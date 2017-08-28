@@ -111,7 +111,7 @@
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">8/15/2017</p>
+            <p style="margin-top: 6px; margin-left: -2px;">Tuesday, August 29th, 2017</p>
           </hgroup>
   </slide>
 
@@ -143,7 +143,7 @@
 
 </article></slide><slide class=''><hgroup><h2>The Process of Data Science</h2></hgroup><article  id="the-process-of-data-science">
 
-<img src='http://r4ds.had.co.nz/diagrams/data-science.png' title='fig:'/>
+<p><img src="http://r4ds.had.co.nz/diagrams/data-science.png" width="700px" height="300px" style="display: block; margin: auto;" /></p>
 
 </article></slide><slide class=''><hgroup><h2>FYI: Base <code>R</code> and the Tidyverse</h2></hgroup><article  id="fyi-base-r-and-the-tidyverse">
 
@@ -192,48 +192,6 @@ calendar &lt;- read_csv(&#39;../data/calendar.csv&#39;)</pre>
 <li>Warmup: The Nicest Places in JP</li>
 </ol>
 
-<!-- ## Warmup: The Nicest Places in JP -->
-
-<!-- - **Question:** What are the "nicest" places to stay in Jamaica Plain?  -->
-
-<!-- - **Task:** Construct a table of listings in JP, sorted in descending order by rating.  -->
-
-<!-- Conceptually, we need to: `filter` to only JP listings, `arrange` the listings by rating, and `select` only the columns we want to see. Let's write some code!   -->
-
-<!-- ## Two Subpar Solutions  -->
-
-<!-- ```{r, eval = FALSE} -->
-
-<!-- # wasteful -->
-
-<!-- jp_only <- filter(listings, neighbourhood == 'Jamaica Plain') -->
-
-<!-- sorted  <- arrange(jp_only, desc(review_scores_rating)) -->
-
-<!-- concise <- select(sorted, neighbourhood, name, review_scores_rating)  -->
-
-<!-- concise -->
-
-<!-- ``` -->
-
-<!-- ```{r, eval = FALSE} -->
-
-<!-- # unreadable -->
-
-<!-- select( -->
-
-<!--    arrange( -->
-
-<!--        filter(listings, neighbourhood == 'Jamaica Plain'),  -->
-
-<!--        desc(review_scores_rating) -->
-
-<!--        ),  -->
-
-<!--    neighbourhood, name, review_scores_rating) -->
-
-<!-- ``` -->
-
 </article></slide><slide class=''><hgroup><h2>The Pipe</h2></hgroup><article  id="the-pipe">
 
 <p><img src="https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3632/small/1419844831/magrittr.png" width="200" height="200" style="display: block; margin: auto;" /></p>
@@ -255,86 +213,6 @@ listings %&gt;% colnames() # = colnames(listings)
 listings %&gt;% select(contains(&#39;review_scores&#39;)) 
 # what should this return? 
 listings %&gt;% select(contains(&#39;review_scores&#39;)) %&gt;% colnames()</pre>
-
-<!-- ## Exercise 1:  -->
-
-<!-- Working with your partner, please rewrite the JP code using the pipe operator. Here's the first line to get you started: -->
-
-<!-- ```{r, eval = FALSE} -->
-
-<!-- listings %>%  -->
-
-<!--    filter(neighbourhood == 'Jamaica Plain') -->
-
-<!-- # ... -->
-
-<!-- ``` -->
-
-<!-- ## Exercise 1 Sample Code {.smaller} -->
-
-<!-- ```{r, eval = FALSE} -->
-
-<!-- listings %>%  -->
-
-<!--    filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test -->
-
-<!--    arrange(desc(review_scores_rating)) %>%           # desc() makes descending order  -->
-
-<!--    select(neighbourhood, name, review_scores_rating) -->
-
-<!-- ``` -->
-
-<!-- ## Exercise 1 Sample Output -->
-
-<!-- ```{r, echo = FALSE} -->
-
-<!-- listings %>%  -->
-
-<!--    filter(neighbourhood == 'Jamaica Plain') %>%      # filter needs a logical test -->
-
-<!--    arrange(desc(review_scores_rating)) %>%           # desc() makes descending order  -->
-
-<!--    select(neighbourhood, name, review_scores_rating) %>% -->
-
-<!--    DT::datatable(options = list(pageLength = 4))  -->
-
-<!-- ``` -->
-
-<!-- ## Exercise 2: The Biggest Place in Back Bay -->
-
-<!-- You are going to spend a long weekend in Back Bay with 50 of your closest friends. -->
-
-<!-- Working with your partner, modify your code slightly to construct a table of the listings in Back Bay, sorted by the number of people who can stay there. You may need to use `glimpse` to see which columns you'll want to use.  -->
-
-<!-- ## Exercise 2: Sample Code -->
-
-<!-- ```{r, eval = FALSE} -->
-
-<!-- listings %>%  -->
-
-<!--    filter(neighbourhood == 'Back Bay') %>%  -->
-
-<!--    arrange(accommodates) %>%  -->
-
-<!--    select(neighbourhood, name, accommodates, price) -->
-
-<!-- ``` -->
-
-<!-- ## Exercise 2: Sample Output -->
-
-<!-- ```{r, echo = FALSE} -->
-
-<!-- listings %>%  -->
-
-<!--    filter(neighbourhood == 'Back Bay') %>%  -->
-
-<!--    arrange(desc(accommodates)) %>%  -->
-
-<!--    select(neighbourhood, name, accommodates, price)  %>% -->
-
-<!--    DT::datatable(options = list(pageLength = 4))  -->
-
-<!-- ``` -->
 
 </article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Summarising Data</h2></hgroup><article  id="summarising-data">
 

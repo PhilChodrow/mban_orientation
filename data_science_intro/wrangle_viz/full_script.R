@@ -43,10 +43,10 @@ glimpse(listings)
 # filter() to include only JP listings
 jp_only <- filter(listings, neighbourhood == 'Jamaica Plain')
 # arrange() to sort in descending order by rating        
-sorted  <- arrange(jp_only, desc(review_scores_rating))
+jp_sorted  <- arrange(jp_only, desc(review_scores_rating))
 # Select only the columns we want to see               
-concise <- select(sorted, neighbourhood, name, review_scores_rating) 
-concise
+jp_best <- select(jp_sorted, neighbourhood, name, review_scores_rating) 
+jp_best
 
 # Problem: this code wastes:
 # 1. **Headspace** to think of names for the intermediate steps that we don't actually care about. 
@@ -83,7 +83,7 @@ listings %>%
 
 # You are going to spend a long weekend in Back Bay with 50 of your closest friends.
 
-# Working with your partner, modify your code slightly to construct a table of the listings in Back Bay, sorted by the number of people who can stay there. You may need to use `glimpse` to see which columns you'll want to use. 
+# Working with your partner, modify your code slightly to construct a table of the listings in Back Bay, sorted by the number of people who can stay there. Display the price column as well. You may need to use `glimpse` to see which columns you'll want to use. 
 
 # ----------------------------------------------
 # SOLUTION
@@ -94,36 +94,36 @@ listings %>%
 	arrange(accommodates) %>% 
 	select(neighbourhood, name, accommodates, price)
 
+
 # -----------------------------------------------------------------
 # Exploratory Data Analysis
 # -----------------------------------------------------------------
 
-# Remember our case study -- we are going to provide recommendations to AirBnB on where to focus their host recruitment efforts. To that end, let's see how to construct a simple summary table in which we'll display the average rating and price-per-guest by neighborhood. To get there, we'll need to do some simple data cleaning, for which we'll introduce a new verb. 
+# Remember our case study -- we are going to provide recommendations to AirBnB on where to focus their host recruitment efforts. To that end, let's see how to construct a simple summary table in which we'll display the average rating and price-per-guest by neighborhood. To get there, we'll need to do some simple data cleaning, for which we'll introduce some new functions in the slides. 
 
 # We'd like to construct the price-per-person column, but we have an issue: 
 
 listings$price
 listings$price %>% class()
 
-# The as.numeric function is useful for converting things that "should be numbers," but it doesn't know how to deal with the "$" sign. We can use a basic string manipulation function to drop the first character of each string: 
+# The as.numeric function is useful for converting things that "should be numbers," but it doesn't know how to deal with the "$" sign. We can use a basic string manipulation function to drop the $ signs and commas, allowing us to make a numeric conversion.
 
-listings$price %>% gsub('\\$|', '',.)
-
+listings$price %>% gsub('\\$|,', '',.)
 # We can place this in the context of our data manipulation pipelines using the mutate() function, which lets us create new columns.
 
 listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric()) 
-	
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric()) 
+
 # In fact, we can construct multiple new columns in the same call to mutate()
 
 listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   price_per = price / accommodates)
 
 # Nifty! Now let's summarize the number of records, mean price_per, and mean rating. 
 
 listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   price_per = price / accommodates)  %>% 
 	summarize(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
@@ -132,7 +132,7 @@ listings %>%
 # This appears to have worked, but isn't tremendously useful. We usually want to slice and dice our data by values of different variables. We can do that by adding in the group_by() function to our pipeline. Toward our motivating question, we'll group_by(neighbourhood) here. 
 
 listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   price_per = price / accommodates)  %>% 
 	group_by(neighbourhood) %>% 
 	summarize(n = n(), 
@@ -155,7 +155,7 @@ listings %>%
 # ----------------------------------------------
 
 summary_table <- listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   price_per = price / accommodates,
 		   weekly_price = weekly_price %>% gsub('\\$|', '',.) %>% as.numeric(),
 		   weekly_price_per = weekly_price / accommodates)  %>% 
@@ -190,7 +190,7 @@ ranked_summary_table <- summary_table %>%
 # RELATIONAL DATA
 # -----------------------------------------------------------------
 
-# How current is this summary data? Does it reflect how things are NOW, or how things were many months or even years ago? In this section, we're going to see how to use data relations to filter the data to only listings with recent, valid listing dates. 
+# How current is this summary data? Does it reflect how things are NOW, or how things were many months or even years ago? In this section, we're going to see how to use data relations to filter the data to only listings with recent, valid listing dates. Let's go back to the slides for a bit to see what we need to do. 
 
 # -----------------------------------------------------
 # EXERCISE 5: Keeping Current
@@ -225,9 +225,9 @@ recent_listings <- listings %>%
 # Now we can re-run our analysis from above using only the recent listings
 
 summary_table <- recent_listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   price_per = price / accommodates,
-		   weekly_price = weekly_price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   weekly_price = weekly_price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   weekly_price_per = weekly_price / accommodates)  %>% 
 	group_by(neighbourhood, property_type) %>% 
 	summarize(n = n(), 
@@ -270,9 +270,11 @@ listings %>%
 # The following code computes the average price of all listings on each day in the data set:
 	
 average_price_table <- calendar %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric()) %>% 
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric()) %>% 
 	group_by(date) %>% 
 	summarise(mean_price = mean(price, na.rm = TRUE))
+
+# Use geom_line() to visualize these prices with time on the x-axis and price on the y-axis. 
 
 # ----------------------------------------------
 # SOLUTION
