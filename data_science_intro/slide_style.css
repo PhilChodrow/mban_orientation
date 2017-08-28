@@ -10,9 +10,9 @@
 }
 
 slides > slide:not(.nobackground):before {
-  width: 150px;
-  height: 75px;
-  background-size: 150px 75px;
+  width: 0px;
+  height: 0px;
+  background-size: 0px 0px;
 }
 
 #myImagePage img {

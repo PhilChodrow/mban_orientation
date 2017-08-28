@@ -57,11 +57,7 @@ concise
 
 select(arrange(filter(listings, neighbourhood == 'Jamaica Plain'), desc(review_scores_rating)), neighbourhood, name, review_scores_rating)
 
-# Ok, that's no longer wasteful, but it's also illegible. What to do?
-
-# ----------------------------------------------
-# SLIDES: The Pipe
-# ----------------------------------------------
+# Ok, that's no longer wasteful, but it's also illegible. What to do? Back to the slides to discuss the pipe
 
 # -----------------------------------------------------
 # EXERCISE 1: The Pipe
@@ -167,7 +163,7 @@ summary_table <- listings %>%
 	summarize(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
 			  price_per = mean(price_per, na.rm = TRUE),
-			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  weekly_price_per = mean(weekly_price_per, na.rm = TRUE),
 			  capacity = sum(beds)) 
 
 # -----------------------------------------------------
@@ -237,7 +233,7 @@ summary_table <- recent_listings %>%
 	summarize(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
 			  price_per = mean(price_per, na.rm = TRUE),
-			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  weekly_price_per = mean(weekly_price_per, na.rm = TRUE),
 			  capacity = sum(beds)) 
 
 # -----------------------------------------------------------------
@@ -303,6 +299,15 @@ summary_table %>%
 	aes(x = neighbourhood, y= n) + 
 	geom_bar(stat = 'identity')
 
+# slightly cleaner
+
+summary_table %>% 
+	filter(property_type == 'Apartment') %>% 
+	ggplot() + 
+	aes(x = reorder(neighbourhood, n), y=n) + 
+	coord_flip() + 
+	geom_bar(stat = 'identity')
+
 # Comparisons: Fill, Color, and Facets
 
 listings %>% 
@@ -325,26 +330,4 @@ listings %>%
 	aes(x = factor(score), y = number_of_reviews) + 
 	geom_boxplot() + 
 	facet_wrap(~type)
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
 
