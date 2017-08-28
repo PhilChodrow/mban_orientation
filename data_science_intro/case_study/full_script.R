@@ -1,32 +1,44 @@
-# ----------------------------------------------
-# CASE STUDY - MACHINE LEARNING IN R
-# ----------------------------------------------
-# In this section, we'll read in the data, and take a look at it. 
+#' ---
+#' title: "Case Study - Machine Learning in R"
+#' author: "Daisy Zhuo"
+#' date: "Aug 30, 2017"
+#' ---
+#' 
+
+#' In the first session, we were introduced to how to import, tidy, transform, visualize, and communicate. But what about modeling? What can we achieve with sophisticated models that we can’t do with summaries and descriptive statistics? 
+
+#' In this case study, we’ll build on your data wrangling skills and introduce modeling, giving you familiarity with every stage of the data scientific process.
+#' 
 
 #' ## Regression	
 #' Within the world of supervised learning, we can divide tasks into two parts. In settings where the response variable is continuous we call the modelling *regression*, and when the response is categorical we call it *classification*. We will begin with regression to understand what factors influence price in the AirBnB data set.	
 
+# ----------------------------------------------
+#' ### Data Exploration
+# ----------------------------------------------
+
 #' Let's start by loading the data (after first setting the correct working directory). We'll use the 'listings.csv' file for now. Since we'll be wrangling and visualizing, we'll also load the `tidyverse` package. (Instead of `tidyverse`, it also works to load `tidyr`, `dplyr`, and `ggplot2` as we saw last session.)	
 
 
-listings <-read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
 library(tidyverse)	
+listings <- read_csv("../data/listings.csv")	
+
 
 #' As a review, we need to change the price column to a numeric form.
 
-listings <-listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))	
+listings <- listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))	
 summary(listings$price) # Check to make sure things worked	
 
 
 #' Now, which variables may be predictive of price? We can use `names(listings)` to get a look at all the variable names.	
+#' 
+#' 
+# ----------------------------------------------
+#' #### EXERCISE 1: LOOK AT DATA
+# ----------------------------------------------
 
-#' #### Data Preparation	
 # ----------------------------------------------
-# EXERCISE 1: LOOK AT DATA
-# ----------------------------------------------
-
-# ----------------------------------------------
-# SOLUTION
+#' #### SOLUTION
 # ----------------------------------------------
 #' Let's begin by looking at the relationship between `listings$accommodates` and `listings$price`. As a first look:	
 listings %>%
@@ -53,13 +65,13 @@ listings_for_lm %>%
   geom_point(alpha = 0.2) +
   facet_wrap(~cancellation_policy,ncol=4)
 
-# ---- end of example solutions to Exercise 1 -----
+#' ---- end of example solutions to Exercise 1 -----
 
 # -----------------------------------------------------------------
-# Linear Regression
+#' ### Regression Model Training
 # -----------------------------------------------------------------
 
-#' You can add a linear fit to a scatter plot easily by adding geom_smooth with method="lm"
+#' You easily can add a linear fit to a scatter plot easily by adding geom_smooth with method="lm":
 listings %>%
   ggplot() +
   aes(x=accommodates, y=price) +
@@ -78,8 +90,7 @@ listings_part <-listings_for_lm %>%
 listings_part
 
 #' The object `listings_for_lm` is now a list with two elements: `train` and `test`.	
-
-#' #### Model Fitting	
+#' 
 #' In R, we specify a model structure and then use the corresponding function to tell R to optimize for the best-fitting model. For linear regression, the function is `lm()`:	
 
 lm_price_by_acc <-lm(price ~ accommodates,data=listings_part$train) # We'll talk more about the '~' notation soon	
@@ -99,25 +110,25 @@ lm_price_by_acc$call
 
 summary(lm_price_by_acc)	
 
-#' There we go, this is more useful! First, let's look at the section under "Coefficients". Notice that R automatically adds an intercept term unless you tell it not to (we'll see how to do this later). In the "estimate" column, we see that the point estimates for the linear model here say that the price is \$55.20 plus \$37.79 for every person accommodated. Notice the '***' symbols at the end of the "(Intercept)" and "accommodates" rows. These indicate that according to a statistical t-test, both coefficients are extremely significantly different than zero, so things are okay from an inference perspective.	
+#' There we go, this is more useful! First, let's look at the section under "Coefficients". Notice that R automatically adds an intercept term unless you tell it not to (we'll see how to do this later). In the "estimate" column, we see that the point estimates for the linear model here say that the price is \$54.03 plus \$38.43 for every person accommodated. Notice the '***' symbols at the end of the "(Intercept)" and "accommodates" rows. These indicate that according to a statistical t-test, both coefficients are extremely significantly different than zero, so things are okay from an inference perspective.	
 
 
 
 # -----------------------------------------------------------------
-# Model evaluation
+#' ### Model evaluation
 # -----------------------------------------------------------------
 # ----------------------------------------------
-# EXERCISE 2: VISUALIZE MODEL PERFORMANCE
+#' #### EXERCISE 2: VISUALIZE MODEL PERFORMANCE
 # ----------------------------------------------
 
-# There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. 	
+#' There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. 	
 
 listing_with_pred <-  as.data.frame(listings_part$train) %>%	
   add_predictions(lm_price_by_acc) %>%	
   add_residuals(lm_price_by_acc,var="resid") 
 
 # ----------------------------------------------
-# SOLUTION
+#' #### SOLUTION
 # ----------------------------------------------
 #' As a check on inference quality, let's plot the fitted line. 
 listing_with_pred %>%
@@ -154,7 +165,7 @@ as.data.frame(listings_part$test) %>%
   geom_point(aes(y=price)) +	
   geom_line(aes(y=pred), color='red')	
 
-# ---- end of example solutions to Exercise 2 -----
+#' ---- end of example solutions to Exercise 2 -----
  
 #' Now, what if we wanted to *quantify* how well the model predicts these out-of-sample values? There are several metrics to aggregate the prediction error. We'll look at RMSE, MAE, and Rsquared.
 
@@ -169,7 +180,7 @@ rsquare(lm_price_by_acc,listings_part$test)
 #' We interacted with the model to evaluate goodness-of-fit and out-of-sample performance. In our case, we used the `modelr` and `dplyr` framework to do this cleanly.	
 
 # -----------------------------------------------------------------
-# Adding More Variables
+#' ### Adding More Variables
 # -----------------------------------------------------------------
 #' Let's work a bit harder on predicting price, this time using more than one predictor. In fact, we'll add a bunch of predictors to the model and see what happens.	
 
@@ -205,28 +216,28 @@ listings_big <- listings %>%
 #' note the use `starts_with` as a handy shortcut to select groups of variables
 
 # ----------------------------------------------
-# EXERCISE 3: BUILD NEW LINEAR MODELS
+#'#### EXERCISE 3: BUILD NEW LINEAR MODELS
 # ----------------------------------------------
 # ----------------------------------------------
-# SOLUTION
+#'#### SOLUTION
 # ----------------------------------------------
 #' In total, we'll use all of these predictors:	
 
-#' * accommodates	
-#' * property_type	
-#' * review_scores_rating	
-#' * neighbourhood_cleansed	
-#' * accommodates*room_type	
-#' * property_type*neighbourhood_cleansed 	
-#' * review_scores_rating*neighbourhood_cleansed 	
-#' * accommodates*review_scores_rating	
-#' * All columns created from the amenities column	
+#' - accommodates	
+#' - property_type	
+#' - review_scores_rating	
+#' - neighbourhood_cleansed	
+#' - accommodates (x) room_type	
+#' - property_type (x) neighbourhood_cleansed 	
+#' - review_scores_rating (x) neighbourhood_cleansed 	
+#' - accommodates (x) review_scores_rating
+#' - all columns created from the amenities column	
 
 #' Note that whenever we include a non-numeric (or categorical) variable, R is going to create one indicator variable for all but one unique value of the variable. We'll see this in the output of `lm()`.	
 
 #' To get R to learn the model, we need to pass it a formula. We don't want to write down all those amenity variables by hand. Luckily, we can use the `paste()` function to string all the variable names together, and then the `as.formula()` function to translate a string into a formula.	
 
-all_amenities <- as.data.frame(listings_big_lm$train) %>% select(starts_with("amenity")) %>% names()	
+all_amenities <- listings_big %>% select(starts_with("amenity")) %>% names()	
 amenities_string <- paste(all_amenities,collapse="+")	
 amenities_string # Taking a look to make sure things worked	
 
@@ -251,10 +262,10 @@ rmse(big_price_lm,listings_big_lm$test) # Out-of-sample
 
 #' We've got an overfitting problem here, meaning that the training error is smaller than the test error. The model is too powerful for the amount of data we have. Note that R recognizes this by giving warnings about a "rank-deficient fit."	
 
-# ---- end of example solutions to Exercise 3 -----
+#' ---- end of example solutions to Exercise 3 -----
 
 # -----------------------------------------------------------------
-# LASSO (Penalized regression)
+#' ### LASSO (Penalized regression)
 # -----------------------------------------------------------------
 #' But is there still a way to use the info from all these variables without overfitting? Yes! One way to do this is by regularized, or penalized, regression.	
 
@@ -301,7 +312,7 @@ plot.glmnet(lasso_price,xvar="lambda")
 #' Here, each line is one variable. The plot is quite messy with so many variables, but it gives us the idea. As lambda shrinks, the model adds more and more nonzero coefficients.	
 
 # -----------------------------------------------------------------
-# Cross Validation
+#' ### Cross Validation
 # -----------------------------------------------------------------
 #' How do we choose which of the 88 models to use? Or in other words, how do we "tune" the $\lambda$ parameter? We'll use a similar idea to the training-test set split called cross-validation.	
 
@@ -337,43 +348,43 @@ listings_big %>%
 
 
 # -----------------------------------------------------------------
-# Classification
+#' ## Classification
 # -----------------------------------------------------------------
 #' So far we've looked at models which predict a continuous response variable. There are many related models which predict categorical outcomes, such as whether an email is spam or not, or which digit a handwritten number is. We'll take a brief look at example of this: logistic regression.	
-
+#' 
 #' Since the function stays between zero and one, it can be interpreted as a mapping from predictor values to a probability of being in one of two classes.	
-
+#' 
 #' In this example, we will be working with the Titanic data where the survival status of passengers, as well as other information such as class, demographics, and fare are provided.
 
 #' Let's read in the Titanic data
-titanic <- read.csv('../data/titanic.csv', stringsAsFactors = F)
+titanic <- read_csv("../data/titanic.csv")
 
-#' check data
-str(titanic)
+#' check data:
+glimpse(titanic)
 
 
 # ----------------------------------------------
-# EXERCISE 4: EXPLORE ON YOUR OWN
+#' #### EXERCISE 4: EXPLORE ON YOUR OWN
 # ----------------------------------------------
 # ----------------------------------------------
-# SOLUTION
+#' #### SOLUTION
 # ----------------------------------------------
 
-#' First we'll look at the relationship between age & survival
+#' First we'll look at the relationship between age & survival:
 titanic %>% 
   ggplot() + 
   aes(Age, fill = factor(Survived)) +
   geom_histogram() + 
   facet_grid(.~Sex)
 
-#' Now we look at it against Sibling/Spouse
+#' Now we look at it against Sibling/Spouse:
 titanic %>% 
   ggplot() +
   aes(x = SibSp, fill = factor(Survived)) + 
   geom_bar(stat='count', position='dodge') +
   scale_x_continuous(breaks=c(1:11))
 
-#' Pclass and sex on survival probability
+#' What about Pclass and Sex on survival probability?
 titanic %>% group_by(Sex, Pclass) %>% 
   summarize(Surv_prob = sum(Survived)/n()) %>%
   ggplot() +
@@ -390,27 +401,27 @@ titanic <-titanic %>%
          AgeGroup = factor(AgeGroup, levels=c("NA", "Young", "Mid-aged", "Old")))
 
 
-### Parititon to train and test
+#' Before training machine learning models, don't forget to parititon to train and test.
 set.seed(1)
 titanic_part <- titanic %>%
   resample_partition(c(test = 0.3, train = 0.7))
 
-#' Run logistic regression on Sex, Sibling/Spouse, Parent/children, Pclass,and age
-
+#' Let's now run logistic regression on Sex, Sibling/Spouse, Parent/children, Pclass,and age.
+#' 
 #' Instead of the `lm()` function, we'll now use `glm()`, but the syntax is almost exactly the same:	
 
 l.glm <-glm(Survived ~ Sex + Pclass + SibSp + Parch + withFamily + AgeGroup,family="binomial",data=titanic_part$train)	
 summary(l.glm)	
 
-#' Make predictions:
+#' Given the model, we can easily make predictions:
 l.pred <-predict(l.glm,newdata=titanic_part$test,type="response")
 
-#' In the meantime, we can explore out-of-sample performance. We can compute the accuracy and AUC.
+#' In the meantime, we can explore out-of-sample performance. We can compute the confusion matrix and accuracy.
 test_survived <- as.data.frame(titanic_part$test)$Survived
 conf_table <- table(l.pred > 0.5, test_survived)
 sum(diag(conf_table))/sum(conf_table)
 
-#' The `ROCR` package is one implementation that allows us to plot ROC curves and calculate AuC. Here's an example (make sure to install the packages first using `install.packages("ROCR"))`:	
+#' The `ROCR` package is one implementation that allows us to plot ROC curves and calculate AUC. Here's an example:	
 
 library(ROCR)	
 pred_obj <-prediction(l.pred,test_survived) # Creating a prediction object for ROCR	
@@ -422,7 +433,7 @@ performance(pred_obj,'auc')   # AUC - a scalar measure of performance
 
 #' As you can see, the `performance()` function in the `ROCR` package is versatile and allows you to calculate and plot a bunch of different performance metrics.	
 
-#' In our case, this model gives an AUC of 0.81. The worst possible is 0.5 - random guessing. We're definitely better than random here, and could likely improve by adding more predictors.	
+#' In our case, this model gives an AUC of 0.85. The worst possible is 0.5 - random guessing. We're definitely better than random here, and could likely improve by adding more predictors.	
 
 #' We've covered basic logistic regression, but just as with linear regression there are many, many extensions. For example, we could add higher-order predictor terms via splines. We could also do LASSO logistic regression if we wanted to use many predictors, using the `glmnet` package.	
 
