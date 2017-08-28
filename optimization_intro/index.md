@@ -48,6 +48,5 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 - [Notebook 7 - Facility Location Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb)
 
 - [Iris Dataset](https://philchodrow.github.io/mban_orientation/optimization_intro/iris.csv)
-- [Ice Cream Dataset](https://philchodrow.github.io/mban_orientation/optimization_intro/icecream_prepared.csv)
 - [Whiskas Nutrition Data](https://philchodrow.github.io/mban_orientation/optimization_intro/nutrition.csv)
 - [Whiskas Cost Data](https://philchodrow.github.io/mban_orientation/optimization_intro/cost.csv)
