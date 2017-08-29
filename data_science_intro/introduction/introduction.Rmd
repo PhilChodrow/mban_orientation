@@ -13,13 +13,24 @@ output:
 knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
 ```
 
-## Main Questions
+## Questions for Today
 
 > 1. What is data science?
 > 2. What are the stages of the data scientific method? 
 > 3. How can we perform those stages using the `R` statistical programming language?
 
-## What Is Data Science?
+## "Big Data" $\neq$ Data Science
+
+> *The key word in "Data Science" is not "Data", it is "Science"* 
+- [Jeff Leek, Simply Statistics](https://simplystatistics.org/2013/12/12/the-key-word-in-data-science-is-not-data-it-is-science/)
+
+> *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.*
+- John Tukey
+
+*Data science* is the science of answering **interesting or impactful questions** using **suitable data** for those questions. 
+
+
+## What Skills Do We Need?
 
 ```{r, fig.align="center", out.width = "400px", out.height = "400px"}
 knitr::include_graphics('https://static1.squarespace.com/static/5150aec6e4b0e340ec52710a/t/51525c33e4b0b3e0d10f77ab/1364352052403/Data_Science_VD.png?format=1500w')
@@ -27,7 +38,7 @@ knitr::include_graphics('https://static1.squarespace.com/static/5150aec6e4b0e340
 
 *Image credit: [Drew Conway Data Consulting](http://drewconway.com/zia/2013/3/26/the-data-science-venn-diagram)*
 
-## The Data Scientific Process
+## The Data Scientific Method
 
 ```{r, fig.align="center", out.width = "700px", out.height = "300px"}
 knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
@@ -35,7 +46,7 @@ knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
 
 *Image credit: Hadley Wickham*
 
-
+# Hello, R
 
 ## Why Not Spreadsheets? {.smaller}
 
@@ -96,13 +107,11 @@ knitr::include_graphics('https://img.tutorialgateway.org/2016/11/R-ggplot2-Jitte
 ## Some Cool `R` Tricks
 
 - [Literate Documents](http://timelyportfolio.github.io/rCharts_nyt_home_price/)
-- [These slides]() are written in `RMarkdown`, a language for literate programming
-- [Interactive Dashboards](https://gallery.shinyapps.io/genome_browser/) with Shiny
-- [More Dashboards](http://jkunst.com/flexdashboard-highcharter-examples/pokemon/)
+- [Interactive Dashboards](http://jkunst.com/flexdashboard-highcharter-examples/pokemon/) with Shiny
 - [Blogs and Websites](https://philchodrow.github.io/post/2017-06-19-info-segregation-2/)
+- These [slides](http://rmarkdown.rstudio.com/ioslides_presentation_format.html) are written in `R`
 
-
-## Goals for Today
+## Learning Goals for Today
 
 > - You are not going to become an `R` expert in one day
 > - But...
