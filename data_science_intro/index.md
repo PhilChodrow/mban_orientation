@@ -33,4 +33,4 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 
 ## Case Study - Daisy
 - [Slides](https://philchodrow.github.io/mban_orientation/data_science_intro/case_study/slides.html)
-- [Script](https://philchodrow.github.io/mban_orientation/data_science_intro/case_study/student_script.R)
+- [Script](https://philchodrow.github.io/mban_orientation/data_science_intro/case_study/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/data_science_intro/case_study/full_script.R))
