@@ -4,6 +4,7 @@ author: "Daisy Zhuo"
 date: "8/15/2017"
 output: 
   ioslides_presentation:
+    logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
     css: ../slide_style.css
 ---
 
@@ -16,13 +17,21 @@ knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "250px", fi
 
 # Introduction
 
+
+## Recall the Process of Data Science
+
+```{r, fig.align="center", out.width = "500px", out.height = "200px", echo = FALSE}
+knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
+```
+
+
 ## What We'll Do This Afternoon
 - Introducing basic machine learning concepts and methods
 - Form hypotheses through exploratory data analysis 
 - Continue wrangling the data for machine learning
 - Implement some ML in R
-    - Regression
-    - Classification
+    - Regression: predicting AirBnB prices
+    - Classification: who survives the Titanic
     
 
 ## Why Machine Learning?{#myImagePage}
@@ -74,16 +83,17 @@ knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "250px", fi
 
 # Case Study - Regression
 ## Read in the data 
-- Read in the data and format the *price* as a numeric:
+- Read in the data and format the `price` as a numeric:
 ```{r, message=FALSE, warning=FALSE}
-listings <- read.csv("../data/listings.csv",stringsAsFactors = FALSE)	
 library(tidyverse)	
-listings <- listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))
+listings <- read_csv("../data/listings.csv")	
+listings <- listings %>% 
+  mutate(price = as.numeric(gsub("\\$|,","",price)))	
 ```
 
 ## Exercise 1: Generating hypotheses
 
-- Take 15 minutes to come up with your predictive models for the price, keep the following in mind:
+- Take 15 minutes to come up with your conceptual predictive models for the price, keep the following in mind:
     - Which factors influence price?
     - Should the relationship be linear?
     - Should variables be transformed?
@@ -91,13 +101,15 @@ listings <- listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))
 - Use visualization, data summary from the morning to explore
 
 
-## Example visualization
+## Example visualization{.smaller}
 ```{r, warning=FALSE, out.width = "500px", out.height = "300px",}
-listings_for_lm <- listings %>%	
-  filter(accommodates <= 10, price <=1000)	
-ggplot(listings_for_lm)+
-  aes(x=accommodates, y=price, color=cancellation_policy, size=review_scores_rating)+
-  geom_point(alpha = 0.2)+
+listings_for_lm <-listings %>%	
+  filter(accommodates <= 10, price <= 1000)
+listings_for_lm %>%
+  ggplot() +
+  aes(x=accommodates, y=price, color=cancellation_policy,
+      size=review_scores_rating) +
+  geom_point(alpha = 0.2) +
   facet_wrap(~cancellation_policy,ncol=4)
 ```
 
@@ -114,15 +126,17 @@ which is also known as **ordinary least square** regression since it minimizes t
 
 
 ## First linear model, visualized
-A single-variable linear fit of `price` on `accommodates` looks like this:
+A single-variable linear fit of `price` on `accommodates`:
 
 ```{r}
-ggplot(listings, aes(x=accommodates, y=price))+
-  geom_point()+
+listings %>%
+  ggplot() +
+  aes(x=accommodates, y=price) +
+  geom_point() +
   geom_smooth(method="lm")
 ```
 
-## First linear model in R
+## First linear model in R{.smaller}
 - Before running the model, recall we need to split data first:
 ```{r, message=TRUE, warning=FALSE}
 library(modelr) 
@@ -132,7 +146,7 @@ listings_part <- listings_for_lm %>%
 listings_part
 ```
 
-- Now we can use the lm command on the training:
+- Now we can use the `lm()` command on the training:
 ```{r, message=FALSE, warning=FALSE}
 lm_price_by_acc <- lm(price ~ accommodates,data=listings_part$train)
 ```
@@ -155,7 +169,14 @@ listing_with_pred =  as.data.frame(listings_part$train) %>%
     - `add_predictions()` function from `modelr` package adds predicted values to a data frame
     - `add_residuals()` adds the model residual to the data frame
    
-
+## Example from Exercise 2
+```{r,echo=FALSE}
+listing_with_pred %>%	
+  group_by(as.factor(accommodates)) %>%	
+  ggplot() + 
+  aes(x=as.factor(accommodates),y=resid) + 
+  geom_boxplot()
+```
 
 ## Quantify first model performance
 
@@ -404,7 +425,7 @@ summary(l.glm)
 - Let's look at the titanic dataset:
 
 ```{r, message=FALSE}
-titanic <- read.csv('../data/titanic.csv', stringsAsFactors = F)
+titanic <- read_csv("../data/titanic.csv")
 ```
 
 ```{r, echo=FALSE}
@@ -422,6 +443,7 @@ Take 20 minutes, working with your partner, construct a logistic regression mode
 
 - Visualize data to generate hypothesis
 - Transform data to engineer additional features
+- Make sure to split training and testing. What do you think we should use to evaluate binary predictions?
 
 ## Example Solution {.smaller}
 ```{r, echo=FALSE}
@@ -436,7 +458,7 @@ set.seed(1)
 titanic_part <- titanic %>%
   resample_partition(c(test = 0.3, train = 0.7))
 
-l.glm <-glm(Survived ~ Sex + Pclass + SibSp + Parch + withFamily + AgeGroup,family="binomial",data=titanic_part$train)	
+l.glm <- glm(Survived ~ Sex + Pclass + SibSp + Parch + withFamily + AgeGroup,family="binomial",data=titanic_part$train)	
 summary(l.glm)	
 ```
 

@@ -32,4 +32,21 @@ We will be using the following software tools duing the class. The installation 
 
 This training does not require any specific theoretical background. To participate in the session, please make sure that you complete the [preassignment](https://github.com/PhilChodrow/mban_orientation/raw/master/optimization_intro/preassignment/optimization-preassignment.pdf) beforehand. 
 
+## Session Materials
 
+You can [download](https://github.com/PhilChodrow/mban_orientation/archive/master.zip) all the course materials as a `.zip` file, or access individual materials through the links below. 
+
+- [Slides](https://philchodrow.github.io/mban_orientation/optimization_intro/slides.pdf)
+
+- [Notebook 0 - Data Manipulation](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb)
+- [Notebook 1 - Intro to JuMP](https://philchodrow.github.io/mban_orientation/optimization_intro/1 - Intro to JuMP.ipynb)
+- [Notebook 2 - Transportation Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/2 - Transportation Problem.ipynb)
+- [Notebook 3 - Airline Revenue Management](https://philchodrow.github.io/mban_orientation/optimization_intro/3 - Airline Revenue Management.ipynb)
+- [Notebook 4 - Whiskas Cat Food](https://philchodrow.github.io/mban_orientation/optimization_intro/4 - Whiskas Cat Food.ipynb)
+- [Notebook 5 - Sudoku](https://philchodrow.github.io/mban_orientation/optimization_intro/5 - Sudoku.ipynb)
+- [Notebook 6 - Working with MIO Solvers](https://philchodrow.github.io/mban_orientation/optimization_intro/6 - Working with MIO Solvers.ipynb)
+- [Notebook 7 - Facility Location Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb)
+
+- [Iris Dataset](https://philchodrow.github.io/mban_orientation/optimization_intro/iris.csv)
+- [Whiskas Nutrition Data](https://philchodrow.github.io/mban_orientation/optimization_intro/nutrition.csv)
+- [Whiskas Cost Data](https://philchodrow.github.io/mban_orientation/optimization_intro/cost.csv)
