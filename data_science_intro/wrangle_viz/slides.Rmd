@@ -15,24 +15,9 @@ library(tidyverse)
 
 # Introduction
 
-1. The Case
-2. Learning Goals
-3. The Data Science Process
-4. The Tidyverse
-
-## The Case
-
-- AirBnB is a website that allows hosts to rent their homes to travelers and tourists. 
-- AirBnB can maximize its business by ensuring it has enough listings in different neighborhoods. 
-- AirBnB has asked you, a data analytics consultant, to help them identify neighborhoods in Boston where they should focus on recruitment through advertising and incentives. 
-- They have given you a complex, multi-part data set to answer this question. 
-
-## What We'll Do This Morning
-
-> - Ask an impactful question. 
-> - Generate some candidate answers using real data.
-> - Create a simple business intelligence (BI) [dashboard](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/dashboard.html) to guide decision-makers. 
-
+1. The Data Science Process
+2. The Case
+3. The Tidyverse
 
 ## The Process of Data Science
 
@@ -40,6 +25,19 @@ library(tidyverse)
 knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
 ```
 
+
+## What We'll Do This Morning
+
+> - Ask an impactful question. 
+> - Generate some candidate answers using real data.
+> - Create a simple business intelligence (BI) [dashboard](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/dashboard.html) to guide decision-makers. 
+
+## The Case
+
+- AirBnB is a website that allows hosts to rent their homes to travelers and tourists. 
+- AirBnB can maximize its business by ensuring it has enough listings in different neighborhoods. 
+- AirBnB has asked you, a data analytics consultant, to help them identify neighborhoods in Boston where they should focus on recruitment through advertising and incentives. 
+- They have given you a complex, multi-part data set to answer this question. 
 
 ## FYI: Base `R` and the Tidyverse
 
@@ -63,12 +61,12 @@ knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
 > 3. Pick a partner. 
 > 4. Give them a professional, yet friendly smile. You are going to need them soon. 
 
-
-## Case Study, Part 1
+# Case Study, Part 1
 
 1. Load libraries
 2. Import and inspect the data
-3. Warmup: The Nicest Places in JP
+3. The Nicest Places in JP
+4. The Biggest Places in Back Bay
 
 ```{r, message=FALSE, warning=FALSE, echo = FALSE}
 library(tidyverse)
@@ -76,16 +74,15 @@ listings <- read_csv('../data/listings.csv')
 calendar <- read_csv('../data/calendar.csv')
 ```
 
-
 ## The Pipe
 
 ```{r, echo = FALSE, out.height = 200, out.width = 200}
 knitr::include_graphics('https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3632/small/1419844831/magrittr.png')
 ```
 
-> - `x %>% f(y)` is equivalent to `f(x,y)`
+> - `x %>% f(y)` \Longleftrightarrow `f(x,y)`
 > - "Take `x`, and **then** do `f(...,y)` to it"
-> - `x %>% f(y) %>% g(z)` $ \equiv$ `g(f(x,y),z)` 
+> - `x %>% f(y) %>% g(z)` $\Longleftrightarrow$ `g(f(x,y),z)` 
 
 ## Some Simple Examples
 
@@ -101,7 +98,6 @@ listings %>% select(contains('review_scores'))
 # what should this return? 
 listings %>% select(contains('review_scores')) %>% colnames()
 ```
-
 
 # Summarising Data
 
