@@ -96,7 +96,7 @@
     }
   </style>
 
-  <link href="data:text/css;charset=utf-8,%2Egdbar%20img%20%7B%0Awidth%3A%20300px%20%21important%3B%0Aheight%3A%20150px%20%21important%3B%0Amargin%3A%208px%208px%3B%0A%7D%0A%2Egdbar%20%7B%0Awidth%3A%20400px%20%21important%3B%0Aheight%3A%20170px%20%21important%3B%0A%7D%0Aslides%20%3E%20slide%3Anot%28%2Enobackground%29%3Abefore%20%7B%0Awidth%3A%200px%3B%0Aheight%3A%200px%3B%0Abackground%2Dsize%3A%200px%200px%3B%0A%7D" rel="stylesheet" type="text/css" />
+  <link href="data:text/css;charset=utf-8,%2Egdbar%20img%20%7B%0Awidth%3A%20300px%20%21important%3B%0Aheight%3A%20150px%20%21important%3B%0Amargin%3A%208px%208px%3B%0A%7D%0A%2Egdbar%20%7B%0Awidth%3A%20400px%20%21important%3B%0Aheight%3A%20170px%20%21important%3B%0A%7D%0Aslides%20%3E%20slide%3Anot%28%2Enobackground%29%3Abefore%20%7B%0Awidth%3A%200px%3B%0Aheight%3A%200px%3B%0Abackground%2Dsize%3A%200px%200px%3B%0A%7D%0A%23myImagePage%20img%20%7B%0Awidth%3A%20100px%3B%0Aheight%3A%20100px%3B%0A%7D" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -118,20 +118,14 @@
 <slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Introduction</h2></hgroup><article  id="introduction">
 
 <ol>
-<li>The Case</li>
-<li>Learning Goals</li>
 <li>The Data Science Process</li>
+<li>The Case</li>
 <li>The Tidyverse</li>
 </ol>
 
-</article></slide><slide class=''><hgroup><h2>The Case</h2></hgroup><article  id="the-case">
+</article></slide><slide class=''><hgroup><h2>The Process of Data Science</h2></hgroup><article  id="the-process-of-data-science">
 
-<ul>
-<li>AirBnB is a website that allows hosts to rent their homes to travelers and tourists.</li>
-<li>AirBnB can maximize its business by ensuring it has enough listings in different neighborhoods.</li>
-<li>AirBnB has asked you, a data analytics consultant, to help them identify neighborhoods in Boston where they should focus on recruitment through advertising and incentives.</li>
-<li>They have given you a complex, multi-part data set to answer this question.</li>
-</ul>
+<p><img src="http://r4ds.had.co.nz/diagrams/data-science.png" width="700px" height="300px" style="display: block; margin: auto;" /></p>
 
 </article></slide><slide class=''><hgroup><h2>What We&#39;ll Do This Morning</h2></hgroup><article  id="what-well-do-this-morning">
 
@@ -141,9 +135,14 @@
 <li>Create a simple business intelligence (BI) <a href='https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/dashboard.html' title=''>dashboard</a> to guide decision-makers.</li>
 </ul>
 
-</article></slide><slide class=''><hgroup><h2>The Process of Data Science</h2></hgroup><article  id="the-process-of-data-science">
+</article></slide><slide class=''><hgroup><h2>The Case</h2></hgroup><article  id="the-case">
 
-<p><img src="http://r4ds.had.co.nz/diagrams/data-science.png" width="700px" height="300px" style="display: block; margin: auto;" /></p>
+<ul>
+<li>AirBnB is a website that allows hosts to rent their homes to travelers and tourists.</li>
+<li>AirBnB can maximize its business by ensuring it has enough listings in different neighborhoods.</li>
+<li>AirBnB has asked you, a data analytics consultant, to help them identify neighborhoods in Boston where they should focus on recruitment through advertising and incentives.</li>
+<li>They have given you a complex, multi-part data set to answer this question.</li>
+</ul>
 
 </article></slide><slide class=''><hgroup><h2>FYI: Base <code>R</code> and the Tidyverse</h2></hgroup><article  id="fyi-base-r-and-the-tidyverse">
 
@@ -176,20 +175,13 @@
 <li>Give them a professional, yet friendly smile. You are going to need them soon.</li>
 </ol>
 
-</article></slide><slide class=''><hgroup><h2>Our Data Today</h2></hgroup><article  id="our-data-today">
-
-<p>AirBnB listings, schedule, and review text for the Boston area, for a time period&#8230;that you will check.</p>
-
-<pre class = 'prettyprint lang-r'>library(tidyverse)
-listings &lt;- read_csv(&#39;../data/listings.csv&#39;)
-calendar &lt;- read_csv(&#39;../data/calendar.csv&#39;)</pre>
-
-</article></slide><slide class=''><hgroup><h2>Case Study, Part 1</h2></hgroup><article  id="case-study-part-1">
+</article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Case Study, Part 1</h2></hgroup><article  id="case-study-part-1">
 
 <ol>
 <li>Load libraries</li>
 <li>Import and inspect the data</li>
-<li>Warmup: The Nicest Places in JP</li>
+<li>The Nicest Places in JP</li>
+<li>The Biggest Places in Back Bay</li>
 </ol>
 
 </article></slide><slide class=''><hgroup><h2>The Pipe</h2></hgroup><article  id="the-pipe">
@@ -197,9 +189,9 @@ calendar &lt;- read_csv(&#39;../data/calendar.csv&#39;)</pre>
 <p><img src="https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3632/small/1419844831/magrittr.png" width="200" height="200" style="display: block; margin: auto;" /></p>
 
 <ul class = 'build'>
-<li><code>x %&gt;% f(y)</code> is equivalent to <code>f(x,y)</code></li>
-<li>&quot;Take <code>x</code>, and then do <code>f(...,y)</code> to it&quot;</li>
-<li><code>x %&gt;% f(y) %&gt;% g(z) %&gt;%</code> $ $ <code>g(f(x,y),z)</code></li>
+<li><code>x %&gt;% f(y)</code> <code>f(x,y)</code></li>
+<li>&quot;Take <code>x</code>, and <strong>then</strong> do <code>f(...,y)</code> to it&quot;</li>
+<li><code>x %&gt;% f(y) %&gt;% g(z)</code> \(\Longleftrightarrow\) <code>g(f(x,y),z)</code></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Some Simple Examples</h2></hgroup><article  id="some-simple-examples">
@@ -236,6 +228,7 @@ listings %&gt;% select(contains(&#39;review_scores&#39;)) %&gt;% colnames()</pre
 <li><code>data %&gt;% mutate(new_col = formula(old_col1, old_col2)</code> creates new columns.</li>
 <li><code>data %&gt;% group_by(col)</code> groups data for breakout summaries.</li>
 <li><code>data %&gt;% summarise(measure = formula(col1, col2))</code> computes summary statistics.</li>
+<li><code>data %&gt;% group_by(col) %&gt;% summarise(measure = formula(col1, col2))</code> computes summary statistics by levels.</li>
 </ul>
 
 <p>Let&#39;s test these out in the case study.</p>
