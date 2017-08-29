@@ -218,7 +218,7 @@ knitr::include_graphics("http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama
 ```
 </div>
 
-## Ingredients of a data visualization {.smaller}
+## Ingredients of a data visualization 
 
 - **`Data`**:  almost always a `data_frame` 
 - **`Aes`**thetic mapping: relation of data to chart components.
@@ -348,7 +348,7 @@ listings %>%
 The following code computes the average price of all listings on each day in the data set:
 ```{r, warning = FALSE}
 average_price_table <- calendar %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric()) %>% 
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric()) %>% 
 	group_by(date) %>% 
 	summarise(mean_price = mean(price, na.rm = TRUE))
 ```
@@ -380,9 +380,9 @@ recent_listings <- listings %>%
 	filter(last_active > lubridate::mdy('6/1/2016'))
 
 summary_table <- recent_listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   price_per = price / accommodates,
-		   weekly_price = weekly_price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   weekly_price = weekly_price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   weekly_price_per = weekly_price / accommodates)  %>% 
 	group_by(neighbourhood, property_type) %>% 
 	summarize(n = n(), 

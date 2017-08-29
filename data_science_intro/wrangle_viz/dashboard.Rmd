@@ -31,9 +31,9 @@ recent_listings <- listings %>%
 	filter(last_active > lubridate::mdy('6/1/2016'))
 
 summary_table <- recent_listings %>% 
-	mutate(price = price %>% gsub('\\$|', '',.) %>% as.numeric(),
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   price_per = price / accommodates,
-		   weekly_price = weekly_price %>% gsub('\\$|', '',.) %>% as.numeric(),
+		   weekly_price = weekly_price %>% gsub('\\$|,', '',.) %>% as.numeric(),
 		   weekly_price_per = weekly_price / accommodates)  %>% 
 	group_by(neighbourhood, property_type) %>% 
 	summarize(n = n(), 

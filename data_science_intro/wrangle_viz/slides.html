@@ -330,7 +330,7 @@ listings %&gt;% select(contains(&#39;review_scores&#39;)) %&gt;% colnames()</pre
 
 <p><img src="http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama2.png" width="300px" height="400" style="display: block; margin: auto;" /></p></div>
 
-</article></slide><slide class=''><hgroup><h2>Ingredients of a data visualization</h2></hgroup><article  id="ingredients-of-a-data-visualization" class="smaller">
+</article></slide><slide class=''><hgroup><h2>Ingredients of a data visualization</h2></hgroup><article  id="ingredients-of-a-data-visualization">
 
 <ul>
 <li><strong><code>Data</code></strong>: almost always a <code>data_frame</code></li>
@@ -454,7 +454,7 @@ listings %&gt;% select(contains(&#39;review_scores&#39;)) %&gt;% colnames()</pre
 <p>The following code computes the average price of all listings on each day in the data set:</p>
 
 <pre class = 'prettyprint lang-r'>average_price_table &lt;- calendar %&gt;% 
-    mutate(price = price %&gt;% gsub(&#39;\\$|&#39;, &#39;&#39;,.) %&gt;% as.numeric()) %&gt;% 
+    mutate(price = price %&gt;% gsub(&#39;\\$|,&#39;, &#39;&#39;,.) %&gt;% as.numeric()) %&gt;% 
     group_by(date) %&gt;% 
     summarise(mean_price = mean(price, na.rm = TRUE))</pre>
 
