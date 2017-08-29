@@ -26,7 +26,8 @@ listings <- read_csv("../data/listings.csv")
 
 #' As a review, we need to change the price column to a numeric form.
 
-listings <- listings %>% mutate(price = as.numeric(gsub("\\$|,","",price)))	
+listings <- listings %>% 
+  mutate(price = as.numeric(gsub("\\$|,","",price)))	
 summary(listings$price) # Check to make sure things worked	
 
 
@@ -43,8 +44,6 @@ summary(listings$price) # Check to make sure things worked
 #'   - Advanced: additional data to be joined on?
 #' - Use visualization, data summary from the morning to explore
 
-listings_for_lm <-listings %>%	
-  filter(accommodates <= 10, price <=1000)	
 
 
 
@@ -63,6 +62,9 @@ listings %>%
 
 #' Since we care about prediction accuracy, we'll reserve a portion of our data to be a test set. There are lots of ways to do this. We'll use the `modelr` package, which is part of the `tidyverse`.	
 
+#' Let's remove the outliers for this linear prediction problem, if you haven't already done so in the exercise.
+listings_for_lm <-listings %>%	
+  filter(accommodates <= 10, price <=1000)	
 
 library(modelr) # Comes with tidyverse installation, but doesn't automatically load with the library(tidyverse) call	
 set.seed(1)  # Keep the random partition the same for multiple runs
@@ -101,7 +103,6 @@ summary(lm_price_by_acc)
 # ----------------------------------------------
 #' #### EXERCISE 2: VISUALIZE MODEL PERFORMANCE
 # ----------------------------------------------
-
 #' There are some nifty functions in the `modelr` package that make interacting with models easy in the `tidyr` and `dplyr` setting. We'll use `modelr::add_predictions()` here. We can also remove the linear trend and check the residual uncertainty, which we'll do here using `modelr::add_residuals()`. 	
 
 listing_with_pred <-  as.data.frame(listings_part$train) %>%	
@@ -109,6 +110,9 @@ listing_with_pred <-  as.data.frame(listings_part$train) %>%
   add_residuals(lm_price_by_acc,var="resid") 
 
 #' - How would you visualize the model fit? Spend 10 minutes to come up with your visualizations
+
+
+
 
 
 
