@@ -96,7 +96,7 @@
     }
   </style>
 
-  <link href="data:text/css;charset=utf-8,%2Egdbar%20img%20%7B%0Awidth%3A%20300px%20%21important%3B%0Aheight%3A%20150px%20%21important%3B%0Amargin%3A%208px%208px%3B%0A%7D%0A%2Egdbar%20%7B%0Awidth%3A%20400px%20%21important%3B%0Aheight%3A%20170px%20%21important%3B%0A%7D%0Aslides%20%3E%20slide%3Anot%28%2Enobackground%29%3Abefore%20%7B%0Awidth%3A%200px%3B%0Aheight%3A%200px%3B%0Abackground%2Dsize%3A%200px%200px%3B%0A%7D" rel="stylesheet" type="text/css" />
+  <link href="data:text/css;charset=utf-8,%2Egdbar%20img%20%7B%0Awidth%3A%20300px%20%21important%3B%0Aheight%3A%20150px%20%21important%3B%0Amargin%3A%208px%208px%3B%0A%7D%0A%2Egdbar%20%7B%0Awidth%3A%20400px%20%21important%3B%0Aheight%3A%20170px%20%21important%3B%0A%7D%0Aslides%20%3E%20slide%3Anot%28%2Enobackground%29%3Abefore%20%7B%0Awidth%3A%200px%3B%0Aheight%3A%200px%3B%0Abackground%2Dsize%3A%200px%200px%3B%0A%7D%0A%23myImagePage%20img%20%7B%0Awidth%3A%20100px%3B%0Aheight%3A%20100px%3B%0A%7D" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -115,7 +115,7 @@
           </hgroup>
   </slide>
 
-<slide class=''><hgroup><h2>Main Questions</h2></hgroup><article  id="main-questions">
+<slide class=''><hgroup><h2>Questions for Today</h2></hgroup><article  id="questions-for-today">
 
 <ol class = 'build'>
 <li>What is data science?</li>
@@ -123,17 +123,31 @@
 <li>How can we perform those stages using the <code>R</code> statistical programming language?</li>
 </ol>
 
-</article></slide><slide class=''><hgroup><h2>What Is Data Science?</h2></hgroup><article  id="what-is-data-science">
+</article></slide><slide class=''><hgroup><h2>&quot;Big Data&quot; \(\neq\) Data Science</h2></hgroup><article  id="big-data-neq-data-science">
+
+<blockquote>
+<p><em>The key word in &quot;Data Science&quot; is not &quot;Data&quot;, it is &quot;Science&quot;</em> - <a href='https://simplystatistics.org/2013/12/12/the-key-word-in-data-science-is-not-data-it-is-science/' title=''>Jeff Leek, Simply Statistics</a></p>
+</blockquote>
+
+<blockquote>
+<p><em>The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.</em> - John Tukey</p>
+</blockquote>
+
+<p><em>Data science</em> is the science of answering <strong>interesting or impactful questions</strong> using <strong>suitable data</strong> for those questions.</p>
+
+</article></slide><slide class=''><hgroup><h2>What Skills Do We Need?</h2></hgroup><article  id="what-skills-do-we-need">
 
 <p><img src="https://static1.squarespace.com/static/5150aec6e4b0e340ec52710a/t/51525c33e4b0b3e0d10f77ab/1364352052403/Data_Science_VD.png?format=1500w" width="400px" height="400px" style="display: block; margin: auto;" /></p>
 
 <p><em>Image credit: <a href='http://drewconway.com/zia/2013/3/26/the-data-science-venn-diagram' title=''>Drew Conway Data Consulting</a></em></p>
 
-</article></slide><slide class=''><hgroup><h2>The Data Scientific Process</h2></hgroup><article  id="the-data-scientific-process">
+</article></slide><slide class=''><hgroup><h2>The Data Scientific Method</h2></hgroup><article  id="the-data-scientific-method">
 
 <p><img src="http://r4ds.had.co.nz/diagrams/data-science.png" width="700px" height="300px" style="display: block; margin: auto;" /></p>
 
 <p><em>Image credit: Hadley Wickham</em></p>
+
+</article></slide><slide class='segue dark nobackground level1'><hgroup class = 'auto-fadein'><h2>Hello, R</h2></hgroup><article  id="hello-r">
 
 </article></slide><slide class=''><hgroup><h2>Why Not Spreadsheets?</h2></hgroup><article  id="why-not-spreadsheets" class="smaller">
 
@@ -204,13 +218,12 @@
 
 <ul>
 <li><a href='http://timelyportfolio.github.io/rCharts_nyt_home_price/' title=''>Literate Documents</a></li>
-<li><a href='' title=''>These slides</a> are written in <code>RMarkdown</code>, a language for literate programming</li>
-<li><a href='https://gallery.shinyapps.io/genome_browser/' title=''>Interactive Dashboards</a> with Shiny</li>
-<li><a href='http://jkunst.com/flexdashboard-highcharter-examples/pokemon/' title=''>More Dashboards</a></li>
+<li><a href='http://jkunst.com/flexdashboard-highcharter-examples/pokemon/' title=''>Interactive Dashboards</a> with Shiny</li>
 <li><a href='https://philchodrow.github.io/post/2017-06-19-info-segregation-2/' title=''>Blogs and Websites</a></li>
+<li>These <a href='http://rmarkdown.rstudio.com/ioslides_presentation_format.html' title=''>slides</a> are written in <code>R</code></li>
 </ul>
 
-</article></slide><slide class=''><hgroup><h2>Goals for Today</h2></hgroup><article  id="goals-for-today">
+</article></slide><slide class=''><hgroup><h2>Learning Goals for Today</h2></hgroup><article  id="learning-goals-for-today">
 
 <ul class = 'build'>
 <li>You are not going to become an <code>R</code> expert in one day</li>
