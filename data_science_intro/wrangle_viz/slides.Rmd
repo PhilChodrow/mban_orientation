@@ -80,7 +80,7 @@ calendar <- read_csv('../data/calendar.csv')
 knitr::include_graphics('https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3632/small/1419844831/magrittr.png')
 ```
 
-> - `x %>% f(y)` \Longleftrightarrow `f(x,y)`
+> - `x %>% f(y)` $\Longleftrightarrow$ `f(x,y)`
 > - "Take `x`, and **then** do `f(...,y)` to it"
 > - `x %>% f(y) %>% g(z)` $\Longleftrightarrow$ `g(f(x,y),z)` 
 
