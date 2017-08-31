@@ -45,7 +45,7 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 - [Notebook 4 - Whiskas Cat Food](https://philchodrow.github.io/mban_orientation/optimization_intro/4 - Whiskas Cat Food.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/4 - Whiskas Cat Food-Complete.ipynb))
 - [Notebook 5 - Sudoku](https://philchodrow.github.io/mban_orientation/optimization_intro/5 - Sudoku.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/5 - Sudoku-Complete.ipynb))
 - [Notebook 6 - Working with MIO Solvers](https://philchodrow.github.io/mban_orientation/optimization_intro/6 - Working with MIO Solvers.ipynb)
-- [Notebook 7 - Facility Location Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation-Complete.ipynb))
+- [Notebook 7 - Facility Location Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/7 - Facility Location Problem.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/7 - Facility Location Problem-Complete.ipynb))
 
 - [Iris Dataset](https://philchodrow.github.io/mban_orientation/optimization_intro/iris.csv)
 - [Whiskas Nutrition Data](https://philchodrow.github.io/mban_orientation/optimization_intro/nutrition.csv)
