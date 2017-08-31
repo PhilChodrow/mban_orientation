@@ -38,13 +38,13 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 
 - [Slides](https://philchodrow.github.io/mban_orientation/optimization_intro/slides.pdf)
 
-- [Notebook 0 - Data Manipulation](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation-Complete.ipynb))
+- [Notebook 0 - Data Manipulation](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb)
 - [Notebook 1 - Intro to JuMP](https://philchodrow.github.io/mban_orientation/optimization_intro/1 - Intro to JuMP.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/1 - Intro to JuMP-Complete.ipynb))
 - [Notebook 2 - Transportation Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/2 - Transportation Problem.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/2 - Transportation Problem-Complete.ipynb))
 - [Notebook 3 - Airline Revenue Management](https://philchodrow.github.io/mban_orientation/optimization_intro/3 - Airline Revenue Management.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/3 - Airline Revenue Management-Complete.ipynb))
 - [Notebook 4 - Whiskas Cat Food](https://philchodrow.github.io/mban_orientation/optimization_intro/4 - Whiskas Cat Food.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/4 - Whiskas Cat Food-Complete.ipynb))
-- [Notebook 5 - Sudoku](https://philchodrow.github.io/mban_orientation/optimization_intro/5 - Sudoku.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/5 - Sudoku-Complete.ipynb)
-- [Notebook 6 - Working with MIO Solvers](https://philchodrow.github.io/mban_orientation/optimization_intro/6 - Working with MIO Solvers.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/6 - Working with MIO Solvers-Complete.ipynb))
+- [Notebook 5 - Sudoku](https://philchodrow.github.io/mban_orientation/optimization_intro/5 - Sudoku.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/5 - Sudoku-Complete.ipynb))
+- [Notebook 6 - Working with MIO Solvers](https://philchodrow.github.io/mban_orientation/optimization_intro/6 - Working with MIO Solvers.ipynb)
 - [Notebook 7 - Facility Location Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation-Complete.ipynb))
 
 - [Iris Dataset](https://philchodrow.github.io/mban_orientation/optimization_intro/iris.csv)
