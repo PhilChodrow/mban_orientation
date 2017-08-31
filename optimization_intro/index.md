@@ -38,7 +38,7 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 
 - [Slides](https://philchodrow.github.io/mban_orientation/optimization_intro/slides.pdf)
 
-- [Notebook 0 - Data Manipulation](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb)
+- [Notebook 0 - Data Manipulation](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/0 - Data Manipulation-Complete.ipynb))
 - [Notebook 1 - Intro to JuMP](https://philchodrow.github.io/mban_orientation/optimization_intro/1 - Intro to JuMP.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/1 - Intro to JuMP-Complete.ipynb))
 - [Notebook 2 - Transportation Problem](https://philchodrow.github.io/mban_orientation/optimization_intro/2 - Transportation Problem.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/2 - Transportation Problem-Complete.ipynb))
 - [Notebook 3 - Airline Revenue Management](https://philchodrow.github.io/mban_orientation/optimization_intro/3 - Airline Revenue Management.ipynb) ([completed version](https://philchodrow.github.io/mban_orientation/optimization_intro/3 - Airline Revenue Management-Complete.ipynb))
