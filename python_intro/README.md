@@ -10,4 +10,4 @@ The instructions for Thursday's class are as follows:
 
 Thanks!
 
-Brad and Jack
+Brad, Jack and Daisy
