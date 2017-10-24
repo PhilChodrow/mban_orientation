@@ -1,10 +1,8 @@
-# Set-up Instructions
-
 ## Session Materials
 
 You can [download](https://github.com/PhilChodrow/mban_orientation/archive/master.zip) all the course materials as a `.zip` file.
 
-
+## Set-up Instructions
 The instructions for Thursday's class are as follows:
 * Please navigate to https://www.anaconda.com/download/ and download Python 2.7 version of Anaconda. 
 * After installation, open Anaconda and launch Jupyter notebook 5.0.0.
