@@ -1,13 +1,12 @@
 # -------------------------------------------------------------------------
 # CASE STUDY: Advanced Topics in Data Science
 # By Phil Chodrow
-# January 19th, 2017
+# January 17th, 2018
 # -------------------------------------------------------------------------
 
 # This is the script for following along with our case-study analysis of trends 
 # in per-person rental prices. Following along with the case study is highly 
 # recommended. 
-
 
 # Load libraries ----------------------------------------------------------
 
@@ -21,15 +20,17 @@ library(ggmap)     # for maps
 # following commands. Do this by clicking Session -> Set Working Directory -> 
 # To Source File Location in the RStudio menu. 
 
+# By now you are a little too advanced for us to spend time on data cleaning, so here's a helper script to load up and clean the main data we'll use today. 
+
 source('load_data.R')
 
 # Take a moment to inspect the data by typing the name of each data frame 
-# (prices and listings)  in the terminal. By now these should look pretty 
-# familiar. 
+# (prices and listings)  in the terminal. 
+# Guess what -- it's the AirBnB data from last time! 
 
 # Preliminary Exploration -------------------------------------------------
 
-# EXERCISE: Time to take a look at the data we have what we have. 
+# REVIEW EXERCISE: Time to take a look to see what we have. 
 # Working with your partner, construct a visualization of the first 2000 rows of
 # the prices data frame using ggplot2. 
 # 	- The date should be on the x-axis
@@ -41,32 +42,15 @@ source('load_data.R')
 # 	- You can use the head(nrows) function to extract a data frame with just the
 # 	  first nrows of data. 
 
-prices %>%
-	head(2000) %>% 
-	ggplot() + 
-	aes(x = date, 
-		y = price_per, 
-		group = listing_id) +
-	geom_line() + 
-	facet_wrap(~listing_id) # or aes(color = listing_id)
 
-
-
-# EXERCISE: It might be easier to get a big-picture view by plotting the average
+# REVIEW EXERCISE: It might be easier to get a big-picture view by plotting the average
 # over time. Working with the person next to you, construct a visualization of 
 # the mean over time. 
 # 	- Use group_by(date) %>% summarise() to create a data frame holding the mean
 # 	- You probably want geom_line() again
 
-prices %>% 
-	group_by(date) %>% 
-	summarise(mean_pp = mean(price_per, na.rm = T)) %>% 
-	ggplot() +
-	aes(x = date, y = mean_pp) + 
-	geom_line()
 
-
-
+# Three interesting things are happening here...
 
 # Modeling ----------------------------------------------------------------
 
