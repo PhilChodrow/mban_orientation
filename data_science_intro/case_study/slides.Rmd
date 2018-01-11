@@ -2,10 +2,12 @@
 title: "Case Study - Machine Learning in R"
 author: "Daisy Zhuo"
 date: "8/29/2017"
-output: 
+output:
   ioslides_presentation:
-    logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
     css: ../slide_style.css
+    logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
+  beamer_presentation: default
+  slidy_presentation: default
 ---
 
 

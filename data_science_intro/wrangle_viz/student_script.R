@@ -7,11 +7,11 @@
 # Session -> Set Working Directory -> Source File Location
 
 # load the tidyverse library
-
+library(tidyverse)
 
 # load the data we'll use today
-
-
+listings <- read_csv("../data/listings.csv")
+calendar <- read_csv("../data/calendar.csv")
 # Inspect the data
 
 
@@ -40,13 +40,13 @@
 # Let's go ahead and do this. We'll start out with a simple but slightly clunky way, and then see how to dramatically simplify it using some syntactical magic. 
 
 # filter() to include only JP listings
-
+JP_only <- filter(listings, neighbourhood == "Jamaica Plain")
 
 # arrange() to sort in descending order by rating        
-
+JP_sorted <- arrange(JP_only, -review_scores_rating)
 
 # Select only the columns we want to see               
-
+JP_best <- select(JP_sorted, neighbourhood, name, review_scores_rating)
 
 
 # Problem: this code wastes:
@@ -112,9 +112,10 @@ listings %>%
 
 # The as.numeric function is useful for converting things that "should be numbers," but it doesn't know how to deal with the "$" sign. We can use a basic string manipulation function to drop the $ signs and commas, allowing us to make a numeric conversion.
 
-
-
-
+listings = listings %>% 
+  mutate(price = as.numeric(gsub("\\$|,", "", price)),
+         price_per = price/accommodates) %>%
+  
 
 
 # We can place this in the context of our data manipulation pipelines using the mutate() function, which lets us create new columns.
