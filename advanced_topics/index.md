@@ -1,6 +1,4 @@
----
-title: Advanced R: Tackling Complex Analyses the Tidy Way
----
+# Advanced R: Tackling Complex Analyses the Tidy Way
 
 *Instructor: [Phil Chodrow](https://philchodrow.github.io/)*
 

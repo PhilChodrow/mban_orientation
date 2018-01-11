@@ -27,6 +27,7 @@ source('load_data.R')
 # (prices and listings)  in the terminal. By now these should look pretty 
 # familiar. 
 
+
 # Preliminary Exploration -------------------------------------------------
 
 
@@ -67,7 +68,6 @@ prices %>%
 
 
 # Three interesting things are happening here...
-
 
 # Modeling ----------------------------------------------------------------
 
@@ -296,23 +296,26 @@ prices_clustered %>%
 # specific week in April; users in the other don't. Now we're ready to visualize
 # where these listings are located
 
-listings_to_plot <- prices_clustered %>% 
-	filter(cluster == 1) %>% 
-	select(listing_id) %>% 
-	unique()
+cluster_lookup <- prices_clustered %>% 
+	filter(!duplicated(listing_id)) %>% 
+	select(listing_id, cluster)
 
 locations_to_plot <- listings %>% 
-	filter(id %in% listings_to_plot$listing_id)
+	left_join(cluster_lookup, by = c('id' = 'listing_id')) %>% 
+	filter(!is.na(cluster))
+	
 
 # Let's pull down a map...
 
-m <- get_map('Copley Square', zoom = 14)
+m <- get_map('Boston', zoom = 14)
 
 # ...and plot the results
 
 ggmap(m) + 
 	geom_point(aes(x = longitude, 
-				   y = latitude), data = locations_to_plot)
+				   y = latitude), 
+			   data = locations_to_plot) + 
+	facet_wrap(~cluster) 
 
 # Does this map support or testify against our hypothesis?
 

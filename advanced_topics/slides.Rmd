@@ -32,6 +32,15 @@ library(knitr)
 
 ## My Favorite Picture 
 
+
+## My Favorite Picture
+
+```{r, out.height = 400, out.width = 500, echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/spongebob_hopeful.jpg')
+```
+
+## My Favorite Picture
+
 ```{r, out.height = 400, out.width=800, echo = FALSE, fig.align='center'}
 knitr::include_graphics('figs/patrickstewartwide.jpg')
 ```
@@ -48,12 +57,6 @@ knitr::include_graphics('figs/gettyimages-871679690-1510950426.jpg')
 knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
 ```
 (*Image credit: Hadley Wickham*)
-
-## ...
-
-```{r, out.height = 400, out.width = 500, echo = FALSE, fig.align='center'}
-knitr::include_graphics('figs/spongebob_hopeful.jpg')
-```
 
 ## ...
 
