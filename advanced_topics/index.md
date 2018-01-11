@@ -23,21 +23,21 @@ While learning these tools, we work a complex case study that will require multi
 
 ## Preassignment
 
-Prior to Tuesday's session, you must complete the [preassignment](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment.html). This is a short set of instructions to install necessary software and ensure its proper functioning. 
+Prior to the session, you must complete the preassignment below. This is a short set of instructions to install necessary software and ensure its proper functioning. 
 
 ### Install Packages
 
 You should already have installed the `tidyverse` package. If not, 
 
 ```{r}
-    install.packages('tidyverse')
+install.packages('tidyverse')
 ```
 
 Now we need to install some packages that you may not have used before. Don't forget `type = source` when installing `ggmap` or you may run into errors. 
 
 ```{r}
-    install.packages('knitr')
-    install.packages('ggmap', type = "source")
+install.packages('knitr')
+install.packages('ggmap', type = "source")
 ```
 
 ### Test packages
@@ -45,10 +45,10 @@ Now we need to install some packages that you may not have used before. Don't fo
 Type or paste the following code into your console and hit "enter." 
 
 ```{r}
-    library(tidyverse)
-    list('To', 'boldly', 'go', 'where', 'no', 'man', 'has', 'gone', 'before') %>% 
-        map(nchar) %>% 
-        reduce(`*`)
+library(tidyverse)
+list('To', 'boldly', 'go', 'where', 'no', 'man', 'has', 'gone', 'before') %>% 
+    map(nchar) %>% 
+    reduce(`*`)
 ```
 
 Your console should print out `51840`. If you like, take a moment to think about what this code does. 
