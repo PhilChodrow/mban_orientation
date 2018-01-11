@@ -11,7 +11,11 @@ Welcome to your first two days of orientation! This website hosts the materials 
 
 This site contains links to all materials used in the training sessions, as well as descriptions of preassignments and other resources. 
 
-
-
 # SIP Week Python Workshops
 [Introduction to Machine Learning and Data Analytics in `Python`](https://philchodrow.github.io/mban_orientation/python_intro/index.html)
+
+# MBAn R Ninja Workshop
+
+1. [Advanced Topics in Data Science](https://philchodrow.github.io/mban_orientation/advanced_topics/index.html)
+
+
