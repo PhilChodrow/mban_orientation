@@ -1,6 +1,5 @@
----
-title: Advanced R: Tackling Complex Analyses the Tidy Way
----
+# Advanced R: Tackling Complex Analyses the Tidy Way
+
 
 *Instructor: [Phil Chodrow](https://philchodrow.github.io/)*
 
@@ -12,7 +11,7 @@ This is the repository for a half day training on advanced data science in R. Da
 
 A skilled analyst needs to be able to smoothly transition from data manipulation to visualization to modeling and back. In this session, we focus on advanced use of the `tidyverse` set of packages to smoothly navigate the Cycle of Data Science. 
 
-### Learning Objectives 
+## Learning Objectives 
 
 Topics covered include:
 
@@ -69,5 +68,10 @@ Please email the instructor if either of these tests do not produce the expected
 
 ## Session Materials
 
-You can [download](https://github.com/PhilChodrow/mban_orientation/archive/master.zip) all the course materials as a `.zip` file, or access individual materials through the links below. 
+You can [download](https://github.com/PhilChodrow/mban_orientation/archive/master.zip) all the course materials as a `.zip` file. If you need to quickly reference individual materials, use the links below. For best results, `git clone` the repository.  
+
+- [Slides](https://philchodrow.github.io/mban_orientation/data_science_intro/advanced_topics/slides.html), [source](https://philchodrow.github.io/mban_orientation/data_science_intro/advanced_topics/slides.Rmd)
+- [Notes](https://philchodrow.github.io/mban_orientation/data_science_intro/advanced_topics/notes.html), [source](https://philchodrow.github.io/mban_orientation/data_science_intro/advanced_topics/notes.Rmd)
+- Case Study: [student version](https://philchodrow.github.io/mban_orientation/data_science_intro/advanced_topics/case_study_student.R), [complete version](https://philchodrow.github.io/mban_orientation/data_science_intro/advanced_topics/case_study_complete.R)
+
 
