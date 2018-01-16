@@ -211,7 +211,7 @@ FALSE 5    6954861 2017-04-11        NA</pre>
 <pre class = 'prettyprint lang-r'>n_missing_1 &lt;- prices$price_per %&gt;% is.na() %&gt;% sum()
 n_missing_1</pre>
 
-<pre >FALSE [1] 645979</pre>
+<pre >## [1] 645979</pre>
 
 <p>Compute the number of listings with no NA values in any of their rows.</p>
 
@@ -223,7 +223,7 @@ n_missing_1</pre>
 
 complete_listings_1</pre>
 
-<pre >FALSE [1] 104</pre>
+<pre >## [1] 104</pre>
 
 <p>These solutions capture data that&#39;s <strong>explicitly</strong> listed as <code>NA</code> in the <code>prices</code> table. But what about data that wasn&#39;t collected, or that someone forgot to enter&#8230;? It&#39;s <strong>implicitly</strong> missing.</p>
 
@@ -321,7 +321,7 @@ n_dates    &lt;- n_distinct(prices$date)
 
 n_listings * n_dates  - nrow(prices)</pre>
 
-<pre >FALSE [1] 43536</pre>
+<pre >## [1] 43536</pre>
 
 <p>Kind of a lot!</p>
 
@@ -339,7 +339,7 @@ n_dates    &lt;- n_distinct(prices$date)
 
 n_listings * n_dates  - nrow(prices)</pre>
 
-<pre >FALSE [1] 0</pre>
+<pre >## [1] 0</pre>
 
 <p>Now there&#39;s no implicitly missing data, at least in terms of prices and dates.</p>
 
@@ -350,7 +350,7 @@ n_listings * n_dates  - nrow(prices)</pre>
 <pre class = 'prettyprint lang-r'>n_missing_2 &lt;- prices$price_per %&gt;% is.na() %&gt;% sum()
 n_missing_1 - n_missing_2</pre>
 
-<pre >FALSE [1] -43536</pre>
+<pre >## [1] -43536</pre>
 
 <p>Compute the number of listings with no NA values in any of their rows.</p>
 
@@ -362,7 +362,7 @@ n_missing_1 - n_missing_2</pre>
 
 complete_listings_2 - complete_listings_1</pre>
 
-<pre >FALSE [1] -104</pre>
+<pre >## [1] -104</pre>
 
 </article></slide><slide class=''><hgroup><h2>Moral</h2></hgroup><article  id="moral">
 
@@ -426,36 +426,36 @@ single_model &lt;-  loess(price_per ~ as.numeric(date),
 
 <pre class = 'prettyprint lang-r'>single_model %&gt;% summary()</pre>
 
-<pre >FALSE Call:
-FALSE loess(formula = price_per ~ as.numeric(date), data = model_data, 
-FALSE     span = 0.5)
-FALSE 
-FALSE Number of Observations: 344 
-FALSE Equivalent Number of Parameters: 6.32 
-FALSE Residual Standard Error: 8.15 
-FALSE Trace of smoother matrix: 6.95  (exact)
-FALSE 
-FALSE Control settings:
-FALSE   span     :  0.5 
-FALSE   degree   :  2 
-FALSE   family   :  gaussian
-FALSE   surface  :  interpolate   cell = 0.2
-FALSE   normalize:  TRUE
-FALSE  parametric:  FALSE
-FALSE drop.square:  FALSE</pre>
+<pre >## Call:
+## loess(formula = price_per ~ as.numeric(date), data = model_data, 
+##     span = 0.5)
+## 
+## Number of Observations: 344 
+## Equivalent Number of Parameters: 6.32 
+## Residual Standard Error: 8.15 
+## Trace of smoother matrix: 6.95  (exact)
+## 
+## Control settings:
+##   span     :  0.5 
+##   degree   :  2 
+##   family   :  gaussian
+##   surface  :  interpolate      cell = 0.2
+##   normalize:  TRUE
+##  parametric:  FALSE
+## drop.square:  FALSE</pre>
 
 </article></slide><slide class=''><hgroup><h2>Model Information the Tidy Way</h2></hgroup><article  id="model-information-the-tidy-way">
 
 <pre class = 'prettyprint lang-r'>model_preds &lt;- broom::augment(single_model, model_data) 
 model_preds %&gt;% head()</pre>
 
-<pre >FALSE   listing_id       date price_per  .fitted  .se.fit     .resid
-FALSE 1       5506 2017-09-05      72.5 73.73994 2.042531 -1.2399385
-FALSE 2       5506 2017-09-04      72.5 73.66160 1.984215 -1.1615956
-FALSE 3       5506 2017-09-03      72.5 73.58551 1.927151 -1.0855140
-FALSE 4       5506 2017-09-02      72.5 73.51158 1.871376 -1.0115812
-FALSE 5       5506 2017-09-01      72.5 73.43968 1.816931 -0.9396847
-FALSE 6       5506 2017-08-31      72.5 73.36971 1.763855 -0.8697121</pre>
+<pre >##   listing_id       date price_per  .fitted  .se.fit     .resid
+## 1       5506 2017-09-05      72.5 73.73994 2.042531 -1.2399385
+## 2       5506 2017-09-04      72.5 73.66160 1.984215 -1.1615956
+## 3       5506 2017-09-03      72.5 73.58551 1.927151 -1.0855140
+## 4       5506 2017-09-02      72.5 73.51158 1.871376 -1.0115812
+## 5       5506 2017-09-01      72.5 73.43968 1.816931 -0.9396847
+## 6       5506 2017-08-31      72.5 73.36971 1.763855 -0.8697121</pre>
 
 </article></slide><slide class=''><hgroup><h2>Visualizing a Single Model</h2></hgroup><article  id="visualizing-a-single-model" class="build">
 
@@ -499,7 +499,7 @@ for(word in my_list){
 </b>
 length_list %&gt;% unlist() # just for display</pre>
 
-<pre >FALSE [1] 2 6 2 5 2 3 3 4 6</pre>
+<pre >## [1] 2 6 2 5 2 3 3 4 6</pre>
 
 </article></slide><slide class=''><hgroup><h2>A better way:</h2></hgroup><article  id="a-better-way">
 
@@ -509,7 +509,7 @@ length_list %&gt;% unlist() # just for display</pre>
 </b>
 length_list %&gt;% unlist() # just for display</pre>
 
-<pre >FALSE [1] 2 6 2 5 2 3 3 4 6</pre>
+<pre >## [1] 2 6 2 5 2 3 3 4 6</pre>
 
 <p><code>purrr::map()</code> applies a function (<code>nchar</code>) to each entry of the original list.</p>
 
@@ -522,7 +522,7 @@ my_list %&gt;%
     map(nchar) %&gt;% 
     reduce(`*`) # `*` is the product function: `*`(a,b) = a*b</pre>
 
-<pre >FALSE [1] 51840</pre>
+<pre >## [1] 51840</pre>
 
 </article></slide><slide class=''><hgroup><h2>Exercise</h2></hgroup><article  id="exercise-1" class="build">
 
@@ -535,15 +535,88 @@ my_list %&gt;%
     reduce(rbind) %&gt;%
     head() # just for display</pre>
 
-<pre >FALSE # A tibble: 6 x 3
-FALSE   listing_id       date price_per
-FALSE        &lt;int&gt;     &lt;date&gt;     &lt;dbl&gt;
-FALSE 1    3075044 2017-04-30      32.5
-FALSE 2    3075044 2017-04-29      37.5
-FALSE 3    3075044 2017-04-28      37.5
-FALSE 4    3075044 2017-04-27      32.5
-FALSE 5    3075044 2017-04-26      32.5
-FALSE 6    3075044 2017-04-25      32.5</pre>
+<pre >## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   listing_id = col_integer(),
+##   date = col_date(format = &quot;&quot;),
+##   price_per = col_double()
+## )</pre>
+
+<pre >## # A tibble: 6 x 3
+##   listing_id       date price_per
+##        &lt;int&gt;     &lt;date&gt;     &lt;dbl&gt;
+## 1    3075044 2017-04-30      32.5
+## 2    3075044 2017-04-29      37.5
+## 3    3075044 2017-04-28      37.5
+## 4    3075044 2017-04-27      32.5
+## 5    3075044 2017-04-26      32.5
+## 6    3075044 2017-04-25      32.5</pre>
 
 </article></slide><slide class=''><hgroup><h2>Fundamental Pattern</h2></hgroup><article  id="fundamental-pattern">
 
@@ -555,15 +628,15 @@ FALSE 6    3075044 2017-04-25      32.5</pre>
 
 <p>Usually their columns are <strong>atomic vectors</strong> of integers, doubles, dates, characters, or booleans. E.g.</p>
 
-<pre >FALSE # A tibble: 6 x 3
-FALSE   listing_id       date price_per
-FALSE        &lt;int&gt;     &lt;date&gt;     &lt;dbl&gt;
-FALSE 1    3075044 2017-08-22      32.5
-FALSE 2    3075044 2017-08-21      32.5
-FALSE 3    3075044 2017-08-20      32.5
-FALSE 4    3075044 2017-08-19      37.5
-FALSE 5    3075044 2017-08-18      37.5
-FALSE 6    3075044 2017-08-17      32.5</pre>
+<pre >## # A tibble: 6 x 3
+##   listing_id       date price_per
+##        &lt;int&gt;     &lt;date&gt;     &lt;dbl&gt;
+## 1    3075044 2017-08-22      32.5
+## 2    3075044 2017-08-21      32.5
+## 3    3075044 2017-08-20      32.5
+## 4    3075044 2017-08-19      37.5
+## 5    3075044 2017-08-18      37.5
+## 6    3075044 2017-08-17      32.5</pre>
 
 <p>But this is somewhat inflexible. What about more complex objects? Lists can hold anything&#8230;</p>
 
@@ -579,8 +652,8 @@ FALSE 6    3075044 2017-08-17      32.5</pre>
 # view the data types of the columns
 map(prices_nested, class) %&gt;% unlist()</pre>
 
-<pre >FALSE listing_id       data 
-FALSE  &quot;integer&quot;     &quot;list&quot;</pre>
+<pre >## listing_id       data 
+##  &quot;integer&quot;     &quot;list&quot;</pre>
 
 </article></slide><slide class=''><hgroup><h2>Ew.</h2></hgroup><article  id="ew.">
 
@@ -590,15 +663,15 @@ FALSE  &quot;integer&quot;     &quot;list&quot;</pre>
 
 <pre class = 'prettyprint lang-r'>prices_nested %&gt;% head()</pre>
 
-<pre >FALSE # A tibble: 6 x 2
-FALSE   listing_id               data
-FALSE        &lt;int&gt;             &lt;list&gt;
-FALSE 1    3075044 &lt;tibble [359 x 2]&gt;
-FALSE 2       6976 &lt;tibble [319 x 2]&gt;
-FALSE 3    7651065 &lt;tibble [334 x 2]&gt;
-FALSE 4    5706985 &lt;tibble [344 x 2]&gt;
-FALSE 5    2843445 &lt;tibble [365 x 2]&gt;
-FALSE 6     753446 &lt;tibble [347 x 2]&gt;</pre>
+<pre >## # A tibble: 6 x 2
+##   listing_id               data
+##        &lt;int&gt;             &lt;list&gt;
+## 1    3075044 &lt;tibble [359 x 2]&gt;
+## 2       6976 &lt;tibble [319 x 2]&gt;
+## 3    7651065 &lt;tibble [334 x 2]&gt;
+## 4    5706985 &lt;tibble [344 x 2]&gt;
+## 5    2843445 &lt;tibble [365 x 2]&gt;
+## 6     753446 &lt;tibble [347 x 2]&gt;</pre>
 
 </article></slide><slide class=''><hgroup><h2>WELP</h2></hgroup><article  id="welp">
 
@@ -608,20 +681,20 @@ FALSE 6     753446 &lt;tibble [347 x 2]&gt;</pre>
 
 <pre class = 'prettyprint lang-r'>prices_nested$data[[1]] # get the first item of the list</pre>
 
-<pre >FALSE # A tibble: 359 x 2
-FALSE          date price_per
-FALSE        &lt;date&gt;     &lt;dbl&gt;
-FALSE  1 2017-08-22      32.5
-FALSE  2 2017-08-21      32.5
-FALSE  3 2017-08-20      32.5
-FALSE  4 2017-08-19      37.5
-FALSE  5 2017-08-18      37.5
-FALSE  6 2017-08-17      32.5
-FALSE  7 2017-08-16      32.5
-FALSE  8 2017-08-15      32.5
-FALSE  9 2017-08-14      32.5
-FALSE 10 2017-08-13      32.5
-FALSE # ... with 349 more rows</pre>
+<pre >## # A tibble: 359 x 2
+##          date price_per
+##        &lt;date&gt;     &lt;dbl&gt;
+##  1 2017-08-22      32.5
+##  2 2017-08-21      32.5
+##  3 2017-08-20      32.5
+##  4 2017-08-19      37.5
+##  5 2017-08-18      37.5
+##  6 2017-08-17      32.5
+##  7 2017-08-16      32.5
+##  8 2017-08-15      32.5
+##  9 2017-08-14      32.5
+## 10 2017-08-13      32.5
+## # ... with 349 more rows</pre>
 
 </article></slide><slide class=''><hgroup><h2>We were here:</h2></hgroup><article  id="we-were-here">
 
@@ -638,7 +711,7 @@ FALSE # ... with 349 more rows</pre>
 <pre class = 'prettyprint lang-r'><b>lengths &lt;- map(prices_nested$data, nrow)
 </b>lengths %&gt;% unlist() %&gt;% head() # for display only</pre>
 
-<pre >FALSE [1] 359 319 334 344 365 347</pre>
+<pre >## [1] 359 319 334 344 365 347</pre>
 
 </article></slide><slide class=''><hgroup><h2>Exercise</h2></hgroup><article  id="exercise-3" class="build">
 
@@ -653,7 +726,7 @@ FALSE # ... with 349 more rows</pre>
 <pre class = 'prettyprint lang-r'><b>biggest_prices &lt;- map(prices_nested$data, get_biggest_price)
 </b>biggest_prices %&gt;% head() %&gt;% unlist()</pre>
 
-<pre >FALSE [1] 37.50000 32.50000 39.50000 66.66667 37.50000 34.50000</pre>
+<pre >## [1] 37.50000 32.50000 39.50000 66.66667 37.50000 34.50000</pre>
 
 </article></slide><slide class=''><hgroup><h2>Exercise</h2></hgroup><article  id="exercise-4" class="build">
 
@@ -662,14 +735,14 @@ FALSE # ... with 349 more rows</pre>
 <pre class = 'prettyprint lang-r'>prices_nested %&gt;% 
     mutate(highest_price = map(data, get_biggest_price))</pre>
 
-<pre >FALSE # A tibble: 5 x 3
-FALSE   listing_id               data highest_price
-FALSE        &lt;int&gt;             &lt;list&gt;        &lt;list&gt;
-FALSE 1    3075044 &lt;tibble [359 x 2]&gt;     &lt;dbl [1]&gt;
-FALSE 2       6976 &lt;tibble [319 x 2]&gt;     &lt;dbl [1]&gt;
-FALSE 3    7651065 &lt;tibble [334 x 2]&gt;     &lt;dbl [1]&gt;
-FALSE 4    5706985 &lt;tibble [344 x 2]&gt;     &lt;dbl [1]&gt;
-FALSE 5    2843445 &lt;tibble [365 x 2]&gt;     &lt;dbl [1]&gt;</pre>
+<pre >## # A tibble: 5 x 3
+##   listing_id               data highest_price
+##        &lt;int&gt;             &lt;list&gt;        &lt;list&gt;
+## 1    3075044 &lt;tibble [359 x 2]&gt;     &lt;dbl [1]&gt;
+## 2       6976 &lt;tibble [319 x 2]&gt;     &lt;dbl [1]&gt;
+## 3    7651065 &lt;tibble [334 x 2]&gt;     &lt;dbl [1]&gt;
+## 4    5706985 &lt;tibble [344 x 2]&gt;     &lt;dbl [1]&gt;
+## 5    2843445 &lt;tibble [365 x 2]&gt;     &lt;dbl [1]&gt;</pre>
 
 </article></slide><slide class=''><hgroup><h2>Exercise</h2></hgroup><article  id="exercise-5">
 
@@ -679,14 +752,14 @@ FALSE 5    2843445 &lt;tibble [365 x 2]&gt;     &lt;dbl [1]&gt;</pre>
 <b>    mutate(highest_price = map_dbl(data, get_biggest_price))
 </b></pre>
 
-<pre >FALSE # A tibble: 5 x 3
-FALSE   listing_id               data highest_price
-FALSE        &lt;int&gt;             &lt;list&gt;         &lt;dbl&gt;
-FALSE 1    3075044 &lt;tibble [359 x 2]&gt;      37.50000
-FALSE 2       6976 &lt;tibble [319 x 2]&gt;      32.50000
-FALSE 3    7651065 &lt;tibble [334 x 2]&gt;      39.50000
-FALSE 4    5706985 &lt;tibble [344 x 2]&gt;      66.66667
-FALSE 5    2843445 &lt;tibble [365 x 2]&gt;      37.50000</pre>
+<pre >## # A tibble: 5 x 3
+##   listing_id               data highest_price
+##        &lt;int&gt;             &lt;list&gt;         &lt;dbl&gt;
+## 1    3075044 &lt;tibble [359 x 2]&gt;      37.50000
+## 2       6976 &lt;tibble [319 x 2]&gt;      32.50000
+## 3    7651065 &lt;tibble [334 x 2]&gt;      39.50000
+## 4    5706985 &lt;tibble [344 x 2]&gt;      66.66667
+## 5    2843445 &lt;tibble [365 x 2]&gt;      37.50000</pre>
 
 </article></slide><slide class=''><hgroup><h2>Summing Up</h2></hgroup><article  id="summing-up">
 
