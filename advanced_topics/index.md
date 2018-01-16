@@ -32,7 +32,7 @@ You should already have installed the `tidyverse` package. If not,
 install.packages('tidyverse')
 ```
 
-Now we need to install some packages that you may not have used before. Don't forget `type = source` when installing `ggmap` or you may run into errors. 
+Now we need to install some packages that you may not have used before. 
 
 ```{r}
 install.packages('knitr')
