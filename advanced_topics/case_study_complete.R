@@ -8,13 +8,12 @@
 # in per-person rental prices. Following along with the case study is highly 
 # recommended. 
 
-
 # Load libraries ----------------------------------------------------------
 
 library(tidyverse) # includes dplyr, tidyr, ggplot2, purrr
 library(broom)     # for retrieving model predictions
 library(lubridate) # for manipulating dates and times
-library(ggmap)
+library(leaflet)
 
 # Load data ---------------------------------------------------------------
 # You may need to manually set your working directory before running the 
@@ -65,7 +64,6 @@ prices %>%
 	ggplot() +
 	aes(x = date, y = mean_pp) + 
 	geom_line()
-
 
 # Three interesting things are happening here...
 
@@ -305,18 +303,15 @@ locations_to_plot <- listings %>%
 	filter(!is.na(cluster))
 	
 
-# Let's pull down a map...
+# Now we'll plot using leaflet
+library(leaflet)
 
-m <- get_map('Boston', zoom = 14)
+pal <- colorFactor(c("navy", "orange"), domain = c("1", "2"))
 
-# ...and plot the results
-
-ggmap(m) + 
-	geom_point(aes(x = longitude, 
-				   y = latitude), 
-			   data = locations_to_plot) + 
-	facet_wrap(~cluster) 
-
+leaflet(data = locations_to_plot)%>% 
+	addProviderTiles(providers$CartoDB.Positron) %>% 
+	addCircles(~longitude, ~latitude, radius = 50, color = ~pal(cluster))
+	
 # Does this map support or testify against our hypothesis?
 
 # EXERCISE: Working with your partner, outline an analysis by which you would further explore the hypothesis that the April spike is driven by the Boston Marathon. Do you have the data you need in this restricted data set? Would it help to use the full one? 

@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------
 # CASE STUDY: Advanced Topics in Data Science
 # By Phil Chodrow
-# January 17th, 2018
+# January 19th, 2017
 # -------------------------------------------------------------------------
 
 # This is the script for following along with our case-study analysis of trends 
@@ -13,22 +13,22 @@
 library(tidyverse) # includes dplyr, tidyr, ggplot2, purrr
 library(broom)     # for retrieving model predictions
 library(lubridate) # for manipulating dates and times
-library(ggmap)     # for maps
+library(leaflet)
 
 # Load data ---------------------------------------------------------------
 # You may need to manually set your working directory before running the 
 # following commands. Do this by clicking Session -> Set Working Directory -> 
 # To Source File Location in the RStudio menu. 
 
-# By now you are a little too advanced for us to spend time on data cleaning, so here's a helper script to load up and clean the main data we'll use today. 
-
 source('load_data.R')
 
 # Take a moment to inspect the data by typing the name of each data frame 
-# (prices and listings)  in the terminal. 
-# Guess what -- it's the AirBnB data from last time! 
+# (prices and listings)  in the terminal. By now these should look pretty 
+# familiar. 
+
 
 # Preliminary Exploration -------------------------------------------------
+
 
 # REVIEW EXERCISE: Time to take a look to see what we have. 
 # Working with your partner, construct a visualization of the first 2000 rows of
@@ -59,6 +59,7 @@ source('load_data.R')
 # creating prices_nested, where the nesting variable is the listing_id: 
 
 
+
 # Now we define our LOESS modeling function. Remember, its first argument must
 # be a data frame. 
 
@@ -66,6 +67,7 @@ source('load_data.R')
 
 # Our next step is to use purrr::map to model each of the data frames in the 
 # data column of prices_nested. 
+
 
 
 # Just like there are data frames in the data column, there are statistical 
@@ -77,15 +79,18 @@ source('load_data.R')
 # the augment function requires both the model and the original data 
 
 
+
 # Hey look, another list column of data frames! You may want to inspect this 
 # column too, for example: 
 # 	prices_with_preds$preds[[1]] %>% head()
 # Now we're ready to get out of bizarro land. 
 
 
+
 # The first three columns are exactly where we started, but the last three are 
 # new: they give the model predictions (and prediction uncertainty) that we've
 # generated. Let's rename the .fitted column "trend" instead:
+
 
 
 # EXERCISE: Now, working with a partner, please visualize the model predictions
@@ -104,15 +109,21 @@ source('load_data.R')
 # there are packages that can do this in a systematic way, we don't actually
 # need to use them, because we know the period of the signal -- the 7-day week. 
 # Our strategy is simple: we'll compute the average residual associated with 
-# each weekday. This is easy with a little help lubridate: 
+# each weekday. This is easy with a little help from the lubridate package: 
+
 
 
 # Now we can construct a new column for the part of the signal that's not 
 # captured by either the long-term trend or the periodic oscillation:  
 
 
-# It's a good exercise in using tidyr::gather to plot all four of these columns
-# in the same visualization: 
+
+
+# EXERCISE: Working with your partner, plot all four columns (price_per, trend, periodic, and remainder) as facets on the same visualization. Start by figuring out what the following code does: 
+
+
+
+# Now build from there
 
 
 
@@ -121,31 +132,34 @@ source('load_data.R')
 # visualization of the mean of the remainder column over time. What do you see?
 
 
+
 # We haven't done a perfect modeling job, but we have made considerable progress
 # toward isolating the signal in April. 
 
-
-# Back to K-Means ---------------------------------------------------------
+# Now to K-Means ---------------------------------------------------------
 
 # Our motivating problem is: while the signal is apparent on average, not every 
 # individual raises their prices in April. How can we identify individual 
 # listings who did? There are plenty of ways to approach this, but we are going 
-# to practice our modeling skills by returning to k-means. 
+# to practice our tidy modeling skills by returning to k-means. 
 
 # Our first step is to prepare the data. Since we know the phenomenon we are
 # interested in is in April, we'll focus only on the data in that month. We'll
 # also just pick the columns we'll need. 
 
 
+
 # We also need to filter out anyone who has any data missing, including 
 # implicitly missing (row absent from the data frame). 
 
 
-# EXERCISE: As you may remember, R's implementation of k-means requires that 
+
+# EXERCISE: As you may know, R's implementation of k-means requires that 
 # the data be stored as a matrix. Use tidyr::spread to convert april_prices into 
 # "wide" format, where the rows correspond to individual listings and there's a 
 # separate column for each date. Then, remove the listing_id column with 
 # select, and convert the result to a matrix with as.matrix()
+
 
 
 # Now we'll fit 10 models for each of k = 1...10, for a total of 100 models.
@@ -155,8 +169,10 @@ source('load_data.R')
 # 	mutate(kclust = map(k, ~ kmeans(prices_for_clustering, .)))
 
 
+
 # How do we know how many clusters to use? One way is to extract a summary of 
 # each model using broom::glance. 
+
 
 
 # EXERCISE: Extract the model summary using glance for each model, and then 
@@ -164,13 +180,16 @@ source('load_data.R')
 # with no nesting. 
 
 
+
 # EXERCISE: Compute the mean tot.withinss for each value of k and plot the
 # results, with k on the x-axis and the mean tot.withinss on the y-axis. What
 # value of k should we use? 
 
 
+
 # We really only need one cluster, so let's extract the first one with our 
 # chosen value of k. 
+
 
 
 # Let's inspect the clustered series. To do this, we need to add the 
@@ -181,8 +200,19 @@ source('load_data.R')
 # specific week in April; users in the other don't. Now we're ready to visualize
 # where these listings are located
 
-# Let's pull down a map...
 
-# ...and plot the results
+# Now we'll plot using leaflet
+
 
 # Does this map support or testify against our hypothesis?
+
+# EXERCISE: Working with your partner, outline an analysis by which you would further explore the hypothesis that the April spike is driven by the Boston Marathon. Do you have the data you need in this restricted data set? Would it help to use the full one? 
+
+listings_full <- read_csv('../data_science_intro/data/listings.csv')
+reviews_full <- read_csv('../data_science_intro/data/reviews.csv')
+calendar_full <- read_csv('../data_science_intro/data/calendar.csv')
+
+# If you have the data that you think you need, spend 30 minutes attempting your analysis. If you don't, spend 10 minutes describing how you would go about collecting the necessary data, and 20 minutes trying something out with the data you have. 
+
+
+
