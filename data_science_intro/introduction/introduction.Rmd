@@ -1,8 +1,8 @@
 ---
 title: "Introduction to Data Science in R"
 # subtitle: "Introduction and Motivation"
-author: "Phil Chodrow and Daisy Zhuo"
-date: "Tuesday, August 29th, 2017"
+author: "Phil Chodrow, Chris McCord, and Colin Pawlowski"
+date: "Tuesday, August 28th, 2018"
 output: 
   ioslides_presentation:
     logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
@@ -38,13 +38,46 @@ knitr::include_graphics('https://static1.squarespace.com/static/5150aec6e4b0e340
 
 *Image credit: [Drew Conway Data Consulting](http://drewconway.com/zia/2013/3/26/the-data-science-venn-diagram)*
 
-## The Data Scientific Method
 
-```{r, fig.align="center", out.width = "700px", out.height = "300px"}
-knitr::include_graphics('http://r4ds.had.co.nz/diagrams/data-science.png')
+## The **data-scientific method** is the method by which we deploy these skills to conduct data science. 
+
+## My Favorite Picture
+
+## My Favorite Picture
+
+```{r, out.height = 400, out.width = 500, echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/spongebob_hopeful.jpg')
 ```
 
-*Image credit: Hadley Wickham*
+## My Favorite Picture
+
+```{r, out.height = 400, out.width=800, echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/patrickstewartwide.jpg')
+```
+
+## My ~~Favorite~~ Second Favorite Picture
+
+## My ~~Favorite~~ Second Favorite Picture
+
+```{r, out.height = 500, out.width = 800,echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/gettyimages-871679690-1510950426.jpg')
+```
+
+## My ~~Favorite~~ Third Favorite Picture 
+
+## My ~~Favorite~~ Third Favorite Picture 
+
+```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
+```
+
+(*Image credit: Hadley Wickham*)
+
+## ...
+
+```{r, out.height = 400, out.width = 500, echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/spongebob_sad.png')
+```
 
 # Hello, R
 
@@ -74,8 +107,8 @@ knitr::include_graphics('http://www.excel-easy.com/data-analysis/images/tables/e
 
 <div class="columns-2">
 
-```{r, out.height = "460px", out.width = "350px"}
-knitr::include_graphics('https://img.tutorialgateway.org/2016/11/R-ggplot2-Jitter-8.png')
+```{r, out.height = "500px", out.width = "350px"}
+knitr::include_graphics('http://rmarkdown.rstudio.com/images/notebook-demo.png')
 ```
 
 - **Flexibility:** Can you do the analysis you want?
@@ -99,8 +132,6 @@ knitr::include_graphics('https://img.tutorialgateway.org/2016/11/R-ggplot2-Jitte
 
 - `R` is **the best** language in the world for **learning** data science.
 - `R` is **one of the best** languages in the world for **doing** data science. 
-- `R` is best-in-class on data wrangling, visualization, and reproducibility.
-- `python` is arguably stronger on machine learning and production deployment.
 - `R` tends to be preferred in academia and among "statisticians," while `python` is more popular among "computer scientists" and "data scientists"
 - Most practicing data scientists know and use both. 
 
@@ -115,55 +146,44 @@ knitr::include_graphics('https://img.tutorialgateway.org/2016/11/R-ggplot2-Jitte
 
 > - You are not going to become an `R` expert in one day
 > - But...
-> - You will know **basic concepts** and **vocabulary** of data science, and **how to get help** when you're lost. 
+> - You will know the **basic concepts** and **vocabulary** of data science -- enough to employ the most important skill of all. 
 
-## The Most Useful Programming Skill
+## The most important skill...
 
-<div class="columns-2">
-```{r}
+```{r, out.width = 750, out.height = 450}
+knitr::include_graphics('http://www.logika.io/wp-content/uploads/2016/01/Data-Science-Education-at-Monash-Monash-University.jpg')
+```
+
+## The most important skill:
+
+<!-- <div class="columns-2"> -->
+```{r, out.height = 500, out.width = 650}
 knitr::include_graphics('http://searchengineland.com/figz/wp-content/seloads/2010/05/delete_facebook-500x438.png')
 ```
 
-**Google Search**
+<!-- ```{r, out.height = 250} -->
+<!-- knitr::include_graphics('https://i.stack.imgur.com/0kaFC.png') -->
+<!-- ``` -->
 
-```{r}
-knitr::include_graphics('https://i.stack.imgur.com/0kaFC.png')
-```
-
-**StackOverflow**
-</div>
-
-## Who Are We? {.smaller}
-
-<div class="columns-2">
-
-```{r, out.height = "310px", out.width="270px"}
-knitr::include_graphics('https://philchodrow.github.io/img/portrait.jpg')
-```
-
-**Phil Chodrow**
-
-Network dynamics and inference; statistics; science of cities; computational social science. 
-
-```{r, out.height = "310px", out.width="310px"}
-knitr::include_graphics('http://www.mit.edu/~zhuo/images/me-square.jpg')
-```
-
-**Daisy Zhuo**
-
-Machine learning and optimization; causal inference in health care; personalized medicine. 
-
-</div>
+<!-- **StackOverflow** -->
+<!-- </div> -->
 
 
-## Plan for the Day
+## Today's Gameplan
 
-- **Data Wrangling and Visualization**, *Phil* 
-	- 3hrs, with breaks
-- **Lunch**
-- **Case Study: Synthesis + Elementary Machine Learning**, *Daisy*
-	- 3hrs, with breaks
+1. **Data Wrangling and Visualization in `R`** (2.5 hrs)
+2. **Mini-Project, Part 1** (1 hr)
+3. **Lunch** (1 hr)
+4. **Statistical Modeling and Analysis in** `R`
+5. **Mini-Project, Part 2** (1 hr)
 
+## Exercise 0
+
+> 1. Look left.
+> 2. Look right.
+> 3. Pick a partner (groups of 3 are fine). 
+> 4. Give them a professional, yet friendly smile. 
+> 5. You are going to need them soon. 
 
 
 

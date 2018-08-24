@@ -40,13 +40,13 @@ calendar <- read_csv("../data/calendar.csv")
 # Let's go ahead and do this. We'll start out with a simple but slightly clunky way, and then see how to dramatically simplify it using some syntactical magic. 
 
 # filter() to include only JP listings
-JP_only <- filter(listings, neighbourhood == "Jamaica Plain")
+
 
 # arrange() to sort in descending order by rating        
-JP_sorted <- arrange(JP_only, -review_scores_rating)
+
 
 # Select only the columns we want to see               
-JP_best <- select(JP_sorted, neighbourhood, name, review_scores_rating)
+
 
 
 # Problem: this code wastes:
@@ -59,13 +59,14 @@ JP_best <- select(JP_sorted, neighbourhood, name, review_scores_rating)
 
 
 
-# Ok, that's no longer wasteful, but it's also illegible. What to do? Back to the slides to discuss the pipe
+# Ok, that's no longer wasteful of memory, but it's definitely wasteful of headspace -- it's illegible! 
+# What to do? Let's head back to the slides to discuss the pipe
 
 # -----------------------------------------------------
 # EXERCISE 1: The Pipe
 # -----------------------------------------------------
 
-# Working with your partner, please rewrite the JP code using the pipe operator. Here's the first line to get you started:
+# Working with your partner, rewrite the JP code using the pipe operator. Here's the first line to get you started:
 
 listings %>% 
 	filter(neighbourhood == 'Jamaica Plain')

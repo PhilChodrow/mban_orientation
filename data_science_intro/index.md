@@ -4,7 +4,7 @@ title: Introduction to Data Science in R
 
 # Introduction to Data Science in R
 
-*Instructors: Daisy Zhuo and [Phil Chodrow](https://philchodrow.github.io/)*
+*Instructors: [Phil Chodrow](https://philchodrow.github.io/), Chris McCord, and [Colin Pawlowski](https://colinpawlowski.com)*
 
 This is the repository for a day-long intensive crash-course on data science in R. Data science is rarely cut-and-dried; each analysis typically provides answers but also raises new questions. This makes the data scientific process fundamentally cyclical:
 
@@ -22,15 +22,15 @@ Prior to Tuesday's session, you must complete the [preassignment](https://philch
 
 You can [download](https://github.com/PhilChodrow/mban_orientation/archive/master.zip) all the course materials as a `.zip` file, or access individual materials through the links below. 
 
-## Introduction - Daisy + Phil
+## Introduction - Phil
 
 - [Slides](https://philchodrow.github.io/mban_orientation/data_science_intro/introduction/introduction.html) ([source](https://philchodrow.github.io/mban_orientation/data_science_intro/introduction/introduction.Rmd))
 
-## Data Wrangling and Visualization - Phil
+## Data Wrangling and Visualization - Phil + Chris
 
 - [Slides](https://philchodrow.github.io/mban_orientation/wrangle_viz/slides.html) ([source](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/slides.Rmd))
 - [Script](https://philchodrow.github.io/mban_orientation/wrangle_viz/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/full_script.R))
 
-## Case Study - Daisy
+## Case Study - Colin + Phil
 - [Slides](https://philchodrow.github.io/mban_orientation/case_study/slides.html)
 - [Script](https://philchodrow.github.io/mban_orientation/case_study/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/case_study/full_script.R))
