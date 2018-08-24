@@ -29,7 +29,7 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 ## Data Wrangling and Visualization - Phil + Chris
 
 - [Slides](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/slides.html) ([source](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/slides.Rmd))
-- [Script](https://philchodrow.github.io/mban_orientation/wrangle_viz/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/full_script.R))
+- [Script](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/full_script.R))
 
 ## Case Study - Colin + Phil
 - [Data Preparation Notes](https://philchodrow.github.io/mban_orientation/data_science_intro/statistical_modeling/airbnbDataPrep.html) ([source](https://philchodrow.github.io/mban_orientation/data_science_intro/statistical_modeling/airbnbDataPrep.Rmd))
