@@ -6,7 +6,7 @@ title: Preassignment
 
 ## 1. Install `R` and RStudio
 
-**We are assuming that you have recent versions of `R` and RStudio installed.** In particular, you need `R` version 3.5.1 and RStudio 1.1.456.For this reason, we **strongly recommend** that you download and install both `R` and RStudio, even if both are already on your laptop. 
+**We are assuming that you have recent versions of `R` and RStudio installed.** In particular, you need `R` version 3.5.1 and RStudio 1.1.456. For this reason, we **strongly recommend** that you download and install both `R` and RStudio, even if both are already on your laptop. 
  
 - **Install `R`**: Navigate to [`https://cran.cnr.berkeley.edu/`](https://cran.cnr.berkeley.edu/) and follow the instructions for your operating system. 
 - **Download RStudio**: Navigate to [`https://www.rstudio.com/products/rstudio/download/`](https://www.rstudio.com/products/rstudio/download/) and download RStudio Desktop with an Open Source License. 

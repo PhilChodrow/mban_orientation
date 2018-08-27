@@ -26,7 +26,15 @@ library(tidyverse)
 knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
 ```
 
-> - Exploratory data analysis (EDA) covers roughly the "transform" and "visualize" steps. 
+> - **Exploratory data analysis (EDA)** covers roughly the "transform" and "visualize" steps. 
+
+# EDA is...
+
+## ...getting to know your Data
+
+```{r, out.height = 700, out.width = 500, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://vignette.wikia.nocookie.net/memoryalpha/images/4/4f/Data%2C_2366.jpg/revision/latest?cb=20130529102644&path-prefix=en')
+```
 
 
 ## What We'll Do This Morning
@@ -44,28 +52,29 @@ knitr::include_graphics('https://imgs.6sqft.com/wp-content/uploads/2017/03/10102
 
 ## The Case
 
+<div class="columns-2">
+
+```{r, out.height = 500, out.width = 350, echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/airbnb_map.png')
+```
+
 - AirBnB can maximize its business by ensuring a strong supply of diverse hosts in various neighborhoods. 
-- AirBnB has asked you, a data analytics consultant: 
-
-> ***Where should we recruit more hosts?*** 
-
-- They have given you a complex, multi-part data set.
-- We will study the data using `R`. 
+- Their question for you: ***Where should we recruit more hosts?*** 
+- They have given you a complex, multi-part data set to study using `R`! 
+</div>
 
 ## FYI: Base `R` and the Tidyverse
 
-- `R` without any packages offers ways to do most of the things we will see today. 
-- But base `R` is not a very good programming language. 
-- We will use the **Tidyverse**, a set of packages that promote code which is 
-	1. Easy to write and read.
-	2. Highly performant.
-	3. Consistent through the data scientific process.
-
+- You can do EDA in "base" `R` without any packages.
+- But base `R` is a bad programming language. 
+- We will use the **Tidyverse**, a set of packages that promote code which is easy to **write** and **read**,  highly **performant**, and **consistent** through the data scientific pipeline. 
+- The Tidyverse has been extensively developed by **Hadley Wickham** and collaborators over the last decade. 
+	
 If you have prior experience in `R` and did not begin all your scripts with `library(dplyr)`....
 
-## 
+## FYI: Base `R` and the Tidyverse
 
-```{r, echo = FALSE, out.height = 550, out.width = 550}
+```{r, echo = FALSE, out.height = 500, out.width = 500}
 knitr::include_graphics('https://memegenerator.net/img/instances/73015626/forget-everything-you-think-you-know.jpg')
 ```
 
@@ -89,15 +98,23 @@ listings <- read_csv('../data/listings.csv')
 calendar <- read_csv('../data/calendar.csv')
 ```
 
-## The Pipe
+## Pipes for your Data
+
+```{r, echo = FALSE, out.height = 500, out.width = 700}
+knitr::include_graphics('http://www.startrek.com/uploads/assets/db_articles/26da32597d9bd37fde9da22660aa524f24fd725c.jpg')
+```
+
+## Pipes for your Data
 
 ```{r, echo = FALSE, out.height = 200, out.width = 200}
 knitr::include_graphics('https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3632/small/1419844831/magrittr.png')
 ```
 
+> - `x %>% f()` $\Longleftrightarrow$ `f(x)` 
+> - *"Take `x`, and **then** do `f` to it"*
 > - `x %>% f(y)` $\Longleftrightarrow$ `f(x,y)`
-> - "Take `x`, and **then** do `f(...,y)` to it"
 > - `x %>% f(y) %>% g(z)` $\Longleftrightarrow$ `g(f(x,y),z)` 
+> - *"Take `x`, **then** do `f` with option `y`, **then** do `g` with option `z`..."*
 
 ## Some Simple Examples
 
@@ -112,9 +129,13 @@ listings %>% colnames() # = colnames(listings)
 listings %>% select(contains('review_scores')) 
 # what should this return? 
 listings %>% select(contains('review_scores')) %>% colnames()
+# compare: colnames(select(listings, contains('review_scores')))
 ```
 
 Let's try this out -- back to the case study! 
+
+
+
 
 
 # Summarising Data
@@ -127,34 +148,33 @@ Let's try this out -- back to the case study!
 
 - You should usually summarise your data before turning on the fancy algorithms -- sometimes the story is clear. 
 
-```{r, echo = FALSE, out.width = 600, out.height = 300}
-knitr::include_graphics("https://www.edwardtufte.com/tufte/graphics/minard_lg.gif")
+```{r, echo = FALSE, out.width = 700, out.height = 400}
+knitr::include_graphics("http://writingcenter.unc.edu/files/2012/07/chart-figure-3.png")
 ```
-*Napoleon's March, by Charles Minard*
+
 
 ## Summaries the Tidy Way
 
-- `data %>% mutate(new_col = formula(old_col1, old_col2)` creates new columns.
-- `data %>% group_by(col)` groups data for breakout summaries.
-- `data %>% summarise(measure = formula(col1, col2))` computes summary statistics.
-- `data %>% group_by(col) %>% summarise(measure = formula(col1, col2))` computes summary statistics by levels.
-
-Let's test these out in the case study. 
+> - `data %>% mutate(new_col = formula(old_col1, old_col2)` creates new columns.
+> - `data %>% group_by(col)` groups data for breakout summaries.
+> - `data %>% summarise(measure = formula(col1, col2))` computes summaries.
+> - `data %>% group_by(col) %>% summarise(measure = formula(col1, col2))` computes breakout summaries. 
+> - Let's test these out in the case study. 
 
 # Keeping Current
 
 1. More practice with `filter` and `summarise`
 2. `join`ing data
 
-## How Current Is This Info?
+## How Recent is our Info?
 
 ```{r}
 calendar %>% 
 	summarise(earliest = min(date), 
-		   latest = max(date))
+		      latest = max(date))
 ```
 
-Pretty current. But some of these listings may be "zombies" without recent availability. How can we include only listings with availability in the last three months? 
+But some of these listings may be "zombies" without recent availability. How can we include only listings with availability from a certain time period? 
 
 ## The Approach
 
@@ -179,7 +199,7 @@ The `join` family of functions lets us add columns from one table to another usi
 - `x %>% outer_join(y)` : keeps all rows of both `x` and `y`
 - `x %>% full_join(y)` : keeps only rows of `x` that match in `y` and vice versa. 
 
-We'll use `left_join` for this case. But first, the exercise! 
+We'll use `left_join` for this case. On to the exercise!
 
 # Getting Visual
 
@@ -189,22 +209,22 @@ We'll use `left_join` for this case. But first, the exercise!
 
 ## Graphical Excellence
 
-```{r, echo = FALSE, out.height = 450, out.width = 450}
-knitr::include_graphics("http://static3.businessinsider.com/image/51bb6d7ceab8ea9113000017-1410-959/detroit%20property%20tax%20delinquency.png")
+```{r, echo = FALSE, out.height = 450, out.width = 650}
+knitr::include_graphics("https://www.edwardtufte.com/bboard/images/0003VL-9150.jpeg")
 ```
 
 
 ## Graphical Excellence
 
-> Graphical excellence is the well-designed presentation of interesting data -- a matter of *substance*, of *statistics*, and of *design*. Graphical excellence consists of complex ideas communicated with clarity, precision, and efficiency. -- *Edward Tufte*
+> Graphical excellence is the **well-designed presentation of interesting data** -- a matter of substance, of statistics, and of design. Graphical excellence consists of complex ideas communicated with **clarity**, **precision**, and **efficiency**. 
+
+-- *Edward Tufte*
 
 ## Graphical Excellence
 
-```{r, echo = FALSE, out.width = 500, out.height = 500}
+```{r, echo = FALSE, out.width = 700, out.height = 500}
 knitr::include_graphics("https://www.edwardtufte.com/bboard/images/0003Cs-8047.GIF")
 ```
-
-
 
 ## The Grammar of Graphics
 
@@ -230,25 +250,24 @@ knitr::include_graphics("http://www.hoteliermiddleeast.com/pictures/640x422/past
 - Implemented in code by Hadley Wickham, now part of the `tidyverse`
 
 <div class="columns-2">
-```{r, out.height = 400, fig.retina = NULL, echo = FALSE}
+```{r, out.height = 350, fig.retina = NULL, echo = FALSE}
 knitr::include_graphics("http://ecx.images-amazon.com/images/I/41ZIHtc9TJL._SX327_BO1,204,203,200_.jpg")
 ```
 
-```{r, out.height = 400, fig.retina = NULL, echo = FALSE}
+```{r, out.height = 350, fig.retina = NULL, echo = FALSE}
 knitr::include_graphics("http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama2.png")
 ```
 </div>
 
 ## Ingredients of a data visualization 
 
-- **`Data`**:  almost always a `data_frame` 
-- **`Aes`**thetic mapping: relation of data to chart components.
-- **`Geom`**etry: specific visualization type? E.g. line, bar, heatmap?
-- **`Stat`**istical transformation: how should the data be transformed or aggregated before visualizing?
-- **`Theme`**: how should the non-data parts of the plot look?
-- Misc. other options. 
-
-`+` plays the same role in `ggplot2` that `%>%` does in data manipulation.
+> - **`Data`**:  almost always a `data_frame` 
+> - **`Aes`**thetic mapping: relation of data to chart components.
+> - **`Geom`**etry: specific visualization type? E.g. line, bar, heatmap?
+> - **`Stat`**istical transformation: how should the data be transformed or aggregated before visualizing?
+> - **`Theme`**: how should the non-data parts of the plot look?
+> - Misc. other options. 
+> - (`+` plays the same role in `ggplot2` that `%>%` does in data manipulation.)
 
 ## First Plot {.smaller}
 
@@ -507,12 +526,12 @@ listings %>%
 2. Click the `knit` button at the top of RStudio and observe the result. If you see a dashboard, then are good to go. 
 3. Modify the dashboard: 
 	- Include your names in the `author` metadata up top
-	- Write code for data preparation and visualizations as appropriate. You should aim to include a main visualization and a supporting one. 
+	- Write code for data preparation and visualizations. 
 	- Include all your code in the `R` "code chunks" that begin with ````{r}`
 	- Add commentary in the indicated area
-	- `knit` your dashboard again. Save the `.Rmd` file. We're coming back to it! 
-4. **FILL OUT FEEDBACK SURVEY** (link in email)
-5. **Resources:** `R` graphics [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), [`R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/)
+	- `knit` your dashboard again. Save the `.Rmd` file. We're coming back to it this afternoon! 
+4. **FILL OUT [FEEDBACK SURVEY](https://goo.gl/forms/baorEGdwwzhqUjY03)**
+5. **Resources:** Data wrangling [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf), `R` graphics [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), [`R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/)
 	
 # Additional Resources
 
