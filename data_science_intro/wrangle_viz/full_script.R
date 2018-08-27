@@ -215,7 +215,6 @@ current_table <- calendar %>%
 	group_by(listing_id) %>% 
 	summarise(last_active = max(date))
 
-
 # Now we're ready to relate this table to listings. The left_join() function lets us specify which column(s) in listings correspond to which column(s) in current_table
 
 recent_listings <- listings %>% 
