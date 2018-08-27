@@ -16,12 +16,10 @@ title: Preassignment
 
 In the RStudio console, type 
 ```
-install.packages(c('tidyverse', 'knitr', 'flexdashboard', 'glmnet', 'ROCR', 'nycflights13',
-'caToools', 'modelr', 'quantreg'))
+install.packages(c('tidyverse', 'knitr', 'flexdashboard', 'glmnet', 'ROCR', 'nycflights13', 'caToools', 'quantreg'))
 ```
 
 If you encounter any error messages that you are unable to handle, please email Phil at `pchodrow@mit.edu`. 
-
 ## 3. Test Packages
 
 ### Test for Wrangling and Visualization 

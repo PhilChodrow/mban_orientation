@@ -8,6 +8,22 @@ output:
     theme: united
 ---
 
+```{r}
+# INSTRUCTIONS
+# 1. Click the `knit` button at the top of RStudio and observe the result. If you see a dashboard, then are good to go. 
+# 2. Now, Modify the dashboard: 
+	# - Include your names in the `author` metadata up top
+	# - Write code for data preparation and visualizations as appropriate. You should aim to include a main visualization and a supporting one. 
+	# - Include all your code in the `R` "code chunks" that begin with ````{r}`
+	# - Add commentary in the indicated area
+# 4. `knit` your final dashboard one last time and place it in the shared Dropbox folder (link in email)
+# 5. **FILL OUT FEEDBACK SURVEY** by copying and pasting the link below:  
+# 
+# https://docs.google.com/forms/d/e/1FAIpQLSd3ujfFoGk0WmeUtHHy8JSDtmHFoHHDdeVPn5yKKVDHWY6flA/viewform
+```
+
+
+
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(tidyverse)
@@ -43,6 +59,8 @@ summary_table <- recent_listings %>%
 			  capacity = sum(beds)) %>% 
 	ungroup()
 ```
+
+# Descriptive Analysis
 
 Column {data-width=650}
 -----------------------------------------------------------------------
@@ -92,3 +110,19 @@ summary_table %>%
 	ylab('Number of Listings')
 ```
 
+
+# Modeling
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Box 1
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Box 2
+
+### Box 3
