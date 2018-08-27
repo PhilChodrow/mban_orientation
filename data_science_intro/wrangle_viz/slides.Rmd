@@ -1,7 +1,7 @@
 ---
 title: "Exploratory Data Analysis in R"
 subtitle: "Data Wrangling and Visualization"
-author: "Phil Chodrow, MIT ORC and LIDS"
+author: "Phil Chodrow, MIT"
 date: "Tuesday, August 28th, 2018"
 output: 
   ioslides_presentation:
@@ -12,6 +12,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "350px", fig.align="center", cache = TRUE)
 library(tidyverse)
+library(knitr)
 ```
 
 # Introduction
@@ -32,7 +33,7 @@ knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.
 
 ## ...getting to know your Data
 
-```{r, out.height = 700, out.width = 500, echo = FALSE, fig.align='center'}
+```{r, out.height = 650, out.width = 500, echo = FALSE, fig.align='center'}
 knitr::include_graphics('https://vignette.wikia.nocookie.net/memoryalpha/images/4/4f/Data%2C_2366.jpg/revision/latest?cb=20130529102644&path-prefix=en')
 ```
 
@@ -83,13 +84,7 @@ knitr::include_graphics('https://memegenerator.net/img/instances/73015626/forget
 1. Data Import and Inspection
 2. Data Subsetting
 3. The Pipe
-
-# Case Study, Part 1
-
-1. Load libraries
-2. Import and inspect the data
-3. The Nicest Places in JP
-4. The Biggest Places in Back Bay
+4. Exercises
 
 
 ```{r, message=FALSE, warning=FALSE, echo = FALSE}
@@ -152,6 +147,31 @@ Let's try this out -- back to the case study!
 knitr::include_graphics("http://writingcenter.unc.edu/files/2012/07/chart-figure-3.png")
 ```
 
+## Basic Data Summaries
+
+Go from this:
+
+```{r, echo = FALSE}
+listings %>% 
+	select(id, neighbourhood_cleansed, review_scores_rating) %>% 
+	head() %>% 
+	kable() 
+```
+
+## Basic Data Summaries
+
+...to this: 
+
+```{r, echo = FALSE}
+listings %>% 
+	select(id, neighbourhood_cleansed, review_scores_rating) %>% 
+	group_by(neighbourhood_cleansed) %>% 
+	summarise(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = T)) %>% 
+	arrange(desc(mean_rating)) %>% 
+	head() %>% 
+	kable() 
+```
 
 ## Summaries the Tidy Way
 
@@ -160,6 +180,7 @@ knitr::include_graphics("http://writingcenter.unc.edu/files/2012/07/chart-figure
 > - `data %>% summarise(measure = formula(col1, col2))` computes summaries.
 > - `data %>% group_by(col) %>% summarise(measure = formula(col1, col2))` computes breakout summaries. 
 > - Let's test these out in the case study. 
+
 
 # Keeping Current
 
@@ -199,13 +220,20 @@ The `join` family of functions lets us add columns from one table to another usi
 - `x %>% outer_join(y)` : keeps all rows of both `x` and `y`
 - `x %>% full_join(y)` : keeps only rows of `x` that match in `y` and vice versa. 
 
-We'll use `left_join` for this case. On to the exercise!
+We'll use `left_join` for this case -- let's try it in the case study. 
+
 
 # Getting Visual
 
 1. Graphical Excellence
 2. The Grammar of Graphics
 3. `ggplot2`
+
+## My Third Favorite Picture:
+
+```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
+```
 
 ## Graphical Excellence
 
@@ -498,19 +526,6 @@ listings %>%
 	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
 ```
 
-## Optional: Score Types {.smaller}
-
-```{r, warning = FALSE,  out.width = 500, out.height=300}
-listings %>% 
-	select(number_of_reviews, contains("review_scores"), - review_scores_rating) %>% 
-	###<b> 
-	gather(key = type, value = score, -number_of_reviews) %>% 
-	###</b> 
-	ggplot() + 
-	aes(x = factor(score), y = number_of_reviews) + 
-	geom_boxplot() + 
-	facet_wrap(~type)
-```
 
 # Mini-Project
 
@@ -530,7 +545,7 @@ listings %>%
 	- Include all your code in the `R` "code chunks" that begin with ````{r}`
 	- Add commentary in the indicated area
 	- `knit` your dashboard again. Save the `.Rmd` file. We're coming back to it this afternoon! 
-4. **FILL OUT [FEEDBACK SURVEY](https://goo.gl/forms/baorEGdwwzhqUjY03)**
+4. **FILL OUT [FEEDBACK SURVEY](https://goo.gl/forms/7rqAPMn37DzRqWko2)**
 5. **Resources:** Data wrangling [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf), `R` graphics [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), [`R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/)
 	
 # Additional Resources

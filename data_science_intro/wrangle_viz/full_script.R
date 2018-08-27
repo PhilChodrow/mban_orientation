@@ -308,27 +308,3 @@ summary_table %>%
 	aes(x = reorder(neighbourhood, n), y=n) + 
 	coord_flip() + 
 	geom_bar(stat = 'identity')
-
-# Comparisons: Fill, Color, and Facets
-
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
-	geom_point(alpha = .5) + 
-	theme_bw() + 
-	facet_wrap(~property_type) + 
-	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
-
-# Optional: breakout by score types
-
-listings %>%
-	select(number_of_reviews, contains("review_scores"), - review_scores_rating) %>% 
-	###<b> 
-	gather(key = type, value = score, -number_of_reviews) %>% 
-	###</b> 
-	ggplot() + 
-	aes(x = factor(score), y = number_of_reviews) + 
-	geom_boxplot() + 
-	facet_wrap(~type)
-

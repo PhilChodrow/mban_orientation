@@ -18,7 +18,7 @@ output:
 	# - Add commentary in the indicated area
 # 4. `knit` your final dashboard one last time and place it in the shared Dropbox folder (link in email)
 # 5. **FILL OUT FEEDBACK SURVEY** by copying and pasting the link below into your browser:  
-# https://goo.gl/forms/baorEGdwwzhqUjY03
+# https://goo.gl/forms/7rqAPMn37DzRqWko2
 # 6. Break for lunch! 
 ```
 
