@@ -405,6 +405,10 @@ the remaining training data and use the current fold as a
 validation set. We then average the performance of each model
 on each fold and pick the best one.	
 
+```{r, out.height = 300, fig.retina = NULL, echo = FALSE, }
+knitr::include_graphics("figures/crossValidation.png")
+```
+
 This is a very common *resampling* method that applies in lots and
 lots of settings. Lucky for us the glmnet package has a very handy
 function called `cv.glmnet()` which does the entire process
@@ -499,7 +503,14 @@ alpha on the model we built for LASSO using `cv.glmnet()`
 (which does not cross-validate for alpha automatically).
 How do the new models do on out-of-sample R^2?
 
-# Predicting AirBnB elevator access
+# Predicting AirBnB Elevator Access
+
+So far, we have looked at models for predicting price, which is
+a continuous variable.  For this type of task, we use *regression* methods.
+However, if we want to predict a variable which is categorical,
+we must use *classification* methods.  Let's take a look at using
+one such method, **Logistic Regression**, to predict the binary variable
+whether or not the AirBnB includes an elevator.  
 
 ## 1. Logistic Regression
 Logistic regression is part of the class of generalized linear
