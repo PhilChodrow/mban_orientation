@@ -256,7 +256,7 @@ knitr::include_graphics("https://www.edwardtufte.com/bboard/images/0003Cs-8047.G
 
 ## The Grammar of Graphics
 
-A **grammar** is a set of components (ingredients) that you can combine to create new things. Many grammars have **required components**: if you're missing one, you're doing it wrong. In baking....
+A **grammar** is a set of components (ingredients) that you can combine to create complex structures (sentences, recipes, data visualizations). In baking....
 
 <div class="columns-2">
 

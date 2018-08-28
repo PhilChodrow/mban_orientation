@@ -19,27 +19,20 @@ knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", f
 > 2. What are the stages of the data scientific method? 
 > 3. How can we perform those stages using the `R` statistical programming language?
 
-## "Big Data" $\neq$ Data Science
+##  "Big Data" $\neq$ Data Science
 
 > *The key word in "Data Science" is not "Data", it is "Science"* 
+
 - [Jeff Leek, Simply Statistics](https://simplystatistics.org/2013/12/12/the-key-word-in-data-science-is-not-data-it-is-science/)
 
 > *The combination of some data and an aching desire for an answer does not ensure that a reasonable answer can be extracted from a given body of data.*
+
 - John Tukey
 
-*Data science* is the science of answering **interesting or impactful questions** using **suitable data** for those questions. 
+## Data Science
 
-
-## What Skills Do We Need?
-
-```{r, fig.align="center", out.width = "400px", out.height = "400px"}
-knitr::include_graphics('https://static1.squarespace.com/static/5150aec6e4b0e340ec52710a/t/51525c33e4b0b3e0d10f77ab/1364352052403/Data_Science_VD.png?format=1500w')
-```
-
-*Image credit: [Drew Conway Data Consulting](http://drewconway.com/zia/2013/3/26/the-data-science-venn-diagram)*
-
-
-## The **data-scientific method** is the method by which we deploy these skills to conduct data science. 
+> - Data science is the practice of **asking impactful questions** of a data set,  **choosing appropriate methods** by which to answer those questions, and **implementing** those methods in practical fashion. 
+> - Ok....but how do we operationalize this? 
 
 ## My Favorite Picture
 
@@ -85,7 +78,7 @@ knitr::include_graphics('figs/spongebob_sad.png')
 
 <div class="columns-2">
 
-```{r, out.height = "440px", out.width = "350px"}
+```{r, out.height = "440px", out.width = "375px"}
 knitr::include_graphics('http://www.excel-easy.com/data-analysis/images/tables/excel-table.png')
 ```
 
@@ -98,8 +91,7 @@ knitr::include_graphics('http://www.excel-easy.com/data-analysis/images/tables/e
 	- Can't version control
 	- Difficult to inspect code
 - **Scalability:** Can you do it quickly on large data sets? 
-	- Excel can handle ~1M rows
-
+	- Excel can handle ~1M rows at best
 </div>
 
 
@@ -107,7 +99,7 @@ knitr::include_graphics('http://www.excel-easy.com/data-analysis/images/tables/e
 
 <div class="columns-2">
 
-```{r, out.height = "500px", out.width = "350px"}
+```{r, out.height = "500px", out.width = "375px"}
 knitr::include_graphics('http://rmarkdown.rstudio.com/images/notebook-demo.png')
 ```
 
@@ -120,7 +112,7 @@ knitr::include_graphics('http://rmarkdown.rstudio.com/images/notebook-demo.png')
 	- Can version-control with `git`
 	- Easy to inspect code
 - **Scalability:** Can you do it quickly on large data sets? 
-	- `R` and `python` can work with ~10M rows easily, lots of solutions for larger data sets
+	- `R` and `python` can work with ~10M rows easily on a laptop. 
 
 </div>
 
@@ -130,10 +122,10 @@ knitr::include_graphics('http://rmarkdown.rstudio.com/images/notebook-demo.png')
 # knitr::include_graphics('https://www.activestate.com/sites/default/files/styles/blog_image/public/r-vs-python-blog.jpg?itok=SHOP2mku')
 ```
 
-- `R` is **the best** language in the world for **learning** data science.
-- `R` is **one of the best** languages in the world for **doing** data science. 
-- `R` tends to be preferred in academia and among "statisticians," while `python` is more popular among "computer scientists" and "data scientists"
-- Most practicing data scientists know and use both. 
+> - `R` is **the best** language in the world for **learning** data science.
+> - `R` is **one of the best** languages in the world for **doing** data science. 
+> - `R` tends to be preferred in academia and among "statisticians," while `python` is more popular among "computer scientists" and "data scientists"
+> - Most practicing data scientists know and use both. 
 
 ## Some Cool `R` Tricks
 
@@ -148,13 +140,13 @@ knitr::include_graphics('http://rmarkdown.rstudio.com/images/notebook-demo.png')
 > - But...
 > - You will know the **basic concepts** and **vocabulary** of data science -- enough to employ the most important skill of all. 
 
-## The most important skill...
+## The most important skill of all...
 
 ```{r, out.width = 750, out.height = 450}
 knitr::include_graphics('http://www.logika.io/wp-content/uploads/2016/01/Data-Science-Education-at-Monash-Monash-University.jpg')
 ```
 
-## The most important skill:
+## The most important skill of all:
 
 <!-- <div class="columns-2"> -->
 ```{r, out.height = 500, out.width = 650}
@@ -171,7 +163,7 @@ knitr::include_graphics('http://searchengineland.com/figz/wp-content/seloads/201
 
 ## Today's Gameplan
 
-1. **Data Wrangling and Visualization in `R`** (2.5 hrs)
+1. **Data Wrangling and Visualization in `R`** (2 hrs)
 2. **Mini-Project, Part 1** (1 hr)
 3. **Lunch** (1 hr)
 4. **Statistical Modeling and Analysis in** `R`
