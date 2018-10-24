@@ -5,7 +5,7 @@ You can [download](https://github.com/PhilChodrow/mban_orientation/archive/maste
 ## Set-up Instructions
 The instructions for Thursday's class are as follows:
 * Please navigate to https://www.anaconda.com/download/ and download Python 2.7 version of Anaconda. 
-* After installation, open Anaconda and launch Jupyter notebook 5.0.0.
+* After installation, open Anaconda and launch a Jupyter notebook.
 * Either a browser should open automatically, or a terminal will open. Follow the instructions on the terminal. 
 * Once you see a Jupyter screen in your browser, click New -> Python 2 to open a new Python notebook.
 * Install the 'pyomo' package by running the code `!pip install pyomo --user` in a cell.
@@ -13,4 +13,4 @@ The instructions for Thursday's class are as follows:
 
 Thanks!
 
-Brad, Jack and Daisy
+Chris, Omar, and Colin
