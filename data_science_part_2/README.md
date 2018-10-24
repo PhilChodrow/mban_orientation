@@ -20,9 +20,9 @@ installed on your computer.  If not, then you can install them from the followin
  - https://cran.cnr.berkeley.edu/ (R)
  - https://www.rstudio.com/products/rstudio/download/ (RStudio)
 
- 
 
-2.  The preassignment for this session is to run the script **preassignment.R**. Please open the file, install the R packages there which are not already installed on your computer, and double-check that you obtain the same output as in *bag-of-words.png*.
+
+2.  The preassignment for this session is to run the script [preassignment.R](https://github.com/PhilChodrow/mban_orientation/blob/master/data_science_part_2/preassignment.R). Please open the file, install the R packages there which are not already installed on your computer, and double-check that you obtain the same output as in [bag-of-words.png](https://github.com/PhilChodrow/mban_orientation/blob/master/data_science_part_2/bag-of-words.png).
 
 If you have any questions loading the required software, feel free to contact Colin (cpawlows@mit.edu).
 
