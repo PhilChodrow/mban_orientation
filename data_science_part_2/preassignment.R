@@ -11,6 +11,9 @@ install.packages("xgboost")
 install.packages("sp")
 install.packages("maps")
 install.packages("devtools")
+install.packages("RgoogleMaps")
+install.packages("png")
+install.packages("jpeg")
 devtools::install_github("dkahle/ggmap") # Select 21 if prompted
 install.packages("RColorBrewer")
 
