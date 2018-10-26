@@ -1,0 +1,157 @@
+---
+title: "Data Types"
+author: "Colin Pawlowski"
+date: "October 26, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+In this document, we go over some basic commands in the R programming language. 
+In addition, we highlight some key differences with Python and Julia as (***).  
+
+## Basic Syntax
+```{r Simple commands}
+# We use "<-" instead of "=" for assignment (***)
+x <- 1
+print(x)
+```
+
+```{r Arithmetic operations}
+# These are mostly the same, except
+# unlike Python, division returns decimals.
+x <- 2
+y <- 5
+print(x + y)
+print(x - y)
+print(x * y)
+print(x / y)
+print(2 ** 5)
+```
+
+## Data Types
+```{r Data Types}
+# We can get the type of a variable in R 
+# using the typeof() command. Here are some
+# of the primitive data types in R.
+# Note that integers and decimals are both type "double".
+typeof(12)
+typeof(3.14)
+typeof("abc")
+typeof(FALSE)
+```
+```{r Checking Data Types}
+# To check if a variable is a certain data type,
+# we can use the following commands:
+is.numeric(12)
+is.numeric(3.14)
+is.character("abc")
+is.logical(FALSE)
+```
+
+## Vectors
+```{r Vectors}
+# To make a vector, we use the c() command.
+# When multiple data types are combined, they will be
+# converted to the same data type.
+x <- c(1, 2, 3)
+y <- c(3.14, 5, 6.9)
+z <- c("a", "b", "c")
+w <- c("a", 4, 9.8)
+print(x)
+print(y)
+print(z)
+print(w)
+```
+
+```{r Vector initialization}
+# Here are some common methods that we use to
+# initialize vectors:
+x <- c(1:10)
+y <- rep("a", 10)
+print(x)
+print(y)
+```
+
+```{r Combining and Extending Vectors}
+# We can combine and extend vectors using c() as well.
+# This will just create one long vector,
+# not a nested list of vectors.
+print(c(x, 7))
+print(c(x, 7, 8))
+print(c(x, y))
+```
+
+```{r Vector indices}
+# In R, vector indices start at 1, not 0.  (***)
+# We can get multiple elements by taking slices
+# of the vector.  We can also get the length and
+# the unique elements in the vector.
+x <- c(1:10)
+print(x[1])
+print(x[5:8])
+length(x)
+unique(x)
+```
+
+```{r Vector operations}
+# When we do operations with numeric vectors,
+# we get the expected output. 
+x <- c(1, 2, 3)
+y <- c(4, 5, 6)
+100 * x
+x / 100
+x + y
+x - y
+x < 2.5
+sum(x)
+max(x)
+mean(x)
+```
+
+```{r Everything is a vector}
+# Everything in R is a vector, even primitive data types.
+# These are just vectors of length 1.  This may lead to some
+# funny behavior.
+x <- 12
+y <- "abc"
+print(x[1])
+print(y[1])
+```
+
+## Lists
+```{r Lists}
+# Beyond vectors, we have lists.  These can contain any objects
+# as its elements, even vectors or other lists.  
+# We can have named lists and unnamed lists.
+# These are similar to dictionaries in Python.
+x <- list(c(1, 2, 3), c(4, 5, 6))
+y <- list(Bugs = "Bunny", Daffy = "Duck")
+print(x)
+print(y)
+```
+
+```{r List indexing}
+# To extract a single element from a list, we use the [[]] or $ notation.
+# To extract multiple items from the list, we use the [] notation.
+# We can refer to list items either by their index or by their names.
+print(y$Bugs)
+print(y[[1]])
+print(y[["Bugs"]])
+print(y[1])
+print(y[1:2])
+```
+
+For more material on Data Types, see Hadley Wickham's online textbook "Advanced R":
+<http://adv-r.had.co.nz/>
+
+## Exercise
+```{r Exercise}
+# Create a list where the first element is a vector of the even numbers 2-100,
+# and the second element is a vector of the odd numbers 1-99.
+
+```
