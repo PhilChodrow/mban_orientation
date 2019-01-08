@@ -69,6 +69,7 @@ X_test = sweep(X_test, 2, sigma_vect, "/", check.margin = F)
 # example of how to use it and then we will run some exercises so you have
 # a chance to practice with the API as well as gaining some intution about 
 # neural networks
+model = keras_model_sequential()
 
 # The first component of the Keras API is defining a model. This can be done
 # by typing
@@ -85,8 +86,7 @@ summary(model)
 # to know how the model should be optimized
 model %>% compile(
   loss = 'mse',
-  optimizer = optimizer_sgd(),
-  metrics = c("accuracy")
+  optimizer = optimizer_sgd()
 )
 
 # Finally we need to tell the API how we want to train the model. This can 
@@ -97,6 +97,8 @@ model %>% fit(
   validation_split = 0.25,
   batch_size = 128
 )
+
+model %>% evaluate(X_test, y_test)
 
 # And that's all there is to defining and training a neural network in Keras.
 # Now let's do some exercises that give you a chance to work with the API
@@ -128,3 +130,20 @@ model %>% fit(
 
 # HINT: To plot the loss profile, you can save the training history from the
 # fit command to a variable
+
+#### Adding More Units ####
+
+## Exercise 3 ##
+
+#Another hyper-parameter that can be changed is the number of nodes or units 
+#to have for a particular layer of a neural network. For this exercise, using 
+#the single-layer architecture, fit a layer with 512 nodes. Evaluate this 
+#model both in and out-of-sample
+
+#### Dropout ####
+
+## Exercise 4 ##
+
+# Using your knowledge of the Keras API as well as the architecture for the 
+# model that we created for Exercise 3, add a layer_dropout with a rate of 0.7
+# to the model to regularize it

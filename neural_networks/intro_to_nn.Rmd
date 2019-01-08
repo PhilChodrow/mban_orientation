@@ -258,4 +258,66 @@ paste("Two layer loss:", res$metrics$val_loss[50])
 
 As you can see, adding additional layers can lead to performance improvements in your model, but it comes with the cost of additional computational time. For this dataset, that penalty is negligible, but for other datasets you might see, the difference can be non-trivial. 
 
+# Number of Nodes
+Another hyper-parameter that can be changed is the number of nodes or units to have for a particular layer of a neural network. For this exercise, using the single-layer architecture, fit a layer with $512$ nodes. Evaluate this model both in and out-of-sample
+
+```{r}
+# Model with 1024 units
+model = keras_model_sequential() %>% 
+  layer_dense(units = 512, activation = "relu",
+              input_shape = dim(X_train)[2]) %>% 
+  layer_dense(units = 1)
+
+model %>% compile(
+  loss = 'mse',
+  optimizer = optimizer_sgd()
+)
+
+res = model %>% fit(
+  x = X_train, y = y_train, epochs = 50, verbose = 0, validation_split = 0.25,
+  batch_size = 128
+)
+```
+
+```{r}
+model %>% evaluate(X_train, y_train)
+
+model %>% evaluate(X_test, y_test)
+```
+
+That's a very large gap. This is a sign that we are *over-fitting* the data. How can we control this?
+
+# Dropout
+Typically when working with models that have a large number of parameters, one way to ensure that the model does not over-fit to the data is by adding regularization. In the context of linear regression, this involves adding either an $L_1$ or $L_2$ penalty to the model to prevent the model from adding too many coefficients. 
+
+While this can be done with neural networks, a simpler approach is to use a technique known as drop-out. Basically what this does is randomly select units from the previous layer to remove. In the original paper they demonstrated that by using this technique, you can have significant improvements out-of-sample. 
+
+For our next exercise, let's try adding drop-out to the model we just created to see if we decrease the gap from the training to the test set.
+
+```{r}
+model = keras_model_sequential() %>% 
+  layer_dense(units = 512, activation = "relu",
+              input_shape = dim(X_train)[2]) %>% 
+  layer_dropout(rate = 0.7) %>% 
+  layer_dense(units = 1)
+
+model %>% compile(
+  loss = 'mse',
+  optimizer = optimizer_sgd()
+)
+
+res = model %>% fit(
+  x = X_train, y = y_train, epochs = 50, verbose = 0, validation_split = 0.25,
+  batch_size = 128
+)
+```
+
+```{r}
+model %>% evaluate(X_train, y_train) 
+
+model %>% evaluate(X_test, y_test)
+```
+
+There is still a large gap between the training and testing performance, but as a consequence of employing dropout, we were able to help a bit. Thus when employing models, especially more complex ones, it's almost always a good idea to add some sort of regularization to them.
+
 In this portion of the lecture we have introduced the Keras API, introduced some key concepts for neural networks, and seen the effects of two key hyper-parameters: the learning rate and the number of layers. Now we're going to switch gears to another data set and also introduce some more advanced neural network concepts. 

@@ -227,4 +227,85 @@ model3 %>% evaluate(X_test, y_test)
 
 It seems that the optimization algorithm can make a big difference in terms of performance. Typically RMSProp or Adam are good choices, but like almost everything with machine learning and especially with neural networks, try everything out and see what works best. 
 
+# Vector Representation
+
+In our previous model, we just arbitrarily chose the words to be represented
+by 32-dimensional vectors; let's see how sensitive our model is to that
+choice; using either a 4, 128, or 256 dimensional vector with the Adam 
+optimizer, determine how sensitive the model is to this hyper-parameter
+
+```{r}
+
+# Model with 4 dimensional vector
+model1 <- keras_model_sequential() %>% 
+  layer_embedding(input_dim = 5000, output_dim = 4,
+                  input_length = 500) %>% 
+  layer_global_average_pooling_1d() %>% 
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dense(units = 1, activation = "sigmoid")
+
+model1 %>% compile(
+  loss = 'binary_crossentropy',
+  optimizer = optimizer_adam(),
+  metrics = c('accuracy')
+)
+
+res1 = model1 %>% fit(
+  x = X_train, y = y_train,
+  epochs = 5, batch_size = 128, 
+  validation_split = 0.25, 
+  verbose = 0
+)
+
+# Model with 128-dimensional vector
+model2 <- keras_model_sequential() %>% 
+  layer_embedding(input_dim = 5000, output_dim = 128,
+                  input_length = 500) %>% 
+  layer_global_average_pooling_1d() %>% 
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dense(units = 1, activation = "sigmoid")
+
+model2 %>% compile(
+  loss = 'binary_crossentropy',
+  optimizer = optimizer_adam(),
+  metrics = c('accuracy')
+)
+
+res2 = model2 %>% fit(
+  x = X_train, y = y_train,
+  epochs = 5, batch_size = 128, 
+  validation_split = 0.25, 
+  verbose = 1
+)
+
+# Model with 256-dimesional vector
+model3 = keras_model_sequential() %>% 
+  layer_embedding(input_dim = 5000, output_dim = 256,
+                  input_length = 500) %>% 
+  layer_global_average_pooling_1d() %>% 
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dense(units = 1, activation = "sigmoid")
+
+model3 %>% compile(
+  loss = 'binary_crossentropy',
+  optimizer = optimizer_adam(),
+  metrics = c('accuracy')
+)
+
+res3 = model3 %>% fit(
+  x = X_train, y = y_train,
+  epochs = 5, batch_size = 128, 
+  validation_split = 0.25, 
+  verbose = 1
+)
+```
+
+Evaluate their performance out of sample
+
+```{r}
+model1 %>% evaluate(X_test, y_test)
+model2 %>% evaluate(X_test, y_test)
+model3 %>% evaluate(X_test, y_test)
+```
+
 I've now taught you everything you need to start using these techniques in practice. I would now like to switch gears to our Kaggle competition so that you have a chance to apply the techniques to a real dataset and compete against your classmates. 

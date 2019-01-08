@@ -95,25 +95,14 @@ X_train[1, ]
 # Embedding layer with 32 dimensional word vectors
 # Default layer_global_average_pooling_1d()
 # One dense layer with 64 units
+# Standard SGD optimizer
+# Binary cross-entropy loss function
+# Train for five epochs
+
+# When this is done, evaluate the model out-of-sample
 
 # HINT: when you have a binary output, the final activation function is "sigmoid"
 # and only has one unit
-
-# Now that we have defined the model, let's compile and fit it
-model %>% compile(
-  loss = 'binary_crossentropy',
-  optimizer = optimizer_sgd(),
-  metrics = c('accuracy')
-)
-
-res = model %>% fit(
-  x = X_train, y = y_train,
-  epochs = 5, batch_size = 128, 
-  validation_split = 0.25
-)
-
-# Evaluate the performance of the model
-model %>% evaluate(X_test, y_test)
 
 #### Optimizers ####
 
@@ -123,3 +112,13 @@ model %>% evaluate(X_test, y_test)
 # train an embedding model that has the same specifications as before; plot
 # the history and report the final test error. Remember to type out the
 # neural network and do not just copy-paste
+
+#### Vector Representation ####
+
+## Exercise 5 ##
+
+# In our previous model, we just arbitrarily chose the words to be represented
+# by 32-dimensional vectors; let's see how sensitive our model is to that
+# choice; using the values assigned to your groups and using the Adam
+# optimizer, train a sentiment analysis model
+
