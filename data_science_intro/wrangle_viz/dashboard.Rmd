@@ -44,6 +44,8 @@ summary_table <- recent_listings %>%
 	ungroup()
 ```
 
+# Tab 1
+
 Column {data-width=650}
 -----------------------------------------------------------------------
 
@@ -91,4 +93,7 @@ summary_table %>%
 	xlab('Neighborhood') + 
 	ylab('Number of Listings')
 ```
+
+# Tab 2
+
 

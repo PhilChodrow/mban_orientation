@@ -42,12 +42,32 @@ source('load_data.R')
 # 	- You can use the head(nrows) function to extract a data frame with just the
 # 	  first nrows of data. 
 
+prices %>% 
+	head(2000) %>% 
+	ggplot() + 
+	aes(x = date,
+		y = price_per,
+		group = listing_id,
+		color = listing_id) %>% 
+	geom_line() +
+	facet_wrap(~listing_id)
+	
+
+
+
 
 # REVIEW EXERCISE: It might be easier to get a big-picture view by plotting the average
 # over time. Working with the person next to you, construct a visualization of 
-# the mean over time. 
+# the mean price_per over time. 
 # 	- Use group_by(date) %>% summarise() to create a data frame holding the mean
 # 	- You probably want geom_line() again
+
+prices %>% 
+	group_by(date) %>% 
+	summarise(mean_pp = mean(price_per, na.rm = T)) %>% 
+	ggplot() + 
+	aes(x = date, y = mean_pp) + 
+	geom_line()
 
 
 # Three interesting things are happening here...
@@ -58,15 +78,27 @@ source('load_data.R')
 # models) to data. Now we want to fit a LOESS model to EACH listing id. Start by
 # creating prices_nested, where the nesting variable is the listing_id: 
 
+prices_nested <- prices %>% 
+	nest(-listing_id)
 
+prices_nested$data[1]
 
 # Now we define our LOESS modeling function. Remember, its first argument must
 # be a data frame. 
 
-
+my_loess <- function(data, span){
+	loess(price_per ~ as.numeric(date),
+		  data = data,
+		  span = span)
+}
 
 # Our next step is to use purrr::map to model each of the data frames in the 
 # data column of prices_nested. 
+
+prices_with_models <- prices_nested %>% 
+	mutate(model = map(data, my_loess, span = 0.25))
+
+prices_with_models$model[[1]] %>% summary()
 
 
 
@@ -78,14 +110,18 @@ source('load_data.R')
 # like map, but it iterates over two lists simultaneously. We do this because
 # the augment function requires both the model and the original data 
 
+prices_with_preds <- prices_with_models %>% 
+	mutate(preds = map2(model, data, augment))
+
 
 
 # Hey look, another list column of data frames! You may want to inspect this 
 # column too, for example: 
-# 	prices_with_preds$preds[[1]] %>% head()
+	prices_with_preds$preds[[1]] %>% head()
 # Now we're ready to get out of bizarro land. 
 
-
+prices_modeled <- prices_with_preds %>% 
+	unnest(preds)
 
 # The first three columns are exactly where we started, but the last three are 
 # new: they give the model predictions (and prediction uncertainty) that we've
@@ -99,9 +135,35 @@ source('load_data.R')
 # and you should consider using facet_wrap to show each listing and its model
 # in a separate plot. 
 
+prices_modeled %>% 
+	head(2000) %>% 
+	ggplot(aes(x = date)) + 
+	geom_line(aes(y = price_per)) + 
+	geom_line(aes(y = .fitted), color = 'firebrick') + 
+	facet_wrap(~listing_id, ncol = 1, scales = 'free_y') 
+	
+
+# Some Equivalent Versions ------------------------------------------------
+
+prices_modeled <- prices %>% 
+	nest(-listing_id) %>% 
+	mutate(model = map(data, ~loess(price_per ~ as.numeric(date), data = ., span = .25)),
+		   preds = map2(model, data, augment)) %>% 
+	unnest(preds)
+
+# with explicit anonymous function notation
+
+prices_modeled <- prices %>% 
+	nest(-listing_id) %>% 
+	mutate(model = map(data, function(x) loess(price_per ~ as.numeric(date), data = x, span = .25)),
+		   preds = map2(model, data, augment)) %>% 
+	unnest(preds)
+
+
 
 
 # Isolating the Signal ----------------------------------------------------
+
 
 # Our next step is to begin isolating the April signal. We can think of the 
 # LOESS models we've fit as expressing the signal of long-term, seasonal 
@@ -111,25 +173,60 @@ source('load_data.R')
 # Our strategy is simple: we'll compute the average residual associated with 
 # each weekday. This is easy with a little help from the lubridate package: 
 
+prices_modeled <- prices_modeled %>% 
+	mutate(weekday = wday(date, label = TRUE)) %>% 
+	group_by(listing_id, weekday) %>% 
+	mutate(periodic = mean(.resid)) %>% 
+	ungroup()
+
+prices_modeled %>% 
+	select(date, weekday)
 
 
 # Now we can construct a new column for the part of the signal that's not 
 # captured by either the long-term trend or the periodic oscillation:  
 
+prices_modeled <- prices_modeled %>% 
+	mutate(remainder = price_per - .fitted - periodic)
+
+prices_modeled$remainder
 
 
+# EXERCISE: Working with your partner, plot all four columns (price_per, .fitted, periodic, and remainder) as facets on the same visualization. Start by figuring out what the following code does: 
 
-# EXERCISE: Working with your partner, plot all four columns (price_per, trend, periodic, and remainder) as facets on the same visualization. Start by figuring out what the following code does: 
-
+prices_modeled %>% 
+	head(1500) %>% 
+	select(-.se.fit, -.resid, -weekday) %>% 
+	tidyr::gather(metric, value, -listing_id, -date)
 
 
 # Now build from there
+
+prices_modeled %>% 
+	head(1500) %>% 
+	select(-.se.fit, -.resid, -weekday) %>% 
+	tidyr::gather(metric, value, -listing_id, -date) %>% 
+	mutate(metric = factor(metric, c('price_per', '.fitted', 'periodic', 'remainder'))) %>% 
+	ggplot() + 
+	aes(x = date, 
+		y = value,
+		group = listing_id,
+		color = as.character(listing_id)) + 
+	geom_line() + 
+	facet_wrap(~metric, scales = 'free_y')
 
 
 
 # EXERCISE: Now we can also take a look at the overall trend in what part of the
 # signal we've failed to capture. Working with your partner, construct a simple 
 # visualization of the mean of the remainder column over time. What do you see?
+
+prices_modeled %>% 
+	group_by(date) %>% 
+	summarise(mean_remainder = mean(remainder, na.rm = T)) %>% 
+	ggplot() + 
+	aes(x = date, y = mean_remainder) + 
+	geom_line()
 
 
 
@@ -147,10 +244,20 @@ source('load_data.R')
 # interested in is in April, we'll focus only on the data in that month. We'll
 # also just pick the columns we'll need. 
 
+april_prices <- prices_modeled %>% 
+	filter(month(date, label = T) == 'Apr') %>% 
+	select(listing_id, date, remainder)
+
 
 
 # We also need to filter out anyone who has any data missing, including 
 # implicitly missing (row absent from the data frame). 
+
+april_prices <- april_prices %>% 
+	complete(listing_id, date) %>% 
+	group_by(listing_id) %>% 
+	filter(sum(is.na(remainder)) == 0) %>% 
+	ungroup()
 
 
 
@@ -160,6 +267,13 @@ source('load_data.R')
 # separate column for each date. Then, remove the listing_id column with 
 # select, and convert the result to a matrix with as.matrix()
 
+prices_to_cluster <- april_prices %>% 
+	spread(key = date, value = remainder)
+
+prices_matrix <- prices_to_cluster %>% 
+	select(-listing_id) %>% 
+	as.matrix()
+
 
 
 # Now we'll fit 10 models for each of k = 1...10, for a total of 100 models.
@@ -168,16 +282,29 @@ source('load_data.R')
 # cluster_models <- data_frame(k = rep(1:10, 10)) %>% 
 # 	mutate(kclust = map(k, ~ kmeans(prices_for_clustering, .)))
 
+set.seed(1234)
+my_kmeans <- function(k){
+	kmeans(prices_matrix, k)
+}
 
+cluster_models <- data_frame(k = rep(1:10, 10)) %>% 
+	mutate(kclust = map(k, my_kmeans))
+
+cluster_models <- data_frame(k = rep(1:10, 10)) %>% 
+	mutate(kclust = map(k, ~kmeans(prices_matrix, .)))
 
 # How do we know how many clusters to use? One way is to extract a summary of 
 # each model using broom::glance. 
 
-
+cluster_models$kclust[[3]] %>% glance()
 
 # EXERCISE: Extract the model summary using glance for each model, and then 
 # convert the result into a "well-behaved" data frame called cluster_performance 
 # with no nesting. 
+
+cluster_performance <- cluster_models %>% 
+	mutate(summary = map(kclust, glance)) %>% 
+	unnest(summary)
 
 
 
@@ -185,23 +312,56 @@ source('load_data.R')
 # results, with k on the x-axis and the mean tot.withinss on the y-axis. What
 # value of k should we use? 
 
+cluster_performance %>% 
+	group_by(k) %>% 
+	summarise(withinss = mean(tot.withinss)) %>% 
+	ggplot() + 
+	aes(x = k, y = withinss) + 
+	geom_point()
 
 
 # We really only need one cluster, so let's extract the first one with our 
 # chosen value of k. 
 
-
+chosen_model <- cluster_models$kclust[cluster_models$k==2][[1]]
 
 # Let's inspect the clustered series. To do this, we need to add the 
 # predictions to prices_for_clustering and use gather: 
+
+prices_clustered <- prices_to_cluster %>% 
+	mutate(cluster = chosen_model$cluster) %>% 
+	gather(key = date, value = price, -cluster, -listing_id) %>% 
+	mutate(date = as.Date(date))
+
+prices_clustered %>% 
+	ggplot() + 
+	aes(x = date, y = price, group = listing_id) + 
+	geom_line() + 
+	facet_wrap(~cluster)
+
 
 
 # We've isolated the signal: users in one group have large spikes at the 
 # specific week in April; users in the other don't. Now we're ready to visualize
 # where these listings are located
 
+cluster_lookup <- prices_clustered %>% 
+	filter(!duplicated(listing_id)) %>% 
+	select(listing_id, cluster)
+
+locations_to_plot <- listings %>% 
+	left_join(cluster_lookup, by = c('id' = 'listing_id')) %>% 
+	filter(!is.na(cluster))
 
 # Now we'll plot using leaflet
+
+library(leaflet)
+
+pal <- colorFactor(c('navy', 'orange'), domain = c('1', '2'))
+
+leaflet(data = locations_to_plot) %>% 
+	addProviderTiles(providers$CartoDB.Positron) %>% 
+	addCircles(~longitude, ~latitude, radius = 50, color = ~pal(cluster))
 
 
 # Does this map support or testify against our hypothesis?
