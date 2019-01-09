@@ -1,0 +1,22 @@
+---
+title: "Kaggle Competition Pre-Assignment"
+output:
+  word_document: default
+  html_document: default
+---
+The capstone of the neural network course will involve the class competing in a mini-Kaggle competition. To do this, I need you to first download a couple packages as well as following some competition-related instructions.
+
+First, please download the following packages by executing the commands
+
+```{r, eval=F}
+install.packages(c("tidyverse", "hdf5r"))
+```
+
+# Competition Instructions
+If you do not have Kaggle account, you will need to first create one using the options that Kaggle has provided for you. To participate in the competition you will need to use this link: https://www.kaggle.com/t/bf46fb2e06694a3caecb47165b71526f. 
+
+Once you have an account and have followed the provided link, please download all of the data and helper R files. This can be found in the "Data" tab on the website. You may also form teams if you would like.
+
+Finally, please do not make any submissions until Jan 9th. My intention is that everyone participate at the same time during the class, and so it would be unfair to others if some of you got a head start. If you would like though, please feel free to familiarize yourself with the data I have provided. More detail will given during the course. 
+
+If you have any questions about signing up for the competition, please contact me at zblanks@mit.edu. If there are a similar set of questions about these instructions, please talk among yourselves and have one person email me so that I'm better able to answer your questions more efficiently. 

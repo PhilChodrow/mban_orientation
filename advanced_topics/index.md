@@ -8,17 +8,16 @@ This is the repository for a half day training on advanced data science in R. Da
 
 *Image credit: Hadley Wickham*
 
-A skilled analyst needs to be able to smoothly transition from data manipulation to visualization to modeling and back. In this session, we focus on advanced use of the `tidyverse` set of packages to smoothly navigate the Cycle of Data Science. 
+In this session, we will work through a complex case study that requires multiple iterations of manipulation, visualization, and modeling in order to test a data scientific hypothesis. Along the way, we will learn how to use advanced tools from the `tidyverse` set of packages to smoothly transition between these stages of the data-scientific methods. 
 
 ## Learning Objectives 
 
-Topics covered include:
+By the end of this session, students will be able to:
 
-1. Reinforcement of fundamental wrangling and visualization tools. 
-2. Efficient, tidy iterative data pipelines with functional tools. 
-3. Tidy model inspection and selection with `broom`. 
-
-While learning these tools, we work a complex case study that will require multiple iterations of manipulation, visualization, and modeling to test a data scientific hypothesis. 
+1. Pose a data scientific hypothesis and plan analyses by which test it. 
+2. Use advanced data manipulation and visualization to explore complex data sets. 
+3. Craft efficient, tidy, and iterative data pipelines using basic functional programming tools. 
+4. Perform tidy model inspection and selection with `broom`. 
 
 ## Preassignment
 
@@ -56,7 +55,7 @@ Next, type or paste the following code into your console and hit "enter." You wi
 
 ```{r}
     library(tidyverse)
-    library(ggmap)
+    library(leaflet)
 
     m <- leaflet() %>% setView(lng = -71.0589, lat = 42.3601, zoom = 12)
     m %>% addTiles()

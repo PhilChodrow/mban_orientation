@@ -1,0 +1,108 @@
+---
+title: "Bag-of-Words"
+author: "Colin Pawlowski"
+date: "October 26, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+In this notebook, we construct a Bag-of-Words from the reviews
+First, we read in the data set which contains the information that we need to build the Bag-of-Words model.  Note that this is equivalent to the data frame that we created in the final exercise from the previous notebook.  
+```{r readdata}
+reviewsWithScores <- readRDS("data/reviewsWithScores.RDS")
+```
+
+## Procedure to Construct Bag-of-Words
+**Step 0:** Install and load two packages for pre-processing:
+```{r Step0}
+library(tm)
+library(SnowballC)
+library(tidyverse)
+```
+
+
+**Step 1:** Convert reviewer comments to a corpus,
+        automatically processing escape characters like "\n".
+**Step 2:** Change all the text to lower case.
+**Step 3:** Remove all punctuation.
+**Step 4:** Remove stop words (this step may take a minute).
+**Step 5:** Stem our document.
+```{r Steps 1-5}
+corpus <- Corpus(VectorSource(reviewsWithScores$comments)) %>%
+  tm_map(tolower) %>%
+  tm_map(removePunctuation) %>%
+  tm_map(removeWords, stopwords("english")) %>%
+  tm_map(stemDocument)
+```
+
+```{r Take a look}
+# Take a look
+strwrap(corpus[[1]])[1:3]
+```
+
+Take a look at tm's stopwords:
+```{r Stopwords}
+stopwords("english")[1:100]
+```
+
+**Step 6:** Create a word count matrix (rows are reviews, columns are words).
+```{r DocumentTermMatrix}
+frequencies <- DocumentTermMatrix(corpus)
+# Take a look
+frequencies
+```
+
+**Step 7:** Account for sparsity.
+```{r Sparsity}
+# Use findFreqTerms to get a feeling for which words appear the most.
+# Words that appear at least 10000 times:
+findFreqTerms(frequencies, lowfreq = 10000)
+```
+
+All 45645 terms will not be useful to us. We might as well get rid
+of some of them - why? Let's only keep terms that appear in
+5% or more of the reviews (142 or more).
+```{r Remove Sparse Terms}
+sparse <- removeSparseTerms(frequencies, 0.95)
+
+# How many did we keep? (1136 terms, compared to 45645 previously)
+sparse
+colnames(sparse)
+```
+
+**Step 8:** Create data frame.
+```{r commentsTM}
+commentsTM <- as.data.frame(as.matrix(sparse))
+
+# View data frame (rows are reviews, columns are words)
+str(commentsTM, list.len = 10)
+```
+
+We have finished building the term frequency data frame `commentsTM`.
+Next, we need to merge the two data frames `commentsTM` (features) and
+`reviewsWithScores` (labels) before we can run our machine learning
+algorithms on this data.  This will be a inner_join by `LISTING_ID`,
+which means that we will only include observations present
+in both data sets (e.g. Airbnb locations with >= 1 rating/review_score
+and >= 1 comment).
+
+```{r join}
+commentsTM$listing_id <- reviewsWithScores$listing_id
+reviewsBagOfWords <- reviewsWithScores %>%
+  select(-comments) %>%
+  left_join(commentsTM)
+
+# View the first few data frame columns
+str(reviewsBagOfWords, list.len = 10)
+```
+
+We have finished building the Bag-of-Words model.
+We can save it to use for our machine learning models next.  
+```{r saveModel}
+saveRDS(reviewsBagOfWords, file = "data/reviewsBagOfWords.RDS")
+```
+

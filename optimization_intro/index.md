@@ -1,5 +1,5 @@
 # Introduction to Optimization
-*Instructors: Jack Dunn and Daisy Zhuo*
+*Instructors: Chris McCord and Colin Pawlowski*
 
 This is the repository for a day-long intensive crash-course on optimization, `Julia`, and `JuMP`. 
 
@@ -17,7 +17,8 @@ The course aims to familiarize students with the concept and implementation of o
 *Break*
 
 4. Intro to `JuMP`
-5. Guide to MIO modeling and solvers
+5. Exercises
+6. Guide to MIO modeling (time permitting)
 
 
 # Software

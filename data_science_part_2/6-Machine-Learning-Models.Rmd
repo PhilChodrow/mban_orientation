@@ -1,0 +1,267 @@
+---
+title: "Machine Learning Models"
+author: "Colin Pawlowski"
+date: "October 26, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+Now that we have the Bag-of-Words, we can train machine learning models.
+We will consider CART, Random Forest, and Boosting models.
+
+First, let's read in the data that contains the final Bag-of-Words.
+```{r Bag-of-Words}
+library(tidyverse)
+reviewsBagOfWords <- readRDS("data/reviewsBagOfWords.RDS")
+```
+
+Next, let's convert the review score category to an ordered level data type.
+This is helpful when we have 3+ ordered categories, because it will determine
+how our confusion matrix is displayed for our results.  
+```{r Order Levels}
+ratingLevels <- c("Terrible", "Low", "Mid", "High", "Perfect")
+reviewsBagOfWords <- reviewsBagOfWords %>%
+  mutate(review_scores_category = 
+         as.factor(ordered(review_scores_category, levels = ratingLevels)))
+```
+
+This is necessary for Random Forest
+```{r add x to numeric variable names}
+numericIndices <- which(grepl("^[0-9]", names(reviewsBagOfWords)))
+names(reviewsBagOfWords)[numericIndices] <-
+  paste0("x", names(reviewsBagOfWords)[numericIndices])
+```
+
+## Splitting into Training/Testing
+Before we begin, we first split our data into training/testing sets.
+```{r split}
+library(caTools)
+set.seed(123)
+X <- as.matrix(reviewsBagOfWords[,4:ncol(reviewsBagOfWords)])
+y <- as.vector(reviewsBagOfWords$review_scores_category)
+spl <- sample.split(y, SplitRatio = 0.75)
+dataTrain <- reviewsBagOfWords[spl,] %>%
+  select(-listing_id, -review_scores_rating) %>%
+  rename(Y = review_scores_category)
+dataTest <- reviewsBagOfWords[!spl,] %>%
+  select(-listing_id, -review_scores_rating) %>%
+  rename(Y = review_scores_category)
+xTrain <- X[spl,]
+xTest <- X[!spl,]
+yTrain <- y[spl]
+yTest <- y[!spl]
+```
+
+## CART
+First, fit a deep CART model (low cp value).  We set a seed because
+the rpart() function performs cross-validation, which is a randomized algorithm.  
+```{r CART}
+library(rpart)
+library(rpart.plot)
+set.seed(123)
+treeBig <- rpart(Y ~ ., data = dataTrain, cp = 0.001)
+```
+
+We can plot this initial tree:
+```{r Big Tree}
+prp(treeBig)
+```
+Next, we use the built-in cross-validation in CART to see how our model
+performs for varying values of cp.  We can use the `printcp()` command to see the
+cross-validated error for different values of cp,
+where:
+- "nsplit"    = number of splits in tree
+- "rel error" = scaled training error
+- "xerror"    = scaled cross-validation error
+- "xstd"      = standard deviation of xerror
+```{r Tune cp}
+printcp(treeBig)
+```
+
+Cool, so rpart automatically computes all of the cross-validated
+errors for trees with cp = 0.001 and up! We can also see these results
+visually using the `plotcp` command.  In this plot:
+ - size of tree = (number of splits in tree) + 1
+ - the dotted line occurs at 1 std. dev. above the minimum xerror
+```{r plotcp}
+plotcp(treeBig)
+```
+
+A rule of thumb is to select the cp value which first
+goes below the dotted line, and then prune the tree using
+this value.
+```{r Prune Tree}
+treeFinal <- prune(treeBig, cp = 0.009)
+prp(treeFinal)
+```
+
+We can obtain predictions using the predict() function:
+```{r CART predictions}
+predTrain <- predict(treeFinal, newdata = dataTrain, type = "class")
+predTest <- predict(treeFinal, newdata = dataTest, type = "class")
+```
+
+Let's evaluate the accuracy of our model:
+```{r CART accuracy}
+print("Training Set")
+t <- table(dataTrain$Y, predTrain)
+t # Confusion Matrix
+sum(diag(t)) / nrow(dataTrain) # Accuracy
+print("Testing Set")
+t <- table(dataTest$Y, predTest)
+t # Confusion Matrix
+sum(diag(t)) / nrow(dataTest) # Accuracy
+```
+
+45\% is not bad out-of-sample, when you consider that
+there are 5 possible categories.  Can the other models do better?
+
+
+
+## Random Forest 
+```{r randomForest}
+library(randomForest)
+# Fit the forest with 200 trees, removing a couple of the words which
+# contain non-alphanumeric characters.
+# Technical Note: The random forest function complains if we try to include
+# variable names with non-alphanumeric characters.
+modelForest <- randomForest(Y ~ .,
+                          data = dataTrain[,c(1:219,221:749,751:1137)],
+                          ntree = 200)
+```
+
+Make predictions on the test set
+```{r Random Forest predictions}
+predTrain <- predict(modelForest, newdata = dataTrain[,c(1:219,221:749,751:1137)])
+predTest <- predict(modelForest, newdata = dataTest[,c(1:219,221:749,751:1137)])
+```
+
+Check accuracy
+```{r Random Forest Accuracy}
+print("Training Set")
+t <- table(dataTrain$Y, predTrain)
+t # Confusion Matrix
+sum(diag(t)) / nrow(dataTrain) # Accuracy
+print("Testing Set")
+t <- table(dataTest$Y, predTest)
+t # Confusion Matrix
+sum(diag(t)) / nrow(dataTest) # Accuracy
+```
+
+So Random Forest increases our out-of-sample accuracy to ~47.5\%.
+For this model, we can print out a Variable Important plot:
+```{r Random Forest Variable Importance}
+varImpPlot(modelForest)
+```
+
+We could also try to print out a sample tree, but these will be very deep
+and not very interpretable.  
+
+## Boosting
+
+Finally, let's try a boosted tree model.  We will use the package XGBoost,
+which is one of the top methods for winning online Kaggle competitions. 
+Here is some more documentation for this package:
+<https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html>
+
+There are many parameters which are important to tune for this model.
+These include:
+- *eta* : learning rate.  This is the gradient step size in the algorithm.
+So small values (eta <= 0.01) will take a long time to converge, while
+large values will converge quickly and may underfit.
+- *nrounds* : Number of trees in the Boosting algorithm.  This should be
+tuned in relation to "eta".
+- *max.depth* : Maximum depth of the trees.  Can be tuned for better performance,
+but typically very short trees or stumps perform well.  
+
+```{r XGBoost}
+library(xgboost)
+X_train <- model.matrix(Y ~ ., data = dataTrain)[,-1]
+X_test <- model.matrix(Y ~ ., data = dataTest)[,-1]
+# For multiclass problems with K classes, XGBoost requires the labels to 
+# go from 0 to K-1.  Since factor variables go from 1,...K, we subtract 1 here.
+dtrain <- xgb.DMatrix(data = X_train, label = as.integer(dataTrain$Y) - 1)
+dtest <- xgb.DMatrix(data = X_test, label = as.integer(dataTest$Y) - 1)
+watchlist <- list(train = dtrain, test = dtest)
+```
+
+
+```{r Fit XGBoost}
+params <- list(
+  objective = "multi:softprob",
+  eval_metric = "mlogloss",
+  num_class = 5, # For multiclass problems, we write here number of classes K
+  eta = 0.1,
+  max_depth = 2)
+nthread <- 1 # Number of threads to use on the computer
+nrounds <- 100
+
+set.seed(123)
+boostedTree <- xgb.train(params = params, data = dtrain,
+                         nrounds = nrounds, nthread = nthread,
+                         watchlist = watchlist)
+
+```
+
+Find the probability predictions for each class:
+```{r XGBoost predictions}
+predTrainLongVec <- predict(boostedTree, X_train)
+predTestLongVec <- predict(boostedTree, X_test)
+predTrainMatrix <- matrix(predTrainLongVec, ncol = 5, byrow = T)
+predTestMatrix <- matrix(predTestLongVec, ncol = 5, byrow = T)
+predTrain <- apply(predTrainMatrix, 1, which.max)
+predTest <- apply(predTestMatrix, 1, which.max)
+
+```
+
+Find the accuracy:
+```{r XGBoost accuracy}
+print("Training Set")
+t <- table(dataTrain$Y, predTrain)
+t # Confusion Matrix
+sum(diag(t)) / nrow(dataTrain) # Accuracy
+print("Testing Set")
+t <- table(dataTest$Y, predTest)
+t # Confusion Matrix
+sum(diag(t)) / nrow(dataTest) # Accuracy
+```
+
+It looks like we have increased the out-of-sample accuracy slightly more,
+up to 48.9\% out-of-sample.
+
+We can plot the first few trees in our XGBoost model:
+```{r XGBoost tree}
+# install.packages("DiagrammeR")
+library(DiagrammeR)
+# First Tree to predict "Terrible"
+xgb.plot.tree(feature_names = names(dataTrain)[2:1137], boostedTree,
+              trees = 0)
+# First Tree to predict "Low"
+xgb.plot.tree(feature_names = names(dataTrain)[2:1137], boostedTree,
+              trees = 1)
+# First Tree to predict "Medium"
+xgb.plot.tree(feature_names = names(dataTrain)[2:1137], boostedTree,
+              trees = 2)
+# First Tree to predict "High"
+xgb.plot.tree(feature_names = names(dataTrain)[2:1137], boostedTree,
+              trees = 3)
+# First Tree to predict "Perfect"
+xgb.plot.tree(feature_names = names(dataTrain)[2:1137], boostedTree,
+              trees = 4)
+# Second Tree to predict "Terrible"
+xgb.plot.tree(feature_names = names(dataTrain)[2:1137], boostedTree,
+              trees = 5)
+```
+
+Each individual tree is reasonably interpretable.  However, in order to understand
+this model, it requires much more analysis because there are 500 trees total.
+
+We can also compute the variable importance scores for this XGBoost model.  
+```{r XGBoost Feature Importance}
+xgb.importance(feature_names = names(dataTrain)[2:1137], boostedTree)
+```
+

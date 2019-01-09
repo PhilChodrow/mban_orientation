@@ -8,6 +8,28 @@ output:
     theme: united
 ---
 
+```{r}
+# INSTRUCTIONS
+# 1. Click the `knit` button at the top of RStudio and observe the result. If you see a dashboard, then are good to go. 
+# 2. Now, modify the dashboard: 
+	# - Include your names in the `author` metadata up top
+	# - Write code for data preparation and visualizations. 
+	# - Include all your code in the `R` "code chunks" that begin with ````{r}`
+	# - Add commentary in the indicated area
+# 4. `knit` your final dashboard one last time and place it in the shared Dropbox folder (link in email)
+# 5. **FILL OUT FEEDBACK SURVEY** by copying and pasting the link below into your browser:  
+# https://goo.gl/forms/7rqAPMn37DzRqWko2
+# 6. Break for lunch! 
+```
+
+```{r}
+# You may find the following resources useful: 
+# - Your team member(s)! 
+# - Data wrangling [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf), 
+# - `R` graphics [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), 
+# - [`R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/)
+```
+
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(tidyverse)
@@ -44,7 +66,9 @@ summary_table <- recent_listings %>%
 	ungroup()
 ```
 
-# Tab 1
+
+# Descriptive Analysis
+
 
 Column {data-width=650}
 -----------------------------------------------------------------------
@@ -94,6 +118,18 @@ summary_table %>%
 	ylab('Number of Listings')
 ```
 
-# Tab 2
 
+# Modeling
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Box 1
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Box 2
 
