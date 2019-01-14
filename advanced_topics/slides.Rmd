@@ -1,7 +1,7 @@
 ---
 title: "Advanced Topics in Data Science"
 subtitle: "*MBAn R Workshop*"
-author: "Phil Chodrow, MIT Operations Research Center"
+author: "Phil Chodrow"
 date: "January 16th, 2019"
 output: 
   revealjs::revealjs_presentation:
@@ -310,9 +310,11 @@ knitr::include_graphics('figs/journey_4.png')
 
 ## All in 5 Lines
 
-```{r, echo = FALSE, out.height=500, out.width = 700}
-knitr::include_graphics('figs/not_bad.jpg')
+
+```{r, out.width = 800, echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/picard_impressed.jpg')
 ```
+
 
 ## My Favorite Picture {.center}
 
@@ -362,7 +364,6 @@ OK: ready for K-means!
 
 # Case Study, Part 5 {.center}
 
-
 # Wrapping Up {.center}
 
 ## What We've Done {.center}
@@ -375,6 +376,13 @@ OK: ready for K-means!
 
 <br>
 
+## 
+
+```{r, echo = FALSE, out.height=500, out.width = 700}
+knitr::include_graphics('figs/not_bad.jpg')
+```
+
+
 ## The Cycle of Data Science
 
 <br/>
@@ -383,6 +391,14 @@ knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.
 ```
 <br/>
 (*Image credit: Hadley Wickham*)
+
+## Learn More
+
+- [Functional programming](https://purrr.tidyverse.org/) with `purrr` (`map()` and friends) -- read the docs! 
+- Jenny Bryan's [excellent purrr tutorial](https://jennybc.github.io/purrr-tutorial/).
+- [*R for Data Science*](https://r4ds.had.co.nz/), an excellent (and free!) book on how to become a tidy warrior. 
+- [*Advanced R*](http://adv-r.had.co.nz/), for those of you who want to go even deeper. 
+- [R Markdown](https://rmarkdown.rstudio.com/) is the best way to communicate in and about `R` -- learn more and use it in all your `R` projects! 
 
 ## 
 

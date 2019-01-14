@@ -47,7 +47,7 @@ prices
 #' and wrote five lines to achieve our aim. Let's explore a better approach. 
 
 #'---------------------------------------------------------------------------- 
-#'
+#' 
 #'----------------------------------------------------------------------------
 
 #' Let's try this: 
@@ -128,60 +128,6 @@ p
 
 #' Three interesting things are happening here...what are they? 
 
-
-
-#' #' How Much Missing Data? ------------------------------------------------------
-#' #' We're now going to work together to answer the following question: how much 
-#' #' data is "missing" from the `prices`` data frame? 
-#' 
-#' #' EXERCISE: Pair up with your partner and answer the following questions about the `prices` table:
-#' #' 1. How many **rows of data** are missing in the `price_per` column?
-#' #' 2. How many **listing_ids** have complete data in the time period?
-#' #' There are many valid approaches. Some useful functions are:
-#' #'  `is.na`, `group_by`, `summarise`, `nrow()`, `unique()`, `n_distinct()`.
-#' 
-#' n_missing_1 <- prices$price_per %>% is.na() %>% sum()
-#' n_missing_1
-#' 
-#' complete_listings_1 <- prices %>%
-#' 	group_by(listing_id) %>%
-#' 	summarise(num_na = sum(is.na(price_per))) %>%
-#' 	filter(num_na == 0) %>%
-#' 	nrow()
-#' 
-#' complete_listings_1
-#' 
-#' #' Your solution may or may not have accounted for data that is *implicitly* 
-#' #' missing. Let's now try to account for these as well. First, let's 
-#' #' check how much data is implicitly missing: 
-#' 
-#' n_listings <- n_distinct(prices$listing_id)
-#' n_dates    <- n_distinct(prices$date)
-#' 
-#' n_listings * n_dates  - nrow(prices)
-#' 
-#' #' Now, let's fill in implicitly missing data. 
-#' 
-#' prices <- prices %>% complete(listing_id, date)
-#' 
-#' n_listings <- n_distinct(prices$listing_id)
-#' n_dates    <- n_distinct(prices$date)
-#' 
-#' n_listings * n_dates  - nrow(prices) # no implicitly missing data left! 
-#' 
-#' #' Now let's check to see how the exercise answers have changed: 
-#' 
-#' n_missing_2 <- prices$price_per %>% is.na() %>% sum()
-#' n_missing_1 - n_missing_2
-#' 
-#' complete_listings_2 <- prices %>%
-#' 	group_by(listing_id) %>%
-#' 	summarise(num_na = sum(is.na(price_per))) %>%
-#' 	filter(num_na == 0) %>%
-#' 	nrow()
-#' 
-#' complete_listings_2 - complete_listings_1
-
 #' Modeling ----------------------------------------------------------------
 #' Now that we know how (in)complete our data is, let's move on to modeling. 
 #' We want to peel out the seasonal variation present in the data. 
@@ -193,7 +139,7 @@ p
 
 p + geom_smooth()
 
-#' Ok, so that's fun, but we've seen that the seasonal variation is different
+#' Ok, so that's helpful, but we've seen that the seasonal variation is different
 #' between listings. Eventually, we want to fit a *different* model to *each*
 #' listing. For now, let's fit a single one. The span is a hyperparameter, a bit
 #' like lambda in LASSO. 
@@ -233,6 +179,8 @@ model_preds %>%
 #'---------------------------------------------------------------------------- 
 #'
 #'----------------------------------------------------------------------------
+
+#' Nesting -------------------------------------------------------------------
 
 prices_nested <- prices %>% 
 	nest(-listing_id)
@@ -287,22 +235,6 @@ prices_modeled <- prices_with_preds %>%
 
 prices_modeled <- prices_modeled %>% 
 	rename(trend = .fitted) 
-
-#' It can be a little tricky to piece together those last couple calls. It's much 
-#' more compact, and perhaps easier to see the big picture, if we arrange them 
-#' as a single pipeline. We can use a little syntactic sugar to avoid needing
-#' to define my_loess
-
-#' prices_modeled <- prices %>%
-#'   nest(-listing_id) %>% 
-#'   mutate(model = map(data, ~loess(price_per ~ as.numeric(date), 
-#'                                   data = ., 
-#'                                   span = .25)),
-#'          preds = map2(model, data, augment)) %>% 
-#'   unnest(preds)
-
-#' This is an immensely complex data analytic task that we have achieved in 5 
-#' simple lines of code! 
 
 #' EXERCISE: Now, working with a partner, please visualize the model predictions
 #' against the actual data for the first 2000 rows. Use geom_line() for both. 
@@ -469,6 +401,9 @@ prices_matrix <- prices_to_cluster %>%
 cluster_models <- data_frame(k = rep(1:10, 10)) %>%
   mutate(kclust = map(k, my_kmeans))
 
+
+#' Model Evaluation ------------------------------------------------------------
+
 #' How do we know how many clusters to use? One way is to extract a summary of 
 #' each model using `broom::glance()`. Here's how that looks for a single model: 
 
@@ -514,13 +449,14 @@ prices_clustered %>%
 	geom_line() + 
 	facet_wrap(~cluster)
 
+#' Geospatial Visualization ----------------------------------------------------
+
 #' We've isolated the signal: users in one group have large spikes at the 
 #' specific week in April; users in the other don't. Now we're ready to visualize
 #' where these listings are located in geographic space. 
 #' To do so, we need to combine our cluster labels with the geographic information
 #' in the `listings` data frame. We'll use `left_join()` for this, but first
 #' we need to remove all the duplicates in `prices_clustered`.  
-#'  
 
 cluster_lookup <- prices_clustered %>% 
 	filter(!duplicated(listing_id)) %>% 
