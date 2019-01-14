@@ -70,7 +70,6 @@ Please email the instructor if either of these tests do not produce the expected
 You can [download](https://github.com/PhilChodrow/mban_orientation/archive/master.zip) all the course materials as a `.zip` file. If you need to quickly reference individual materials, use the links below. For best results, `git clone` the repository.  
 
 - [Slides](https://philchodrow.github.io/mban_orientation/advanced_topics/slides.html), [source](https://philchodrow.github.io/mban_orientation/advanced_topics/slides.Rmd)
-- [Notes](https://philchodrow.github.io/mban_orientation/advanced_topics/notes.html), [source](https://philchodrow.github.io/mban_orientation/advanced_topics/notes.Rmd)
 - Case Study: [student version](https://philchodrow.github.io/mban_orientation/advanced_topics/case_study_student.R), [complete version](https://philchodrow.github.io/mban_orientation/advanced_topics/case_study_complete.R)
 
 
