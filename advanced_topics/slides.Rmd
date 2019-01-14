@@ -20,6 +20,10 @@ output:
 knitr::opts_chunk$set(cache = TRUE, warning = FALSE)
 library(knitr)
 library(tidyverse)
+
+prices <- list.files('data/prices', full.names = T) %>% 
+  map(read_csv) %>% 
+  reduce(rbind)
 ```
 
 # Good Morning
