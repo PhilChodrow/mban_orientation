@@ -5,8 +5,6 @@ author: "Phil Chodrow, MIT Operations Research Center"
 date: "January 16th, 2019"
 output: 
   revealjs::revealjs_presentation:
-    self_contained: false
-    reveal_plugins: ["zoom"]
     slide_level: 2
     theme: blood
     highlight: zenburn
@@ -364,13 +362,6 @@ OK: ready for K-means!
 
 # Case Study, Part 5 {.center}
 
-## For or Against our Hypothesis?
-```{r, echo = FALSE, warning = FALSE, message = FALSE, comment = FALSE}
-source('case_study_complete.R')
-leaflet(data = locations_to_plot)%>% 
-	addProviderTiles(providers$CartoDB.Positron) %>% 
-	addCircles(~longitude, ~latitude, radius = 50, color = ~pal(cluster))
-```
 
 # Wrapping Up {.center}
 
