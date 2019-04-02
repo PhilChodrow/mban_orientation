@@ -19,6 +19,6 @@ For those who are unable to install keras on R (sometimes there are installation
 along with the lecture via the Jupyer notebooks in the repository. To do this, you will need to use Python with an Anaconda installation.
 To install Keras on your local machine, execute the following command:
 
-`conda install keras`
+`conda install -c conda-forge keras `
 
 This should install all of the requisite packages needed to use the code that I have provided in the Jupyter notebooks.
