@@ -8,7 +8,7 @@ output:
     slide_level: 2
     theme: blood
     highlight: zenburn
-    # css: slide_style.css
+    css: style_2.css
     reveal_options:
       slideNumber: false
       previewLinks: true
@@ -28,6 +28,8 @@ prices <- list.files('data/prices', full.names = T) %>%
 
 # Good Morning
 
+
+
 ## Some Draft Session Titles
 
 <br/>
@@ -42,6 +44,18 @@ prices <- list.files('data/prices', full.names = T) %>%
 <div class = 'fragment'> 
 So, uh, what are we actually doing here?
 </div>
+
+## What's Data Science? {.center}
+
+<div class='fragment'>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">New data scientist definition: A data scientist is a statistician who is wearing a bow tie 😝</p>&mdash; Hadley Wickham (@hadleywickham) <a href="https://twitter.com/hadleywickham/status/906146116412039169?ref_src=twsrc%5Etfw">September 8, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+</div>
+
+## Checks out
+
+![](https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg)
 
 ## Recall My Favorite Picture
 
@@ -92,6 +106,12 @@ knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.
 ```{r, out.height = 500, echo = FALSE}
 knitr::include_graphics('figs/not_impressed.jpg')
 ```
+
+<!-- ## Download Materials -->
+
+<!-- 1. `https://philchodrow.github.io/mban_orientation/` -->
+<!-- 2. Click into "Advanced Topics in Data Science" -->
+<!-- 3. Click the "Download" link at the bottom of the page.  -->
 
 ## Exercise 0.0
 
@@ -174,9 +194,14 @@ If $X = (x_1,\ldots,x_n)$, then
 
 <br/>
 
-> 1. `c('To', 'boldly', 'go') %>% map(nchar)`
-> 2. `c('To', 'boldly', 'go') %>% map(toupper)`
-> 3. `c('To', 'boldly', 'go') %>% map(rep, 2)`
+```{r, eval = FALSE}
+c('To', 'boldly', 'go') %>% map(nchar)
+
+c('To', 'boldly', 'go') %>% map(toupper)
+
+c('To', 'boldly', 'go') %>% map(rep, 2)
+```
+
 
 ## `Reduce()` Combines {.center}
 
@@ -186,8 +211,12 @@ If $g$ is a binary function, then
 
 ## What  do these do? {.center}
 
-> 1. `c('To', 'boldly', 'go') %>% map(nchar) %>% reduce(sum)`
-> 2. `c('To', 'boldly', 'go') %>% reduce(paste)`  
+```{r, eval = FALSE}
+c('To', 'boldly', 'go') %>% map(nchar) %>% reduce(sum)
+
+c('To', 'boldly', 'go') %>% reduce(paste)
+```
+
 
 # Case Study, Part 2 {.center}
 
