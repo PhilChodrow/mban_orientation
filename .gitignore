@@ -7,7 +7,8 @@
 todo.txt
 */slides_files/
 *.Rproj
-assets
 .Rapp.history
 *cache*
 *slides_files*
+Gemfile.lock
+_site/
