@@ -8,6 +8,23 @@ This is a **long** preassignment that involves lots of software installation and
 
 # Version Control: Git and GitHub
 
+`git` is a powerful system for collaborating on and publishing software. It is standard in the worlds of data science and software development. Learning to use `git` will help you manage your own work; collaborate with colleagues; and access useful tools. 
+
+## Install `git`
+
+Get started by installing `git`. You can follow the relevant instructions for your operating system [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). For Windows 10 users, we suggest installing and interacting with `git` either via the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or via the [GitHub Desktop Client](https://desktop.github.com).
+
+## Make an Account on GitHub.com
+
+[GitHub](https://github.com/) is a hosting service for `git` that makes it easy to share your code. 
+
+1. Sign up for an account -- remember to keep track of your username and password. 
+2. Link your GitHub.com credentials to your local `git` installation.  
+
+## Test Your Installation
+
+INSERT TEST
+
 # Data Analysis: `R` and RStudio
 
 ## Install `R` and RStudio
