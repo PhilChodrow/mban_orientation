@@ -4,3 +4,10 @@
 .Ruserdata
 .Rproj
 .DS_Store
+todo.txt
+*/slides_files/
+*.Rproj
+assets
+.Rapp.history
+*cache*
+*slides_files*
