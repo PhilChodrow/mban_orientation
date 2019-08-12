@@ -1,0 +1,580 @@
+---
+title: "Exploratory Data Analysis in R"
+subtitle: "Data Wrangling and Visualization"
+author: "Phil Chodrow, MIT"
+date: "Tuesday, August 28th, 2018"
+output: 
+  ioslides_presentation:
+    # logo: http://colinpawlowski.com/assets/images/ORC_logo_horizontal.png
+    css: ../slide_style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, out.width = "300px", out.height = "350px", fig.align="center", cache = TRUE)
+library(tidyverse)
+library(knitr)
+```
+
+# Introduction
+
+1. The Data Science Process
+2. The Case
+3. The Tidyverse
+
+## My Third Favorite Picture:
+
+```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
+```
+
+> - **Exploratory data analysis (EDA)** covers roughly the "transform" and "visualize" steps. 
+
+# EDA is...
+
+## ...getting to know your Data
+
+```{r, out.height = 650, out.width = 500, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://vignette.wikia.nocookie.net/memoryalpha/images/4/4f/Data%2C_2366.jpg/revision/latest?cb=20130529102644&path-prefix=en')
+```
+
+
+## What We'll Do This Morning
+
+> - Ask an impactful question of a real data set. 
+> - Use EDA to propose candidate answers. 
+> - Create a simple business intelligence (BI) [dashboard](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/dashboard.html) to guide decision-makers. 
+
+## The Case
+
+```{r, out.height = 500, out.width = 700, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://imgs.6sqft.com/wp-content/uploads/2017/03/10102308/airbnb-logo.jpg')
+```
+
+
+## The Case
+
+<div class="columns-2">
+
+```{r, out.height = 500, out.width = 350, echo = FALSE, fig.align='center'}
+knitr::include_graphics('figs/airbnb_map.png')
+```
+
+- AirBnB can maximize its business by ensuring a strong supply of diverse hosts in various neighborhoods. 
+- Their question for you: ***Where should we recruit more hosts?*** 
+- They have given you a complex, multi-part data set to study using `R`! 
+</div>
+
+## FYI: Base `R` and the Tidyverse
+
+- You can do EDA in "base" `R` without any packages.
+- But base `R` is a bad programming language. 
+- We will use the **Tidyverse**, a set of packages that promote code which is easy to **write** and **read**,  highly **performant**, and **consistent** through the data scientific pipeline. 
+- The Tidyverse has been extensively developed by **Hadley Wickham** and collaborators over the last decade. 
+	
+If you have prior experience in `R` and did not begin all your scripts with `library(dplyr)`....
+
+## FYI: Base `R` and the Tidyverse
+
+```{r, echo = FALSE, out.height = 500, out.width = 500}
+knitr::include_graphics('https://memegenerator.net/img/instances/73015626/forget-everything-you-think-you-know.jpg')
+```
+
+# Getting Started
+
+1. Data Import and Inspection
+2. Data Subsetting
+3. The Pipe
+4. Exercises
+
+
+```{r, message=FALSE, warning=FALSE, echo = FALSE}
+library(tidyverse)
+listings <- read_csv('../data/listings.csv')
+calendar <- read_csv('../data/calendar.csv')
+```
+
+## Pipes for your Data
+
+```{r, echo = FALSE, out.height = 500, out.width = 700}
+knitr::include_graphics('http://www.startrek.com/uploads/assets/db_articles/26da32597d9bd37fde9da22660aa524f24fd725c.jpg')
+```
+
+## Pipes for your Data
+
+```{r, echo = FALSE, out.height = 200, out.width = 200}
+knitr::include_graphics('https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3632/small/1419844831/magrittr.png')
+```
+
+> - `x %>% f()` $\Longleftrightarrow$ `f(x)` 
+> - *"Take `x`, and **then** do `f` to it"*
+> - `x %>% f(y)` $\Longleftrightarrow$ `f(x,y)`
+> - `x %>% f(y) %>% g(z)` $\Longleftrightarrow$ `g(f(x,y),z)` 
+> - *"Take `x`, **then** do `f` with option `y`, **then** do `g` with option `z`..."*
+
+## Some Simple Examples
+
+```{r, eval = FALSE}
+
+# familiar
+listings %>% glimpse()  # = glimpse(listings)
+listings %>% head()     # = head(listings)
+listings %>% colnames() # = colnames(listings)
+
+# get all columns with "review_scores" in the column name
+listings %>% select(contains('review_scores')) 
+# what should this return? 
+listings %>% select(contains('review_scores')) %>% colnames()
+# compare: colnames(select(listings, contains('review_scores')))
+```
+
+Let's try this out -- back to the case study! 
+
+
+
+
+
+# Summarising Data
+
+1. Summary Statistics
+2. Adding Columns
+3. Grouping
+
+## Data Summaries
+
+- You should usually summarise your data before turning on the fancy algorithms -- sometimes the story is clear. 
+
+```{r, echo = FALSE, out.width = 700, out.height = 400}
+knitr::include_graphics("http://writingcenter.unc.edu/files/2012/07/chart-figure-3.png")
+```
+
+## Basic Data Summaries
+
+Go from this:
+
+```{r, echo = FALSE}
+listings %>% 
+	select(id, neighbourhood_cleansed, review_scores_rating) %>% 
+	head() %>% 
+	kable() 
+```
+
+## Basic Data Summaries
+
+...to this: 
+
+```{r, echo = FALSE}
+listings %>% 
+	select(id, neighbourhood_cleansed, review_scores_rating) %>% 
+	group_by(neighbourhood_cleansed) %>% 
+	summarise(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = T)) %>% 
+	arrange(desc(mean_rating)) %>% 
+	head() %>% 
+	kable() 
+```
+
+## Summaries the Tidy Way
+
+> - `data %>% mutate(new_col = formula(old_col1, old_col2)` creates new columns.
+> - `data %>% group_by(col)` groups data for breakout summaries.
+> - `data %>% summarise(measure = formula(col1, col2))` computes summaries.
+> - `data %>% group_by(col) %>% summarise(measure = formula(col1, col2))` computes breakout summaries. 
+> - Let's test these out in the case study. 
+
+
+# Keeping Current
+
+1. More practice with `filter` and `summarise`
+2. `join`ing data
+
+## How Recent is our Info?
+
+```{r}
+calendar %>% 
+	summarise(earliest = min(date), 
+		      latest = max(date))
+```
+
+But some of these listings may be "zombies" without recent availability. How can we include only listings with availability from a certain time period? 
+
+## The Approach
+
+1. Operate on the `calendar` table (exercise)
+2. `join` that information to the `listings` table (together)
+3. Filter the listings table accordingly (together)
+
+## Relational Data
+
+The information we need is distributed between two tables -- how can we get there? 
+
+We need a **key** column that tells us which `calendar` rows correspond to which `listings`. 
+
+> `listings$id` corresponds to `calendar_listing$id`
+
+## `join` 
+
+The `join` family of functions lets us add columns from one table to another using a key. 
+
+- `x %>% left_join(y)`  : most common, keeps all rows of `x` but not necessarily `y`.
+- `x %>% right_join(y)` : keeps all rows of `y` but not necessarily `x`.  
+- `x %>% outer_join(y)` : keeps all rows of both `x` and `y`
+- `x %>% full_join(y)` : keeps only rows of `x` that match in `y` and vice versa. 
+
+We'll use `left_join` for this case -- let's try it in the case study. 
+
+
+# Getting Visual
+
+1. Graphical Excellence
+2. The Grammar of Graphics
+3. `ggplot2`
+
+## My Third Favorite Picture:
+
+```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
+```
+
+## Graphical Excellence
+
+```{r, echo = FALSE, out.height = 450, out.width = 650}
+knitr::include_graphics("https://www.edwardtufte.com/bboard/images/0003VL-9150.jpeg")
+```
+
+
+## Graphical Excellence
+
+> Graphical excellence is the **well-designed presentation of interesting data** -- a matter of substance, of statistics, and of design. Graphical excellence consists of complex ideas communicated with **clarity**, **precision**, and **efficiency**. 
+
+-- *Edward Tufte*
+
+## Graphical Excellence
+
+```{r, echo = FALSE, out.width = 700, out.height = 500}
+knitr::include_graphics("https://www.edwardtufte.com/bboard/images/0003Cs-8047.GIF")
+```
+
+## The Grammar of Graphics
+
+A **grammar** is a set of components (ingredients) that you can combine to create complex structures (sentences, recipes, data visualizations). In baking....
+
+<div class="columns-2">
+
+- **A body** -- typically some kind of flour)
+- **Binder** -- eggs, oil, butter, applesauce
+- **A rising agent** -- yeast, baking soda, baking powder
+- **Flavoring** -- sugar, salt, chocolate, vanilla
+
+```{r, out.height = 200, fig.retina = NULL, echo = FALSE}
+knitr::include_graphics("http://www.hoteliermiddleeast.com/pictures/640x422/pastry-1-web.jpg")
+```
+
+</div>
+
+## The Grammar of Graphics
+
+- Puts the `gg` in `ggplot2`. 
+- Formulated by Leland Wilkinson.
+- Implemented in code by Hadley Wickham, now part of the `tidyverse`
+
+<div class="columns-2">
+```{r, out.height = 350, fig.retina = NULL, echo = FALSE}
+knitr::include_graphics("http://ecx.images-amazon.com/images/I/41ZIHtc9TJL._SX327_BO1,204,203,200_.jpg")
+```
+
+```{r, out.height = 350, fig.retina = NULL, echo = FALSE}
+knitr::include_graphics("http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama2.png")
+```
+</div>
+
+## Ingredients of a data visualization 
+
+> - **`Data`**:  almost always a `data_frame` 
+> - **`Aes`**thetic mapping: relation of data to chart components.
+> - **`Geom`**etry: specific visualization type? E.g. line, bar, heatmap?
+> - **`Stat`**istical transformation: how should the data be transformed or aggregated before visualizing?
+> - **`Theme`**: how should the non-data parts of the plot look?
+> - Misc. other options. 
+> - (`+` plays the same role in `ggplot2` that `%>%` does in data manipulation.)
+
+## First Plot {.smaller}
+
+Does getting **lots** of reviews usually mean you get **good** reviews? 
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot()
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating)
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point()
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) 
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 600}
+listings %>% 
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) + 
+	theme_bw()
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	### <b>
+	filter(number_of_reviews < 100) %>%
+	### </b>
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) + 
+	theme_bw() 
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	geom_point(alpha = .2) + 
+	theme_bw() + 
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
+```
+
+## First Plot {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating) + 
+	### <b>
+	geom_point(alpha = .2, color = 'firebrick') + 
+	### </b>
+	theme_bw() + 
+	labs(x='Number of Reviews', y='Review Score',title='Review Volume and Review Quality') 
+```
+
+## Changing Aesthetics {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	### <b>
+	aes(x = review_scores_value, 
+		y = review_scores_location, 
+		size = number_of_reviews) + 
+	### </b>
+	geom_point(alpha = .2, color = 'firebrick') + 
+	theme_bw() 
+```
+
+## As a Heatmap {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = review_scores_value, 
+		y = review_scores_location, 
+	### <b>
+		fill = number_of_reviews) + 
+	geom_tile() + 
+	### </b>
+	theme_bw() 
+```
+
+## Exercise 6
+
+The following code computes the average price of all listings on each day in the data set:
+```{r, warning = FALSE}
+average_price_table <- calendar %>% 
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric()) %>% 
+	group_by(date) %>% 
+	summarise(mean_price = mean(price, na.rm = TRUE))
+```
+
+Use `geom_line()` to visualize these prices with time on the `x`-axis and price on the `y`-axis. 
+
+## Exercise 6 Sample Solution
+
+```{r,  out.width = 500, out.height=300}
+ average_price_table %>% 
+	ggplot() + 
+	aes(x = date, y = mean_price) + 
+	geom_line()
+```
+
+## Exercise 7
+
+```{r, warning = FALSE, echo = FALSE}
+
+current_table <- calendar %>% 
+	filter(!is.na(price), 
+		   date < lubridate::today(),
+		   date > lubridate::mdy('6/1/2016')) %>%
+	group_by(listing_id) %>% 
+	summarise(last_active = max(date))
+
+recent_listings <- listings %>% 
+	left_join(current_table, by = c('id' = 'listing_id')) %>% 
+	filter(last_active > lubridate::mdy('6/1/2016'))
+
+summary_table <- recent_listings %>% 
+	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
+		   price_per = price / accommodates,
+		   weekly_price = weekly_price %>% gsub('\\$|,', '',.) %>% as.numeric(),
+		   weekly_price_per = weekly_price / accommodates)  %>% 
+	group_by(neighbourhood, property_type) %>% 
+	summarize(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
+			  price_per = mean(price_per, na.rm = TRUE),
+			  weekly_price_per = mean(weekly_price_per, na.rm = T),
+			  capacity = sum(beds)) %>% 
+	ungroup()
+```
+
+Using the `summary_table` object you created earlier, make a bar chart showing the number of **apartments** by neighbourhood. In this case, the correct `geom` to use is `geom_bar(stat = 'identity')`. 
+
+## Exercise 7 Sample Solution {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height = 300}
+summary_table %>% 
+	filter(property_type == 'Apartment') %>% 
+	ggplot() + 
+	aes(x = neighbourhood, y= n) + 
+	geom_bar(stat = 'identity')
+```
+
+## Let's Clean This Up a Bit {.smaller}
+
+```{r, warning = FALSE, out.width = 500, out.height = 300}
+summary_table %>% 
+	filter(property_type == 'Apartment') %>% 
+	ggplot() + 
+	###<b>
+	aes(x = reorder(neighbourhood, n), y=n) + 
+	coord_flip() + 
+	###</b>
+	geom_bar(stat = 'identity')
+```
+
+# Comparisons: Fill, Color, and Facets
+
+## From Exercise 7 {.smaller}
+```{r, warning = FALSE,  out.width = 500, out.height=300}
+summary_table %>% 
+	ggplot() + 
+	###<b>
+	aes(x = reorder(neighbourhood, n), y=n, fill = property_type) + 
+	###</b>
+	coord_flip() + 
+	geom_bar(stat = 'identity') 
+```
+
+## From Our First Plot {.smaller}
+```{r, warning = FALSE,  out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	### <b>
+	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
+	### </b>
+	geom_point(alpha = .5) + 
+	theme_bw() + 
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
+```
+
+## From Our First Plot {.smaller}
+```{r, warning = FALSE,  out.width = 500, out.height=300}
+listings %>% 
+	filter(number_of_reviews < 100) %>%
+	ggplot() + 
+	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
+	geom_point(alpha = .5) + 
+	theme_bw() + 
+	### <b>
+	facet_wrap(~property_type) + 
+	### </b>
+	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
+```
+
+
+# Mini-Project
+
+## Project Description
+
+- Working with your partner, you are going to make a business intelligence (BI) dashboard for AirBnB, using the EDA skills we have developed in this session. 
+- You will use this dashboard to lead a meeting with decision-makers on where to prioritize host recruitment efforts. 
+- It will look like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/dashboard.html) -- but better! 
+
+## Instructions {.smaller}
+
+1. Open `wrangle_viz/dashboard.Rmd`
+2. Click the `knit` button at the top of RStudio and observe the result. If you see a dashboard, then are good to go. 
+3. Modify the dashboard: 
+	- Include your names in the `author` metadata up top
+	- Write code for data preparation and visualizations. 
+	- Include all your code in the `R` "code chunks" that begin with ````{r}`
+	- Add commentary in the indicated area
+	- `knit` your dashboard again. Save the `.Rmd` file. We're coming back to it this afternoon! 
+4. **FILL OUT [FEEDBACK SURVEY](https://goo.gl/forms/7rqAPMn37DzRqWko2)**
+5. **Resources:** Data wrangling [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf), `R` graphics [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), [`R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/)
+	
+# Additional Resources
+
+## Map of the Tidyverse
+
+```{r, echo = FALSE, out.width = "700px"}
+knitr::include_graphics("https://rviews.rstudio.com/post/2017-06-09-What-is-the-tidyverse_files/tidyverse1.png")
+```
+
+## Guides and Cheatsheets
+
+- Data Wrangling [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+- `ggplot2` [Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+- [The `R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/), by Winston Chang
+
+## Books and Courses
+
+- Jenny Bryan's fabulous [course website](http://stat545.com/) on introductory, reproducible data analysis with `R`
+- [R for Data Science](http://r4ds.had.co.nz/), a book on the Tidyverse by Hadley Wickham and Garrett Grolemund
+- Modules 2-4 of ["Computing in Optimization and Statistics"](https://philchodrow.github.io/cos_2018/) (15.S60) covers similar material in more breadth and depth.
+
+## Other Topics in `R`
+
+- [Reproducible research](https://simplystatistics.org/2015/12/11/instead-of-research-on-reproducibility-just-do-reproducible-research/) with [RMarkdown](http://rmarkdown.rstudio.com/)
+- Interactive data applications with [Shiny](https://shiny.rstudio.com/)
+- Automate long data science pipelines with GNU [make](http://stat545.com/automation04_make-activity.html)
+- Develop your own `R` [packages](http://r-pkgs.had.co.nz/)
+- Some news on [`R`](https://www.r-bloggers.com/),  [statistics](https://simplystatistics.org/), and [data science at FiveThirtyEight](http://fivethirtyeight.com/) (they use `R`!)
+
+
+

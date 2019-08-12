@@ -12,3 +12,4 @@ todo.txt
 *slides_files*
 Gemfile.lock
 _site/
+*.RDS
