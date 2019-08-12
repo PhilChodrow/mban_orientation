@@ -6,12 +6,11 @@ output:
   revealjs::revealjs_presentation:
     slide_level: 2
     css: slides.css
-    self_contained: false
+    self_contained: true
     reveal_options:
       slideNumber: false
       controls: false
       center: true
-    reveal_plugins: ["notes"]
 ---
 
 ```{r setup, include=FALSE}
