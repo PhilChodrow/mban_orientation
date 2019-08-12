@@ -11,17 +11,20 @@ In our first two days, we will learn how to perform data analysis in R and solve
 
 ## Preassignment
 
-**You must complete the [preassignment](https://philchodrow.github.io/mban_orientation/preassignments/preassignment1/index.html) prior to the session.** In this preassignment, you will install and configure version control tools (git and GitHub); data analysis tools (R and RStudio); and optimization tools (Julia, JuMP, and Gurobi). We will use all of these tools extensively during our time together. 
+**You must complete the [preassignment](https://philchodrow.github.io/mban_orientation/1_orientation/preassignment/index.html) prior to the session.** In this preassignment, you will install and configure version control tools (git and GitHub); data analysis tools (R and RStudio); and optimization tools (Julia, JuMP, and Gurobi). We will use all of these tools extensively during our time together. 
 
 Please note that this first preassignment is especially long: plan to allow 2 hours to complete the entire preassignment, and get started **at least two days** prior to the beginning of the session. **We will not be troubleshooting software installation issues during class time.**
 
 ## Session Materials
 
-1. [Introduction to Data Science in R](https://philchodrow.github.io/mban_orientation/data_science_intro/index.html)
-2. [Introduction to Optimization in Julia](https://philchodrow.github.io/mban_orientation/optimization_intro/index.html)
+0. [Introduction: Why Code?](https://philchodrow.github.io/mban_orientation/1_orientation/0_intro/introduction.html)
+1. [Version Control and Git]
+2. [Introduction to Data Science in R](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/index.html)
+3. [Introduction to Optimization in Julia](https://philchodrow.github.io/mban_orientation/1_orientation/3_optimization/index.html)
 
 # SIP Week 
-[Introduction to Machine Learning and Data Analytics in `Python`](https://philchodrow.github.io/mban_orientation/python_intro/index.html)
+
+1. [Introduction to Machine Learning and Data Analytics in `Python`](https://philchodrow.github.io/mban_orientation/python_intro/index.html)
 
 # MBAn R Ninja Workshop
 
