@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Phil Chodrow, MIT" />
+  <title>Exploratory Data Analysis in R</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="slides_files/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="slides_files/reveal.js-3.3.0.1/css/theme/simple.css" id="theme">
+
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <link rel="stylesheet" href="slides.css"/>
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Exploratory Data Analysis in R</h1>
+    <h2 class="author">Phil Chodrow, MIT</h2>
+    <h3 class="date">Tuesday, August 27th, 2018</h3>
+</section>
+
+<section><section id="introduction" class="title-slide slide level1"><h1>Introduction</h1></section><section id="data-science-is" class="slide level2">
+<h2>Data Science Is:</h2>
+<ul>
+<li>Gathering <strong>data that matters.</strong></li>
+<li>Asking <strong>questions that matter</strong> about your data.</li>
+<li><strong>Choosing appropriate methods</strong> to answer those questions.</li>
+<li><strong>Implementing solutions</strong> that meets stakeholder needs.</li>
+</ul>
+</section><section id="my-favorite-picture" class="slide level2">
+<h2>My Favorite Picture</h2>
+<p><img src="figs/spongebob_hopeful.jpg" width="500" height="400" style="display: block; margin: auto;" /></p>
+</section><section id="my-favorite-picture-1" class="slide level2">
+<h2>My Favorite Picture</h2>
+<div class="fragment">
+<p><img src="figs/patrickstewartwide.jpg" width="800" height="400" style="display: block; margin: auto;" /></p>
+</div>
+</section><section id="my-favorite-second-favorite-picture" class="slide level2">
+<h2>My <del>Favorite</del> Second Favorite Picture</h2>
+<div class="fragment">
+<p><img src="figs/gettyimages-871679690-1510950426.jpg" width="800" height="500" style="display: block; margin: auto;" /></p>
+</div>
+</section><section id="my-favorite-third-favorite-picture" class="slide level2">
+<h2>My <del>Favorite</del> Third Favorite Picture</h2>
+<p><img src="https://ismayc.github.io/moderndiver-book/images/tidy1.png" width="800" height="300" style="display: block; margin: auto;" /></p>
+<p>(<em>Image credit: Hadley Wickham</em>)</p>
+</section><section id="section" class="slide level2">
+<h2>…</h2>
+<p><img src="figs/spongebob_sad.png" width="500" height="400" style="display: block; margin: auto;" /></p>
+</section><section id="my-third-favorite-picture" class="slide level2">
+<h2>My Third Favorite Picture:</h2>
+<p><img src="https://ismayc.github.io/moderndiver-book/images/tidy1.png" width="800" height="300" style="display: block; margin: auto;" /></p>
+<ul>
+<li class="fragment"><strong>Exploratory data analysis (EDA)</strong> covers roughly the “transform” and “visualize” steps.</li>
+</ul>
+</section></section>
+<section><section id="eda-is" class="title-slide slide level1"><h1>EDA is…</h1></section><section id="getting-to-know-your-data" class="slide level2">
+<h2>…getting to know your Data</h2>
+<p><img src="https://vignette.wikia.nocookie.net/memoryalpha/images/4/4f/Data%2C_2366.jpg/revision/latest?cb=20130529102644&path-prefix=en" width="500" height="650" style="display: block; margin: auto;" /></p>
+</section><section id="what-well-do-this-morning" class="slide level2">
+<h2>What We’ll Do This Morning</h2>
+<ul>
+<li class="fragment">Ask an impactful question of a real data set.</li>
+<li class="fragment">Use EDA to propose candidate answers.</li>
+<li class="fragment">Create a simple business intelligence (BI) dashboard to guide decision-makers.</li>
+</ul>
+</section><section id="the-case" class="slide level2">
+<h2>The Case</h2>
+<p><img src="https://imgs.6sqft.com/wp-content/uploads/2017/03/10102308/airbnb-logo.jpg" width="700" height="500" style="display: block; margin: auto;" /></p>
+</section><section id="the-case-1" class="slide level2">
+<h2>The Case</h2>
+<div id="left">
+<p><img src="figs/airbnb_map.png" width="350" height="500" style="display: block; margin: auto;" /></p>
+</div>
+<div id="right">
+<ul>
+<li>AirBnB can maximize its business by ensuring a strong supply of diverse hosts in various neighborhoods.</li>
+<li>Their question for you: <strong><em>Where should we recruit more hosts?</em></strong></li>
+<li>They have given you a complex, multi-part data set to study using <code>R</code>!</li>
+</ul>
+</div>
+</section><section id="fyi-base-r-and-the-tidyverse" class="slide level2">
+<h2>FYI: Base <code>R</code> and the Tidyverse</h2>
+<ul>
+<li>You can do EDA in “base” <code>R</code> without any packages.</li>
+<li>But base <code>R</code> is…not a good programming language.</li>
+<li>We will use the <strong>Tidyverse</strong>, a set of packages that promote code which is easy to <strong>write</strong> and <strong>read</strong>, highly <strong>performant</strong>, and <strong>consistent</strong> through the data scientific pipeline.</li>
+<li>The Tidyverse has been extensively developed by <strong>Hadley Wickham</strong> and collaborators over the last decade.</li>
+</ul>
+<p>If you have prior experience in <code>R</code> and did not begin all your scripts with <code>library(dplyr)</code>….</p>
+</section><section id="fyi-base-r-and-the-tidyverse-1" class="slide level2">
+<h2>FYI: Base <code>R</code> and the Tidyverse</h2>
+<p><img src="figs/forget.jpeg" width="500" height="500" style="display: block; margin: auto;" /></p>
+</section></section>
+<section><section id="getting-started" class="title-slide slide level1"><h1>Getting Started</h1></section><section id="case-study" class="slide level2 noborder">
+<h2>Case Study</h2>
+<ol type="1">
+<li>Inspect the data</li>
+<li><code>Filter()</code>, <code>sort()</code>, and <code>select()</code></li>
+</ol>
+</section><section id="pipes-for-your-data" class="slide level2">
+<h2>Pipes for your Data</h2>
+<p><img src="figs/Data_with_pipe.jpg" width="500" height="500" style="display: block; margin: auto;" /></p>
+</section><section id="pipes-for-your-data-1" class="slide level2">
+<h2>Pipes for your Data</h2>
+<p><img src="https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/3632/small/1419844831/magrittr.png" width="200" height="200" style="display: block; margin: auto;" /></p>
+<ul>
+<li class="fragment"><code>x %&gt;% f()</code> <span class="math inline">\(\Longleftrightarrow\)</span> <code>f(x)</code></li>
+<li class="fragment"><em>“Take <code>x</code>, and <strong>then</strong> do <code>f</code> to it”</em></li>
+<li class="fragment"><code>x %&gt;% f(y)</code> <span class="math inline">\(\Longleftrightarrow\)</span> <code>f(x,y)</code></li>
+<li class="fragment"><code>x %&gt;% f(y) %&gt;% g(z)</code> <span class="math inline">\(\Longleftrightarrow\)</span> <code>g(f(x,y),z)</code></li>
+<li class="fragment"><em>“Take <code>x</code>, <strong>then</strong> do <code>f</code> with option <code>y</code>, <strong>then</strong> do <code>g</code> with option <code>z</code>…”</em></li>
+</ul>
+</section><section id="some-simple-examples" class="slide level2">
+<h2>Some Simple Examples</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># familiar</span></a>
+<a class="sourceLine" id="cb1-2" title="2">listings <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">glimpse</span>()  <span class="co"># = glimpse(listings)</span></a>
+<a class="sourceLine" id="cb1-3" title="3">listings <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()     <span class="co"># = head(listings)</span></a>
+<a class="sourceLine" id="cb1-4" title="4">listings <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">colnames</span>() <span class="co"># = colnames(listings)</span></a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co"># get all columns with &quot;review_scores&quot; in the column name</span></a>
+<a class="sourceLine" id="cb1-7" title="7">listings <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&#39;review_scores&#39;</span>)) </a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="co"># what should this return? </span></a>
+<a class="sourceLine" id="cb1-9" title="9">listings <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&#39;review_scores&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">colnames</span>()</a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co"># compare: colnames(select(listings, contains(&#39;review_scores&#39;)))</span></a></code></pre></div>
+<p>Let’s try this out – back to the case study!</p>
+</section></section>
+<section><section id="summarising-data" class="title-slide slide level1"><h1>Summarising Data</h1></section><section id="data-summaries" class="slide level2">
+<h2>Data Summaries</h2>
+<ul>
+<li>You should usually summarise your data before turning on the fancy algorithms – sometimes the story is clear.</li>
+</ul>
+<p><img src="http://writingcenter.unc.edu/files/2012/07/chart-figure-3.png" width="700" height="400" style="display: block; margin: auto;" /></p>
+</section><section id="basic-data-summaries" class="slide level2">
+<h2>Basic Data Summaries</h2>
+<p>Go from this:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: left;">neighbourhood_cleansed</th>
+<th style="text-align: right;">review_scores_rating</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">12147973</td>
+<td style="text-align: left;">Roslindale</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3075044</td>
+<td style="text-align: left;">Roslindale</td>
+<td style="text-align: right;">94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">6976</td>
+<td style="text-align: left;">Roslindale</td>
+<td style="text-align: right;">98</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1436513</td>
+<td style="text-align: left;">Roslindale</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7651065</td>
+<td style="text-align: left;">Roslindale</td>
+<td style="text-align: right;">99</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">12386020</td>
+<td style="text-align: left;">Roslindale</td>
+<td style="text-align: right;">100</td>
+</tr>
+</tbody>
+</table>
+</section><section id="basic-data-summaries-1" class="slide level2">
+<h2>Basic Data Summaries</h2>
+<p>…to this:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">neighbourhood_cleansed</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean_rating</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Leather District</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">98.33333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Roslindale</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">95.38000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">West Roxbury</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">95.21212</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">South Boston Waterfront</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">94.43103</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jamaica Plain</td>
+<td style="text-align: right;">343</td>
+<td style="text-align: right;">94.15932</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Longwood Medical Area</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">94.00000</td>
+</tr>
+</tbody>
+</table>
+</section><section id="summaries-the-tidy-way" class="slide level2">
+<h2>Summaries the Tidy Way</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># Compute a summary statistic</span></a>
+<a class="sourceLine" id="cb2-2" title="2">data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(<span class="dt">measure =</span> <span class="kw">formula</span>(col1, col2))</a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="co"># Make a new column</span></a>
+<a class="sourceLine" id="cb2-5" title="5">data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">new_col =</span> <span class="kw">formula</span>(old_col1, old_col2))</a>
+<a class="sourceLine" id="cb2-6" title="6"></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co"># Compute a summary statistic for each group</span></a>
+<a class="sourceLine" id="cb2-8" title="8">data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">group_col =</span> <span class="kw">formula</span>(old_col1, old_col2) )</a>
+<a class="sourceLine" id="cb2-10" title="10">    <span class="kw">group_by</span>(group_col) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">measure =</span> <span class="kw">formula</span>(col1, col2))</a></code></pre></div>
+</section></section>
+<section><section id="keeping-current" class="title-slide slide level1"><h1>Keeping Current</h1><ol type="1">
+<li>More practice with <code>filter</code> and <code>summarise</code></li>
+<li><code>join</code>ing data</li>
+</ol></section><section id="how-recent-is-our-info" class="slide level2">
+<h2>How Recent is our Info?</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">calendar <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">earliest =</span> <span class="kw">min</span>(date), </a>
+<a class="sourceLine" id="cb3-3" title="3">              <span class="dt">latest =</span> <span class="kw">max</span>(date))</a></code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   earliest   latest    
+##   &lt;date&gt;     &lt;date&gt;    
+## 1 2016-09-06 2017-09-05</code></pre>
+<p>But some of these listings may be “zombies” without recent availability. How can we include only listings with availability from a certain time period?</p>
+</section><section id="the-approach" class="slide level2">
+<h2>The Approach</h2>
+<ol type="1">
+<li>Operate on the <code>calendar</code> table (exercise)</li>
+<li><code>join</code> that information to the <code>listings</code> table (together)</li>
+<li>Filter the listings table accordingly (together)</li>
+</ol>
+</section><section id="relational-data" class="slide level2">
+<h2>Relational Data</h2>
+<p>The information we need is distributed between two tables – how can we get there?</p>
+<p>We need a <strong>key</strong> column that tells us which <code>calendar</code> rows correspond to which <code>listings</code>.</p>
+<blockquote>
+<p><code>listings$id</code> corresponds to <code>calendar_listing$id</code></p>
+</blockquote>
+</section><section id="join" class="slide level2">
+<h2><code>join</code></h2>
+<p>The <code>join</code> family of functions lets us add columns from one table to another using a key.</p>
+<ul>
+<li><code>x %&gt;% left_join(y)</code> : most common, keeps all rows of <code>x</code> but not necessarily <code>y</code>.</li>
+<li><code>x %&gt;% right_join(y)</code> : keeps all rows of <code>y</code> but not necessarily <code>x</code>.<br />
+</li>
+<li><code>x %&gt;% outer_join(y)</code> : keeps all rows of both <code>x</code> and <code>y</code></li>
+<li><code>x %&gt;% full_join(y)</code> : keeps only rows of <code>x</code> that match in <code>y</code> and vice versa.</li>
+</ul>
+<p>We’ll use <code>left_join</code> for this case – let’s try it in the case study.</p>
+</section></section>
+<section><section id="getting-visual" class="title-slide slide level1"><h1>Getting Visual</h1><ol type="1">
+<li>Graphical Excellence</li>
+<li>The Grammar of Graphics</li>
+<li><code>ggplot2</code></li>
+</ol></section><section id="my-third-favorite-picture-1" class="slide level2">
+<h2>My Third Favorite Picture:</h2>
+<p><img src="https://ismayc.github.io/moderndiver-book/images/tidy1.png" width="800" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="graphical-excellence" class="slide level2">
+<h2>Graphical Excellence</h2>
+<p><img src="https://www.edwardtufte.com/bboard/images/0003VL-9150.jpeg" width="900" height="550" style="display: block; margin: auto;" /></p>
+</section><section id="graphical-excellence-1" class="slide level2">
+<h2>Graphical Excellence</h2>
+<blockquote>
+<p>Graphical excellence is the <strong>well-designed presentation of interesting data</strong> – a matter of substance, of statistics, and of design. Graphical excellence consists of complex ideas communicated with <strong>clarity</strong>, <strong>precision</strong>, and <strong>efficiency</strong>.</p>
+</blockquote>
+<p>– <em>Edward Tufte</em></p>
+</section><section id="graphical-excellence-edwardtufte.com" class="slide level2">
+<h2>Graphical Excellence (<a href="https://www.edwardtufte.com/bboard/images/0003Cs-8047.GIF">edwardtufte.com</a>)</h2>
+<p><img src="https://www.edwardtufte.com/bboard/images/0003Cs-8047.GIF" width="1000" height="600" style="display: block; margin: auto;" /></p>
+</section><section id="the-grammar-of-graphics" class="slide level2">
+<h2>The Grammar of Graphics</h2>
+<p>A <strong>grammar</strong> is a set of components (ingredients) that you can combine to create complex structures (sentences, recipes, data visualizations). In baking….</p>
+<div id="left">
+<ul>
+<li><strong>A body</strong> – typically some kind of flour)</li>
+<li><strong>Binder</strong> – eggs, oil, butter, applesauce</li>
+<li><strong>A rising agent</strong> – yeast, baking soda, baking powder</li>
+<li><strong>Flavoring</strong> – sugar, salt, chocolate, vanilla</li>
+<li>Get it wrong, and…</li>
+</ul>
+</div>
+<div id="right">
+<div class="fragment">
+<p><img src="figs/mary.png" width="400" height="400" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</section><section id="the-grammar-of-graphics-1" class="slide level2">
+<h2>The Grammar of Graphics</h2>
+<ul>
+<li>Puts the <code>gg</code> in <code>ggplot2</code>.</li>
+<li>Formulated by Leland Wilkinson.</li>
+<li>Implemented in code by Hadley Wickham, now part of the <code>tidyverse</code></li>
+</ul>
+<div id="left">
+<p><img src="http://ecx.images-amazon.com/images/I/41ZIHtc9TJL._SX327_BO1,204,203,200_.jpg" width="300px" height="350" style="display: block; margin: auto;" /></p>
+</div>
+<div id="right">
+<p><img src="http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama2.png" width="300px" height="350" style="display: block; margin: auto;" /></p>
+</div>
+</section><section id="ingredients-of-a-data-visualization" class="slide level2">
+<h2>Ingredients of a data visualization</h2>
+<ul>
+<li class="fragment"><strong><code>Data</code></strong>: almost always a <code>data_frame</code></li>
+<li class="fragment"><strong><code>Aes</code></strong>thetic mapping: relation of data to chart components.</li>
+<li class="fragment"><strong><code>Geom</code></strong>etry: specific visualization type? E.g. line, bar, heatmap?</li>
+<li class="fragment"><strong><code>Stat</code></strong>istical transformation: how should the data be transformed or aggregated before visualizing?</li>
+<li class="fragment"><strong><code>Theme</code></strong>: how should the non-data parts of the plot look?</li>
+<li class="fragment">Misc. other options.</li>
+<li class="fragment">(<code>+</code> plays the same role in <code>ggplot2</code> that <code>%&gt;%</code> does in data manipulation.)</li>
+</ul>
+</section><section id="first-plot" class="slide level2 smaller">
+<h2>First Plot</h2>
+<p>Does getting <strong>lots</strong> of reviews usually mean you get <strong>good</strong> reviews?</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>()</a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-26-1.png" width="600" height="350px" style="display: block; margin: auto;" /></p>
+</section><section id="first-plot-1" class="slide level2 smaller">
+<h2>First Plot</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating)</a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-27-1.png" width="600" height="350px" style="display: block; margin: auto;" /></p>
+</section><section id="first-plot-2" class="slide level2 smaller">
+<h2>First Plot</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="st">    </span><span class="kw">geom_point</span>()</a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-28-1.png" width="600" height="350px" style="display: block; margin: auto;" /></p>
+</section><section id="first-plot-3" class="slide level2 smaller">
+<h2>First Plot</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.2</span>) </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-29-1.png" width="600" height="350px" style="display: block; margin: auto;" /></p>
+</section><section id="first-plot-4" class="slide level2 smaller">
+<h2>First Plot</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="st">    </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-30-1.png" width="600" height="350px" style="display: block; margin: auto;" /></p>
+</section><section id="first-plot-5" class="slide level2 smaller">
+<h2>First Plot</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="st">    </span><span class="kw">filter</span>(number_of_reviews <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">## </span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="st">    </span><span class="kw">theme_bw</span>() </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-31-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="first-plot-6" class="slide level2 smaller">
+<h2>First Plot</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="st">    </span><span class="kw">filter</span>(number_of_reviews <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-6" title="6"><span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-7" title="7"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;Number of Reviews&#39;</span>, <span class="dt">y=</span><span class="st">&#39;Review Score&#39;</span>, <span class="dt">title=</span><span class="st">&#39;Review Volume and Review Quality&#39;</span>) </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-32-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="first-plot-7" class="slide level2 smaller">
+<h2>First Plot</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="st">    </span><span class="kw">filter</span>(number_of_reviews <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-5" title="5"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.2</span>, <span class="dt">color =</span> <span class="st">&#39;firebrick&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="co">##</span></a>
+<a class="sourceLine" id="cb12-6" title="6"><span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-7" title="7"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;Number of Reviews&#39;</span>, <span class="dt">y=</span><span class="st">&#39;Review Score&#39;</span>,<span class="dt">title=</span><span class="st">&#39;Review Volume and Review Quality&#39;</span>) </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-33-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="changing-aesthetics" class="slide level2 smaller">
+<h2>Changing Aesthetics</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="st">    </span><span class="kw">filter</span>(number_of_reviews <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> review_scores_value,    <span class="co">##</span></a>
+<a class="sourceLine" id="cb13-5" title="5">        <span class="dt">y =</span> review_scores_location, <span class="co">##</span></a>
+<a class="sourceLine" id="cb13-6" title="6">        <span class="dt">size =</span> number_of_reviews) <span class="op">+</span><span class="st"> </span><span class="co">## </span></a>
+<a class="sourceLine" id="cb13-7" title="7"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.2</span>, <span class="dt">color =</span> <span class="st">&#39;firebrick&#39;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-8" title="8"><span class="st">    </span><span class="kw">theme_bw</span>() </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-34-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="as-a-heatmap" class="slide level2 smaller">
+<h2>As a Heatmap</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="st">    </span><span class="kw">filter</span>(number_of_reviews <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> review_scores_value, </a>
+<a class="sourceLine" id="cb14-5" title="5">        <span class="dt">y =</span> review_scores_location, </a>
+<a class="sourceLine" id="cb14-6" title="6">        <span class="dt">fill =</span> number_of_reviews) <span class="op">+</span><span class="st"> </span><span class="co">##</span></a>
+<a class="sourceLine" id="cb14-7" title="7"><span class="st">    </span><span class="kw">geom_tile</span>() <span class="op">+</span><span class="st">                   </span><span class="co">##</span></a>
+<a class="sourceLine" id="cb14-8" title="8"><span class="st">    </span><span class="kw">theme_bw</span>() </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-35-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="exercise-6" class="slide level2">
+<h2>Exercise 6</h2>
+<p>The following code computes the average price of all listings on each day in the data set:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">average_price_table &lt;-<span class="st"> </span>calendar <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">price =</span> price <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">gsub</span>(<span class="st">&#39;</span><span class="ch">\\</span><span class="st">$|,&#39;</span>, <span class="st">&#39;&#39;</span>,.) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="st">    </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">mean_price =</span> <span class="kw">mean</span>(price, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<p>Use <code>geom_line()</code> to visualize these prices with time on the <code>x</code>-axis and price on the <code>y</code>-axis.</p>
+</section><section id="exercise-6-sample-solution" class="slide level2">
+<h2>Exercise 6 Sample Solution</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"> average_price_table <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> date, <span class="dt">y =</span> mean_price) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="st">    </span><span class="kw">geom_line</span>()</a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-37-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="exercise-7" class="slide level2">
+<h2>Exercise 7</h2>
+<p>Using the <code>summary_table</code> object you created earlier, make a bar chart showing the number of <strong>apartments</strong> by neighbourhood. In this case, the correct <code>geom</code> to use is <code>geom_bar(stat = 'identity')</code>.</p>
+</section><section id="exercise-7-sample-solution" class="slide level2 smaller">
+<h2>Exercise 7 Sample Solution</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">summary_table <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="st">    </span><span class="kw">filter</span>(property_type <span class="op">==</span><span class="st"> &#39;Apartment&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> neighbourhood, <span class="dt">y=</span> n) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-5" title="5"><span class="st">    </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&#39;identity&#39;</span>)</a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-39-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="lets-clean-this-up-a-bit" class="slide level2 smaller">
+<h2>Let’s Clean This Up a Bit</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">summary_table <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="st">    </span><span class="kw">filter</span>(property_type <span class="op">==</span><span class="st"> &#39;Apartment&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(neighbourhood, n), <span class="dt">y=</span>n) <span class="op">+</span><span class="st"> </span><span class="co">##</span></a>
+<a class="sourceLine" id="cb18-5" title="5"><span class="st">    </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st">                            </span><span class="co">##</span></a>
+<a class="sourceLine" id="cb18-6" title="6"><span class="st">    </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&#39;identity&#39;</span>)</a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-40-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section></section>
+<section><section id="comparisons-fill-color-and-facets" class="title-slide slide level1"><h1>Comparisons: Fill, Color, and Facets</h1></section><section id="from-exercise-7" class="slide level2 smaller">
+<h2>From Exercise 7</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1">summary_table <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-2" title="2"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-3" title="3"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(neighbourhood, n), <span class="dt">y=</span>n, <span class="dt">fill =</span> property_type) <span class="op">+</span><span class="st"> </span><span class="co">##</span></a>
+<a class="sourceLine" id="cb19-4" title="4"><span class="st">    </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb19-5" title="5"><span class="st">    </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&#39;identity&#39;</span>) </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-41-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="from-our-first-plot" class="slide level2 smaller">
+<h2>From Our First Plot</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="st">    </span><span class="kw">filter</span>(number_of_reviews <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, </a>
+<a class="sourceLine" id="cb20-5" title="5">        <span class="dt">y =</span> review_scores_rating, </a>
+<a class="sourceLine" id="cb20-6" title="6">        <span class="dt">color =</span> property_type) <span class="op">+</span><span class="st"> </span><span class="co">## </span></a>
+<a class="sourceLine" id="cb20-7" title="7"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.5</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-8" title="8"><span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-9" title="9"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;Number of Reviews&#39;</span>, <span class="dt">y=</span><span class="st">&#39;Review Score&#39;</span>, </a>
+<a class="sourceLine" id="cb20-10" title="10">         <span class="dt">title=</span><span class="st">&#39;Review Volume and Review Quality&#39;</span>) </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-42-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section><section id="from-our-first-plot-1" class="slide level2 smaller">
+<h2>From Our First Plot</h2>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">listings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="st">    </span><span class="kw">filter</span>(number_of_reviews <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-4" title="4"><span class="st">    </span><span class="kw">aes</span>(<span class="dt">x =</span> number_of_reviews, <span class="dt">y =</span> review_scores_rating, <span class="dt">color =</span> property_type) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-5" title="5"><span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">.5</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-6" title="6"><span class="st">    </span><span class="kw">theme_bw</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb21-7" title="7"><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>property_type) <span class="op">+</span><span class="st"> </span><span class="co">##</span></a>
+<a class="sourceLine" id="cb21-8" title="8"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;Number of Reviews&#39;</span>, <span class="dt">y=</span><span class="st">&#39;Review Score&#39;</span>, <span class="dt">title=</span><span class="st">&#39;Review Volume and Review Quality&#39;</span>) </a></code></pre></div>
+<p><img src="slides_files/figure-revealjs/unnamed-chunk-43-1.png" width="500" height="300" style="display: block; margin: auto;" /></p>
+</section></section>
+<section><section id="mini-project" class="title-slide slide level1"><h1>Mini-Project</h1></section><section id="project-description" class="slide level2">
+<h2>Project Description</h2>
+<ul>
+<li>Working with your partner, you are going to make a business intelligence (BI) dashboard for AirBnB, using the EDA skills we have developed in this session.</li>
+<li>You will use this dashboard to lead a meeting with decision-makers on where to prioritize host recruitment efforts.</li>
+<li>It will look like <a href="https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/dashboard.html">this</a> – but better!</li>
+</ul>
+</section><section id="instructions" class="slide level2 smaller">
+<h2>Instructions</h2>
+<ol type="1">
+<li>Open <code>wrangle_viz/dashboard.Rmd</code></li>
+<li>Click the <code>knit</code> button at the top of RStudio and observe the result. If you see a dashboard, then are good to go.</li>
+<li>Modify the dashboard:
+<ul>
+<li>Include your names in the <code>author</code> metadata up top</li>
+<li>Write code for data preparation and visualizations.</li>
+<li>Include all your code in the <code>R</code> “code chunks” that begin with ```<code>{r}</code></li>
+<li>Add commentary in the indicated area</li>
+<li><code>knit</code> your dashboard again. Save the <code>.Rmd</code> file. We’re coming back to it this afternoon!</li>
+</ul></li>
+<li><strong>FILL OUT <a href="https://goo.gl/forms/7rqAPMn37DzRqWko2">FEEDBACK SURVEY</a></strong></li>
+<li><strong>Resources:</strong> Data wrangling <a href="https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf">cheatsheet</a>, <code>R</code> graphics <a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">cheatsheet</a>, <a href="http://www.cookbook-r.com/Graphs/"><code>R</code> Graphics Cookbook</a></li>
+</ol>
+</section></section>
+<section><section id="additional-resources" class="title-slide slide level1"><h1>Additional Resources</h1></section><section id="map-of-the-tidyverse" class="slide level2">
+<h2>Map of the Tidyverse</h2>
+<p><img src="https://rviews.rstudio.com/post/2017-06-09-What-is-the-tidyverse_files/tidyverse1.png" width="700px" height="350px" style="display: block; margin: auto;" /></p>
+</section><section id="guides-and-cheatsheets" class="slide level2">
+<h2>Guides and Cheatsheets</h2>
+<ul>
+<li>Data Wrangling <a href="https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf">Cheatsheet</a></li>
+<li><code>ggplot2</code> <a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">Cheatsheet</a></li>
+<li><a href="http://www.cookbook-r.com/Graphs/">The <code>R</code> Graphics Cookbook</a>, by Winston Chang</li>
+</ul>
+</section><section id="books-and-courses" class="slide level2">
+<h2>Books and Courses</h2>
+<ul>
+<li>Jenny Bryan’s fabulous <a href="http://stat545.com/">course website</a> on introductory, reproducible data analysis with <code>R</code></li>
+<li><a href="http://r4ds.had.co.nz/">R for Data Science</a>, a book on the Tidyverse by Hadley Wickham and Garrett Grolemund</li>
+<li>Modules 2-4 of <a href="https://philchodrow.github.io/cos_2018/">“Computing in Optimization and Statistics”</a> (15.S60) covers similar material in more breadth and depth.</li>
+</ul>
+</section><section id="other-topics-in-r" class="slide level2">
+<h2>Other Topics in <code>R</code></h2>
+<ul>
+<li><a href="https://simplystatistics.org/2015/12/11/instead-of-research-on-reproducibility-just-do-reproducible-research/">Reproducible research</a> with <a href="http://rmarkdown.rstudio.com/">RMarkdown</a></li>
+<li>Interactive data applications with <a href="https://shiny.rstudio.com/">Shiny</a></li>
+<li>Automate long data science pipelines with GNU <a href="http://stat545.com/automation04_make-activity.html">make</a></li>
+<li>Develop your own <code>R</code> <a href="http://r-pkgs.had.co.nz/">packages</a></li>
+<li>Some news on <a href="https://www.r-bloggers.com/"><code>R</code></a>, <a href="https://simplystatistics.org/">statistics</a>, and <a href="http://fivethirtyeight.com/">data science at FiveThirtyEight</a> (they use <code>R</code>!)</li>
+</ul>
+</section><section id="some-cool-r-tricks" class="slide level2">
+<h2>Some Cool <code>R</code> Tricks</h2>
+<ul>
+<li><a href="http://timelyportfolio.github.io/rCharts_nyt_home_price/">Literate Documents</a></li>
+<li><a href="http://jkunst.com/flexdashboard-highcharter-examples/pokemon/">Interactive Dashboards</a> with Shiny</li>
+<li><a href="https://philchodrow.github.io/post/2017-06-19-info-segregation-2/">Blogs and Websites</a></li>
+<li>These <a href="http://rmarkdown.rstudio.com/ioslides_presentation_format.html">slides</a> are written in <code>R</code></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="slides_files/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="slides_files/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: false,
+        // Display the page number of the current slide
+        slideNumber: false,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: true,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'slides_files/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>
