@@ -36,7 +36,7 @@ As a very basic use case, we are going to use git and GitHub to access the cours
 
 ###  Fork the Repo
 
-Navigate to `[https://github.com/PhilChodrow/mban_orientation](https://github.com/PhilChodrow/mban_orientation)`. Make sure you are signed in. Click the "Fork" button.
+Navigate to [`https://github.com/PhilChodrow/mban_orientation`](https://github.com/PhilChodrow/mban_orientation). Make sure you are signed in. Click the "Fork" button.
 
 ![](figs/fork.png)
 
@@ -97,7 +97,7 @@ If you encounter any error messages that you are unable to handle, please email 
 
 [Download](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.Rmd) and open the file `preassignment1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). The "Knit" button is the one circled in [this image](http://cinf401.artifice.cc/images/workflow-25.png).
 
-After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.html).  If your dashboard matches the example, move on to the next step. 
+After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.html).  If your dashboard matches the example, congratulations! You are up and running with R and RStudio. Move on to the next step. 
 
 ## If You Encounter Problems
 
