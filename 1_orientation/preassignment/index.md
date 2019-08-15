@@ -141,7 +141,7 @@ This might take quite a while to finish, so don’t worry if it looks like nothi
 
 To test if the package is installed correctly, run the following commands
 ```julia
-julia> using
+julia> using JuMP
 julia> m = Model()
 ```
 You should see the output below
