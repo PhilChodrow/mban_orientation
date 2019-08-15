@@ -67,7 +67,7 @@ In the "Summary" field, write "git preassignment." Then, click "Commit to master
 
 If that's what you see, congratulations! You are up and running with git and GitHub, and are ready to move on to the next phase of the preassignment. 
 
-## If You Encounter Problems
+**If You Encounter Problems**
 
 1. If you receive an error message, Google it. 
 2. If you tried that, write an email to `pchodrow@mit.edu` describing the problem in as much detail as possible, preferably including screenshots.  
@@ -99,7 +99,7 @@ If you encounter any error messages that you are unable to handle, please email 
 
 After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.html).  If your dashboard matches the example, congratulations! You are up and running with R and RStudio. Move on to the next step. 
 
-## If You Encounter Problems
+**If You Encounter Problems**
 
 1. If you receive an error message, Google it. 
 2. If you tried that, write an email to `pchodrow@mit.edu` describing the problem in as much detail as possible, preferably including screenshots.  
