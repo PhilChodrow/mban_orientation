@@ -10,21 +10,16 @@ This is the repository for a day-long intensive crash-course on data science in 
 
 *Image credit: Hadley Wickham*
 
-The course aims to familiarize students with the major stages of the circle of data science. The first part of the training covers data preparation and exploratory analysis, including import, data preparation/cleaning, and data visualization. The second part is an in-depth case study that reinforces these skills and introduces elementary statistical modeling methods in the context of answering a complex question using a real-world data set. 
-
-## Preassignment
-
-Prior to the session, you must complete the [preassignment](https://philchodrow.github.io/mban_orientation/preassignments/preassignment1/index.html). This is a set of instructions to install necessary software and ensure its proper functioning. 
+During orientation, we will focus on the tidying, transforming, and visualizing of data. These steps comprise what is often called Exploratory Data Analysis. We will also introduce RMarkdown as a convenient, flexible tool for communicating both code and analysis findings. 
 
 ## Session Materials
 
 The best way to interact with the materials is to `git clone` the repository, but you can also course access individual materials through the links below. 
 
-## Introduction
-
-- [Slides](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/introduction.html) ([source](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/introduction.Rmd))
 
 ## Exploratory Data Analysis in `R`
+
+Slides introduce some key concepts, while almost all coding work happens in the linked scripts. 
 
 - [Slides](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/slides.html) ([source](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/slides.Rmd))
 - [Script](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/full_script.R))
@@ -32,6 +27,7 @@ The best way to interact with the materials is to `git clone` the repository, bu
 
 ## Literate Programming with R Markdown
 
+We will step through `example_report.rmd` below to see how examples like these are constructed. 
 
 - [Example Report](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_report.html) ([source](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_report.rmd))
 - [Example Dashboard](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_dashboard.html#basic-analysis) ([source](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_dashboard.rmd))
