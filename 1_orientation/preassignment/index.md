@@ -34,7 +34,7 @@ As a very basic use case, we are going to use git and GitHub to access the cours
 2. *Clone* the forked repo from GitHub to your computer. Here's where you'll interact with the files. 
 3. After changing files, you can *push* your changes back up to GitHub. Let's see how this all works. 
 
-###  Fork the Repo
+**Fork the Repo**
 
 Navigate to [`https://github.com/PhilChodrow/mban_orientation`](https://github.com/PhilChodrow/mban_orientation). Make sure you are signed in. Click the "Fork" button.
 
@@ -42,7 +42,7 @@ Navigate to [`https://github.com/PhilChodrow/mban_orientation`](https://github.c
 
 You now have a copy of the mban_orientation repo under your own user account. 
 
-###  Clone the Repo
+**Clone the Repo**
 
 Now go to GitHub Desktop. Choose "Clone Repository," and click the URL tab.  In the first field, enter `your_name/mban_orientation`. In the second field, enter the location on your computer where you would like to place the materials. Your desktop is fine. 
 
@@ -50,11 +50,11 @@ Now go to GitHub Desktop. Choose "Clone Repository," and click the URL tab.  In 
 
 Take a moment to check that the folder containing some files has appeared in the specified location on your computer. 
 
-###  Edit Some Files
+**Edit Some Files**
 
 Open the file `1_orientation/1_git/README.md` in a text editor. Replace the first line of text with "# [your_name or GitHub username]". 
 
-###  Push Your Changes
+**Push Your Changes**
 
 Once you have made your changes in the file, check back on GitHub Desktop. The client has noticed that you have changed this file, and even gives a visual description of what change you made. 
 
