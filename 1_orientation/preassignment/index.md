@@ -28,21 +28,21 @@ During setup, you will be prompted to enter your username and password from GitH
 
 ## Test Your Installation
 
-As a very basic use case, we are going to use git and GitHub to access the course materials. The course materials live in a repository ("repo") on GitHub. There are three steps: 
+As a very basic use case, we are going to use git and GitHub to access the course materials. The course materials live in a repository ("repo") on GitHub. There are three main steps: 
 
 1. *Fork* the repo on GitHub. This creates a copy of the class repo under your own account. Changes you make here won't be reflected in the original repo -- think of it as your playground. 
 2. *Clone* the forked repo from GitHub to your computer. Here's where you'll interact with the files. 
 3. After changing files, you can *push* your changes back up to GitHub. Let's see how this all works. 
 
-### (1) Fork the Repo
+###  Fork the Repo
 
-Navigate to [https://github.com/PhilChodrow/mban_orientation](https://github.com/PhilChodrow/mban_orientation). Make sure you are signed in. Click the "Fork" button.
+Navigate to `[https://github.com/PhilChodrow/mban_orientation](https://github.com/PhilChodrow/mban_orientation)`. Make sure you are signed in. Click the "Fork" button.
 
 ![](figs/fork.png)
 
 You now have a copy of the mban_orientation repo under your own user account. 
 
-### (2) Clone the Repo
+###  Clone the Repo
 
 Now go to GitHub Desktop. Choose "Clone Repository," and click the URL tab.  In the first field, enter `your_name/mban_orientation`. In the second field, enter the location on your computer where you would like to place the materials. Your desktop is fine. 
 
@@ -50,11 +50,11 @@ Now go to GitHub Desktop. Choose "Clone Repository," and click the URL tab.  In 
 
 Take a moment to check that the folder containing some files has appeared in the specified location on your computer. 
 
-### (2.5) Edit Some Files
+###  Edit Some Files
 
 Open the file `1_orientation/1_git/README.md` in a text editor. Replace the first line of text with "# [your_name or GitHub username]". 
 
-### (3) Push Your Changes
+###  Push Your Changes
 
 Once you have made your changes in the file, check back on GitHub Desktop. The client has noticed that you have changed this file, and even gives a visual description of what change you made. 
 
@@ -62,14 +62,15 @@ Once you have made your changes in the file, check back on GitHub Desktop. The c
 
 In the "Summary" field, write "git preassignment." Then, click "Commit to master" and then "Push origin." To check that this worked: 
 
-1. Navigate back to your fork of the repository on GitHub.com. 
-2. Click through 1_orientation/1_git. The file README.md is rendered at the bottom. It should have your name on it. 
+1. Navigate back to your fork of the repository on GitHub.com in your browser. 
+2. Click through `1_orientation/1_git`. The file README.md is rendered at the bottom. It should have your name on it. 
 
 If that's what you see, congratulations! You are up and running with git and GitHub, and are ready to move on to the next phase of the preassignment. 
 
+## If You Encounter Problems
 
-
-
+1. If you receive an error message, Google it. 
+2. If you tried that, write an email to `pchodrow@mit.edu` describing the problem in as much detail as possible, preferably including screenshots.  
 
 
 # 2. Data Analysis: R and RStudio
@@ -85,8 +86,9 @@ If that's what you see, congratulations! You are up and running with git and Git
 ## Install Packages
 
 In the RStudio console, type 
-```{r}
-install.packages(c('tidyverse', 'knitr', 'flexdashboard', 'glmnet', 'ROCR', 'nycflights13', 'caToools', 'quantreg'))
+```R
+pkgs <- c('tidyverse', 'knitr', 'flexdashboard', 'nycflights13')
+install.packages(pkgs)
 ```
 
 If you encounter any error messages that you are unable to handle, please email Phil at `pchodrow@mit.edu`. 
@@ -95,7 +97,12 @@ If you encounter any error messages that you are unable to handle, please email 
 
 [Download](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.Rmd) and open the file `preassignment1.rmd` in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). The "Knit" button is the one circled in [this image](http://cinf401.artifice.cc/images/workflow-25.png).
 
-After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.html).  If your dashboard matches the example, move on to the next step. If not, please email Phil (`pchodrow@mit.edu`) with the error message you received. 
+After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/preassignment/preassignment1.html).  If your dashboard matches the example, move on to the next step. 
+
+## If You Encounter Problems
+
+1. If you receive an error message, Google it. 
+2. If you tried that, write an email to `pchodrow@mit.edu` describing the problem in as much detail as possible, preferably including screenshots.  
 
 
 # 3. Optimization: Julia and JuMP
@@ -222,3 +229,5 @@ The answer is 0.0
 ```
 
 If you see this output, everything is working correctly. If you see errors, one of the steps above may be incomplete. If you don't see any output, make sure that you have selected the notebook cell where you paste the code and try to run it again. 
+
+
