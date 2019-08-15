@@ -18,16 +18,15 @@ Please note that this first preassignment is especially long: plan to allow 2 ho
 ## Session Materials
 
 0. [Introduction: Why Code?](https://philchodrow.github.io/mban_orientation/1_orientation/0_intro/introduction.html)
-1. [Version Control and Git]
-2. [Introduction to Data Science in R](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/index.html)
-3. [Introduction to Optimization in Julia](https://philchodrow.github.io/mban_orientation/1_orientation/3_optimization/index.html)
+1. [Introduction to Data Science in R](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/index.html)
+2. [Introduction to Optimization in Julia](https://philchodrow.github.io/mban_orientation/1_orientation/3_optimization/index.html)
 
 # SIP Week 
 
-1. [Introduction to Machine Learning and Data Analytics in `Python`](https://philchodrow.github.io/mban_orientation/python_intro/index.html)
+1. Statistical Modeling and Machine Learning with R
+2. Advanced Topics: Navigating the Cycle of Data Science 
 
-# MBAn R Ninja Workshop
+# IAP 
 
-1. [Advanced Topics in Data Science](https://philchodrow.github.io/mban_orientation/advanced_topics/index.html)
-
+Special topics TBD
 
