@@ -1,1 +1,1 @@
-# Days 1 and 2 of MBAn Orientation at MIT
+# Software Training for Data Science
