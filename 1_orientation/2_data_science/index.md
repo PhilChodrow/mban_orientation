@@ -28,3 +28,12 @@ The best way to interact with the materials is to `git clone` the repository, bu
 
 - [Slides](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/slides.html) ([source](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/slides.Rmd))
 - [Script](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/student_script.R) ([complete](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/full_script.R))
+
+
+## Literate Programming with R Markdown
+
+
+- [Example Report](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_report.html) ([source](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_report.rmd))
+- [Example Dashboard](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_dashboard.html#basic-analysis) ([source](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/example_dashboard.rmd))
+
+
