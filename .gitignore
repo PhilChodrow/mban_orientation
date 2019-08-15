@@ -13,3 +13,6 @@ todo.txt
 Gemfile.lock
 _site/
 *.RDS
+feedback
+reflections.*
+highlight.scss
