@@ -56,7 +56,17 @@ Open the file `1_orientation/1_git/README.md` in a text editor. Replace the firs
 
 ### (3) Push Your Changes
 
-Once you have 
+Once you have made your changes in the file, check back on GitHub Desktop. The client has noticed that you have changed this file, and even gives a visual description of what change you made. 
+
+![](figs/commit_push.png)
+
+In the "Summary" field, write "git preassignment." Then, click "Commit to master" and then "Push origin." To check that this worked: 
+
+1. Navigate back to your fork of the repository on GitHub.com. 
+2. Click through 1_orientation/1_git. The file README.md is rendered at the bottom. It should have your name on it. 
+
+If that's what you see, congratulations! You are up and running with git and GitHub, and are ready to move on to the next phase of the preassignment. 
+
 
 
 
