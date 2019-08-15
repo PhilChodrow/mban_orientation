@@ -6,22 +6,61 @@ This is a **long** preassignment that involves lots of software installation and
 
 # 1. Version Control: Git and GitHub
 
-git is a powerful system for collaborating on and publishing software. It is standard in the worlds of data science and software development. Learning to use git will help you manage your own work; collaborate with colleagues; and access useful tools. 
+How can we manage complex, code-based workflows? How can we reliably share code between collaborators without syncing issues? How can we track multiple versions of scripts without going crazy? There are multiple solutions to these problems, but *version control* with git is by far the most common. 
 
-## Install git
+<!-- ## Install git
 
-Get started by installing git. You can follow the relevant instructions for your operating system [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). For Windows 10 users, we suggest installing and interacting with git either via the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or via the [GitHub Desktop Client](https://desktop.github.com).
-
+Get started by installing Git. You can follow the relevant instructions for your operating system [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). For Windows 10 users, we suggest installing and interacting with git either via the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) or via the [GitHub Desktop Client](https://desktop.github.com).
+ -->
 ## Make an Account on GitHub.com
 
 [GitHub](https://github.com/) is a hosting service for git that makes it easy to share your code. 
 
-1. Sign up for an account -- remember to keep track of your username and password. 
-2. Link your GitHub.com credentials to your local git installation.  
+Sign up for an account -- remember to keep track of your username and password. Feel free to enter information about yourself and optionally a profile picture. 
+
+## Install GitHub Desktop
+
+Download GitHub Desktop [here](https://desktop.github.com), and follow the installation directions. 
+
+During setup, you will be prompted to enter your username and password from GitHub. 
+
+*If you have used git previously and prefer to interact with it via the command line, that's fine. However, we won't be giving command line instructions and won't help you if you get stuck by doing something silly.* 
 
 ## Test Your Installation
 
-INSERT TEST
+As a very basic use case, we are going to use git and GitHub to access the course materials. The course materials live in a repository ("repo") on GitHub. There are three steps: 
+
+1. *Fork* the repo on GitHub. This creates a copy of the class repo under your own account. Changes you make here won't be reflected in the original repo -- think of it as your playground. 
+2. *Clone* the forked repo from GitHub to your computer. Here's where you'll interact with the files. 
+3. After changing files, you can *push* your changes back up to GitHub. Let's see how this all works. 
+
+### (1) Fork the Repo
+
+Navigate to [https://github.com/PhilChodrow/mban_orientation](https://github.com/PhilChodrow/mban_orientation). Make sure you are signed in. Click the "Fork" button.
+
+![](figs/fork.png)
+
+You now have a copy of the mban_orientation repo under your own user account. 
+
+### (2) Clone the Repo
+
+Now go to GitHub Desktop. Choose "Clone Repository," and click the URL tab.  In the first field, enter `your_name/mban_orientation`. In the second field, enter the location on your computer where you would like to place the materials. Your desktop is fine. 
+
+![](figs/clone.png)
+
+Take a moment to check that the folder containing some files has appeared in the specified location on your computer. 
+
+### (2.5) Edit Some Files
+
+Open the file `1_orientation/1_git/README.md` in a text editor. Replace the first line of text with "# [your_name or GitHub username]". 
+
+### (3) Push Your Changes
+
+Once you have 
+
+
+
+
 
 # 2. Data Analysis: R and RStudio
 
