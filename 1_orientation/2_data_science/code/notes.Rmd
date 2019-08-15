@@ -4,11 +4,13 @@ subtitle: "Import, Wrangling, and Visualization in `R`"
 author: "Phil Chodrow"
 date: "8/15/2017"
 output: 
-  html_document:
-    theme: sandstone
-    highlight: tango
-    toc: true
-    toc_float: true
+  # html_document:
+  #   highlight: tango
+  #   keep_md: yes
+  #   theme: sandstone
+  #   toc: yes
+  #   toc_float: yes
+  rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}

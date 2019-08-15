@@ -17,6 +17,23 @@ output:
 knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
 ```
 
+## Use `git` and GitHub to...
+
+- Organize your projects.
+- Grab cool new software. 
+- Promote your personal brand.
+- Host your website(!!)
+
+## Your Analysis is Your Code
+
+
+
+## Your Code is Software
+
+
+
+
+
 
 
 
