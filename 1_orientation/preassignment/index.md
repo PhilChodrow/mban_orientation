@@ -230,4 +230,7 @@ The answer is 0.0
 
 If you see this output, everything is working correctly. If you see errors, one of the steps above may be incomplete. If you don't see any output, make sure that you have selected the notebook cell where you paste the code and try to run it again. 
 
+**If you've made it this far, congratulations!** You now possess a powerful set of tools for analyzing data, solving optimization problems, and collaborating on code. You're ready to go!  
+
+
 
