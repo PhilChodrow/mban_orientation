@@ -322,8 +322,8 @@ test <- get_map(location = c(left   = -71.1289,
 ggmap(test) + 
 	geom_point(aes(x = longitude, y = latitude), 
 			   data = listings, 
-			   size = .2,
-			   alpha = .5)
+			   size = .5,
+			   alpha = 1)
 
 
 
