@@ -18,7 +18,12 @@ knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", f
 ```
 
 
-# What is Data Science? 
+## {.noborder}
+
+```{r, out.width = 450, out.height = 600}
+knitr::include_graphics('figs/cat.png')
+```
+
 
 ## Some Things That Aren't Data Science {.noborder}
 
@@ -38,8 +43,8 @@ knitr::include_graphics('figs/colors.jpg')
 
 ## BIG DATA!!1!!
 
-```{r, out.width = 800, out.height = 500}
-knitr::include_graphics('figs/big_data_use.jpg')
+```{r, out.width = 800, out.height = 600}
+knitr::include_graphics('figs/big_data.jpg')
 ```
 
 ## Data Science Is: 
@@ -47,16 +52,14 @@ knitr::include_graphics('figs/big_data_use.jpg')
 > - Gathering **data that matters.**
 > - Asking **questions that matter** about your data. 
 > - **Choosing appropriate methods**  to answer those questions. 
-> - **Implementing solutions** that meets stakeholder needs. 
-
-# Data Science Tools
+> - **Implementing solutions** that meet stakeholder needs. 
 
 ## You Can Do Data Science With:
 
-> - A pencil and paper
-> - A calculator
-> - Excel
-> - `R`, `Julia`, `Python`.... 
+> - A pencil and paper.
+> - A calculator.
+> - Excel.
+> - Coding: `R`, `Julia`, `Python`.... 
 
 ## Why Not Excel? 
 
@@ -103,36 +106,27 @@ knitr::include_graphics('http://rmarkdown.rstudio.com/images/notebook-demo.png')
 	
 </div>
 
-## Basic Software Tools
+## Version Control with `git` 
 
-- `git` and GitHub: version control, collaboration, sharing. 
-- `R` and RStudio: data exploration, statistics, machine learning, visualization. 
-- `Julia` and `JuMP`: optimization. 
+>- Break your workflow into manageable stages; easily collaborate; access cool code. 
+>- Promote your brand: share your work, build a portfolio, [host your website](https://pages.github.com). 
+>- Used at: Google, Facebook, Netflix, Amazon, Apple, Twitter, Microsoft... (*[source](https://www.quora.com/What-companies-use-Git)*)
 
-## Why `git` for Version Control?
-
-- Break your workflow into manageable stages. 
-- [Feature branching model](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow) -- easy collaboration, code always production-ready.
-- Promote your brand: share your work, build a portfolio, [host your website](https://pages.github.com). 
-- Used at: Google, Facebook, Netflix, Amazon, Apple, Twitter, Microsoft... (*[source](https://www.quora.com/What-companies-use-Git)*)
-
-
-## Why `R` for Data Analysis? 
+## Data Analysis with  `R`
 
 > - `R` is **the best** language in the world for **learning** data science.
 > - `R` is **one of the best** languages in the world for **doing** data science. 
 > - `R` tends to be preferred in academia and among "statisticians," while `python` is more popular among "computer scientists" and "data scientists"
 > - Most practicing data scientists know and use both. 
 
-## Why `Julia` and `JuMP` for Optimization? 
+## Optimization with `Julia` and `JuMP` 
 
-- `Julia` is high-performance, open-source dynamic language for technical computing -- easy writing, fast compute times.
-- Developed at MIT
-- `JuMP` is a package for optimization in `Julia` -- developed by ORC students!  
+>- `Julia` is high-performance, open-source dynamic language for technical computing -- easy writing, fast compute times.
+>- Developed at MIT.
+>- `JuMP` is a package for optimization in `Julia` -- developed by ORC students!
+>- Not everyone uses `Julia`...yet. 
 
 ## *...yes, there will be an opportunity to learn `Python` later in the semester.* {.noborder}
-
-# Learning Goals
 
 ## What can you pick up in two days? 
 
@@ -160,8 +154,8 @@ knitr::include_graphics('http://searchengineland.com/figz/wp-content/seloads/201
 
 ## Gameplan
 
-1. **Today**: Version Control, Basic Data Analysis and Visualization in `R`
-2. **Tomorrow**: Optimization in `Julia` and `JuMP`, presenting work.
+1. **Today**: Version Control, Basic Data Analysis and Visualization in `R`, RMarkdown.
+2. **Tomorrow**: Optimization in `Julia` and `JuMP`, selected presentations.
 3. **Both days**: mini-project, partner work, lots of exercises. 
 
 ## Exercise 0
@@ -177,7 +171,7 @@ knitr::include_graphics('http://searchengineland.com/figz/wp-content/seloads/201
 
 <div id='right'>
 <div class='fragment'>
-```{r, out.width = 500}
+```{r, out.width = 500, out.height = 300}
 knitr::include_graphics('figs/0602-sir-patrick-stewart.jpg')
 ```
 </div>
