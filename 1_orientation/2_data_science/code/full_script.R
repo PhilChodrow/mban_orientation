@@ -8,6 +8,7 @@
 
 # load the tidyverse library
 library(tidyverse)
+library(ggmap)
 
 # load the data we'll use today
 listings <- read_csv('../data/listings.csv')
@@ -308,3 +309,22 @@ summary_table %>%
 	aes(x = reorder(neighbourhood, n), y=n) + 
 	coord_flip() + 
 	geom_bar(stat = 'identity')
+
+# ------------
+
+# code to get map background for Boston
+test <- get_map(location = c(left   = -71.1289, 
+				  bottom = 42.3201, 
+				  right  = -71.0189, 
+				  top    = 42.3701),
+				maptype = 'watercolor', force = T)
+
+ggmap(test) + 
+	geom_point(aes(x = longitude, y = latitude), 
+			   data = listings, 
+			   size = .2,
+			   alpha = .5)
+
+
+
+

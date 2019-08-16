@@ -87,7 +87,7 @@ If that's what you see, congratulations! You are up and running with git and Git
 
 In the RStudio console, type 
 ```R
-pkgs <- c('tidyverse', 'knitr', 'flexdashboard', 'nycflights13')
+pkgs <- c('tidyverse', 'knitr', 'flexdashboard', 'nycflights13', 'ggmap')
 install.packages(pkgs)
 ```
 
