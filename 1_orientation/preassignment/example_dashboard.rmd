@@ -1,0 +1,78 @@
+---
+title: "Can I Stay on an AirBnB Boat?"
+author: By Boaty McBoatFace
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: united
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+# Basic Analysis
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+```{r}
+library(tidyverse)
+library(knitr)
+df <- read_csv('../data/listings.csv')
+
+top_rated_neighborhood <- df %>% 
+  group_by(neighbourhood) %>% 
+  summarise(review_scores_rating = mean(review_scores_rating, na.rm = T),
+            n = n()) %>% 
+  filter(n > 100) %>% 
+  arrange(desc(review_scores_rating)) %>% 
+  filter(neighbourhood != 'NA')
+```
+
+### Map of Listings in Boston
+
+```{r}
+
+library(ggmap)
+
+plot_df <- df %>%
+  filter(property_type %in% c("Apartment", "House", "Boat", "Hotel")) %>% 
+  mutate(property_type = ifelse(property_type == 'Boat', 'Boat', 'Not Boat'))
+
+background <- get_map(location = c(left   = -71.1289, 
+				  bottom = 42.3101, 
+				  right  = -71.0189, 
+				  top    = 42.3801),
+				maptype = 'terrain-lines', source = 'stamen', force = T)
+
+ggmap(background) + 
+	geom_point(aes(x = longitude, 
+	               y = latitude, 
+	               color = property_type),
+			   data = plot_df, 
+			   size = 1,
+			   alpha = 1) + 
+  guides(size = FALSE, color = guide_legend(title = element_blank())) + 
+  ggtitle(label = "There aren't many boats...",
+          subtitle = "...but there are a few.") + 
+  scale_color_manual(values = c('darkred', 'black'))
+  
+
+```
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### If I can't stay on a boat...
+
+There are other places too, I guess. In fact, there are ```r nrow(top_rated_neighborhood)``` neighborhoods represented in the data set. Of these, the highest rated is ```r top_rated_neighborhood$neighbourhood[1]``` and the lowest is ```r top_rated_neighborhood$neighbourhood[nrow(top_rated_neighborhood)]```. This data is current as of ```r lubridate::today()```
+
+### Top Rated Neighbourhoods
+```{r}
+top_rated_neighborhood %>% 
+  head(5) %>% 
+  kable()
+```
