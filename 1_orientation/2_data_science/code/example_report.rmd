@@ -1,7 +1,7 @@
 ---
 title: "Introduction to R Markdown"
 author: Phil Chodrow
-date: Tuesday, August 28th, 2019
+date: Tuesday, August 27th, 2019
 output: 
   html_document:
     theme: united
@@ -40,7 +40,7 @@ Markdown itself is extremely useful, but R Markdown is something especially magi
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(knitr)
-df <- read_csv('../data/listings.csv')
+df <- read_csv('../../data/listings.csv')
 ```
 
 ## Peeking at Data 
@@ -51,8 +51,7 @@ For a start, we can embed views of our data. Let's look at the 10 lowest-rated l
 df %>% 
   select(name, neighbourhood, review_scores_rating) %>% 
   arrange(review_scores_rating) %>% 
-  head(10) %>% # just grab the first 10 rows
-  kable() # for pretty displays 
+  head(10) 
 ```
 
 This is the magic of R Markdown: anything you can do in `R`, you can execute, visualize, and explain in the same document. 
@@ -62,9 +61,9 @@ This is the magic of R Markdown: anything you can do in `R`, you can execute, vi
 As you are crafting expository text, you might wish to reference a given number or name from the code. 
 For example, when describing the data set, you might run `nrow(df)` and `ncol(df)` and then manually write in the answers: 
 
-> The data has 3585 rows and 95 columns. 
+> The data has 6264 rows and 106 columns. 
 
-Of course, that's correct all on its own, but...what happens when you get an updated data set from your collaborators? Think you're going to remember to correct the manually-typed number in all your documents?  Try this instead: 
+Of course, that's correct all on its own, but...what happens when you get an updated data set from your collaborators? (This actually happened to me: we updated the data set this year.) Think you're going to remember to correct the manually-typed number in all your documents?  Try this instead: 
 
 > The data set has ```r nrow(df)``` rows and ```r ncol(df)``` columns. 
 

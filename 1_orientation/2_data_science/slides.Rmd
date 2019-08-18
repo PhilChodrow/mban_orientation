@@ -1,7 +1,7 @@
 ---
-title: "Exploratory Data Analysis in R"
+title: "Data Science Fundamentals with R"
 author: "Phil Chodrow, MIT"
-date: "Tuesday, August 28th, 2018"
+date: "Tuesday, August 27th, 2018"
 output: 
   revealjs::revealjs_presentation:
     slide_level: 2
@@ -21,6 +21,9 @@ library(knitr)
 
 # Introduction
 
+- The Circle of Data Science
+- The Tidyverse
+- The Data 
 
 ## Data Science Is: 
 
@@ -31,9 +34,11 @@ library(knitr)
 
 ## My Favorite Picture
 
+<div class='fragment'>
 ```{r, out.height = 400, out.width = 500, echo = FALSE, fig.align='center'}
 knitr::include_graphics('figs/spongebob_hopeful.jpg')
 ```
+</div>
 
 ## My Favorite Picture
 
@@ -45,97 +50,37 @@ knitr::include_graphics('figs/patrickstewartwide.jpg')
 
 ## My ~~Favorite~~ Second Favorite Picture 
 
-<div class='fragment'>
-```{r, out.height = 500, out.width = 800,echo = FALSE, fig.align='center'}
-knitr::include_graphics('figs/gettyimages-871679690-1510950426.jpg')
-```
-</div>
-
-## My ~~Favorite~~ Third Favorite Picture 
-
 ```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
 knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
 ```
 
 (*Image credit: Hadley Wickham*)
 
-## ...
-
-```{r, out.height = 400, out.width = 500, echo = FALSE, fig.align='center'}
-knitr::include_graphics('figs/spongebob_sad.png')
-```
-
-
-## My Third Favorite Picture:
-
-```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
-knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
-```
-
 > - **Exploratory data analysis (EDA)** covers roughly the "transform" and "visualize" steps. 
 
-# EDA is...
-
-## ...getting to know your Data
+## EDA is getting to know your Data
 
 ```{r, out.height = 650, out.width = 500, echo = FALSE, fig.align='center'}
 knitr::include_graphics('https://vignette.wikia.nocookie.net/memoryalpha/images/4/4f/Data%2C_2366.jpg/revision/latest?cb=20130529102644&path-prefix=en')
 ```
 
-## What We'll Do This Morning
-
-> - Ask an impactful question of a real data set. 
-> - Use EDA to propose candidate answers. 
-> - Create a simple business intelligence (BI) dashboard to guide decision-makers. 
-
-## The Case
+## The Data 
 
 ```{r, out.height = 500, out.width = 700, echo = FALSE, fig.align='center'}
 knitr::include_graphics('https://imgs.6sqft.com/wp-content/uploads/2017/03/10102308/airbnb-logo.jpg')
 ```
 
-## The Case
+## The Data
 
-<div id='left'>
+- Scraped by [InsideAirBnB](http://insideairbnb.com/), "an independent, non-commercial set of tools and data that allows you to explore how Airbnb is really being used in cities around the world."
+- Includes `listings` info, a `calendar` of prices, and texts of `reviews`. We'll be using the first two data sets today. 
+- Data given for mid-2019 through mid-2020 (for prices and availability). 
 
-```{r, out.height = 500, out.width = 350, echo = FALSE, fig.align='center'}
-knitr::include_graphics('figs/airbnb_map.png')
-```
-</div>
+# Fundamentals of Exploratory Data Analysis
 
-<div id='right'>
-- AirBnB can maximize its business by ensuring a strong supply of diverse hosts in various neighborhoods. 
-- Their question for you: ***Where should we recruit more hosts?*** 
-- They have given you a complex, multi-part data set to study using `R`! 
-</div>
-
-## FYI: Base `R` and the Tidyverse
-
-- You can do EDA in "base" `R` without any packages.
-- But base `R` is...not a good programming language. 
-- We will use the **Tidyverse**, a set of packages that promote code which is easy to **write** and **read**,  highly **performant**, and **consistent** through the data scientific pipeline. 
-- The Tidyverse has been extensively developed by **Hadley Wickham** and collaborators over the last decade. 
-	
-If you have prior experience in `R` and did not begin all your scripts with `library(dplyr)`....
-
-## FYI: Base `R` and the Tidyverse
-
-```{r, echo = FALSE, out.height = 500, out.width = 500}
-knitr::include_graphics('figs/forget.jpeg')
-```
-
-# Getting Started
-
-```{r, message=FALSE, warning=FALSE, echo = FALSE}
-library(tidyverse)
-listings <- read_csv('data/listings.csv')
-calendar <- read_csv('data/calendar.csv')
-```
-
-## Case Study {.noborder}
-
-1. Inspect the data
-2. `Filter()`, `sort()`, and `select()` 
+1. Reading and inspecting data. 
+2. The pipe operator. 
+3. Data wrangling.
 
 ## Pipes for your Data
 
@@ -155,125 +100,32 @@ knitr::include_graphics('https://d21ii91i3y6o6h.cloudfront.net/gallery_images/fr
 > - `x %>% f(y) %>% g(z)` $\Longleftrightarrow$ `g(f(x,y),z)` 
 > - *"Take `x`, **then** do `f` with option `y`, **then** do `g` with option `z`..."*
 
-## Some Simple Examples
+## Exercises and Examples
 
 ```{r, eval = FALSE}
 
-# familiar
 listings %>% glimpse()  # = glimpse(listings)
 listings %>% head()     # = head(listings)
 listings %>% colnames() # = colnames(listings)
 
-# get all columns with "review_scores" in the column name
-listings %>% select(contains('review_scores')) 
-# what should this return? 
-listings %>% select(contains('review_scores')) %>% colnames()
-# compare: colnames(select(listings, contains('review_scores')))
-```
+listings %>%                             
+	select(contains('review_scores'))  # what does this do? 
 
-Let's try this out -- back to the case study! 
-
-# Summarising Data
-
-## Data Summaries
-
-- You should usually summarise your data before turning on the fancy algorithms -- sometimes the story is clear. 
-
-```{r, echo = FALSE, out.width = 700, out.height = 400}
-knitr::include_graphics("http://writingcenter.unc.edu/files/2012/07/chart-figure-3.png")
-```
-
-## Basic Data Summaries
-
-Go from this:
-
-```{r, echo = FALSE}
 listings %>% 
-	select(id, neighbourhood_cleansed, review_scores_rating) %>% 
-	head() %>% 
-	kable() 
+	select(contains('review_scores')) %>%  # what about this? 
+	colnames()
 ```
 
-## Basic Data Summaries
-
-...to this: 
-
-```{r, echo = FALSE}
-listings %>% 
-	select(id, neighbourhood_cleansed, review_scores_rating) %>% 
-	group_by(neighbourhood_cleansed) %>% 
-	summarise(n = n(), 
-			  mean_rating = mean(review_scores_rating, na.rm = T)) %>% 
-	arrange(desc(mean_rating)) %>% 
-	head() %>% 
-	kable() 
-```
-
-## Summaries the Tidy Way
-
-```{r, eval = FALSE}
-# Compute a summary statistic
-data %>% summarise(measure = formula(col1, col2))
-
-# Make a new column
-data %>% mutate(new_col = formula(old_col1, old_col2))
-
-# Compute a summary statistic for each group
-data %>% 
-	mutate(group_col = formula(old_col1, old_col2))
-	group_by(group_col) %>% 
-	summarise(measure = formula(col1, col2))
-```
+Ok, back to the script to put this in action. 
 
 
-# Keeping Current
-
-1. More practice with `filter` and `summarise`
-2. `join`ing data
-
-## How Recent is our Info?
-
-```{r}
-calendar %>% 
-	summarise(earliest = min(date), 
-		      latest = max(date))
-```
-
-But some of these listings may be "zombies" without recent availability. How can we include only listings with availability from a certain time period? 
-
-## The Approach
-
-1. Operate on the `calendar` table (exercise)
-2. `join` that information to the `listings` table (together)
-3. Filter the listings table accordingly (together)
-
-## Relational Data
-
-The information we need is distributed between two tables -- how can we get there? 
-
-We need a **key** column that tells us which `calendar` rows correspond to which `listings`. 
-
-> `listings$id` corresponds to `calendar_listing$id`
-
-## `join` 
-
-The `join` family of functions lets us add columns from one table to another using a key. 
-
-- `x %>% left_join(y)`  : most common, keeps all rows of `x` but not necessarily `y`.
-- `x %>% right_join(y)` : keeps all rows of `y` but not necessarily `x`.  
-- `x %>% outer_join(y)` : keeps all rows of both `x` and `y`
-- `x %>% full_join(y)` : keeps only rows of `x` that match in `y` and vice versa. 
-
-We'll use `left_join` for this case -- let's try it in the case study. 
-
-
-# Getting Visual
+# Data Visualization
 
 1. Graphical Excellence
 2. The Grammar of Graphics
 3. `ggplot2`
 
-## My Third Favorite Picture:
+## My Second Favorite Picture:
 
 ```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
 knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
@@ -284,7 +136,6 @@ knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.
 ```{r, echo = FALSE, out.height = 550, out.width = 900}
 knitr::include_graphics("https://www.edwardtufte.com/bboard/images/0003VL-9150.jpeg")
 ```
-
 
 ## Graphical Excellence
 
@@ -313,7 +164,7 @@ A **grammar** is a set of components (ingredients) that you can combine to creat
 
 <div id='right'>
 <div class='fragment'>
-```{r, out.height = 400, out.width = 400, fig.retina = NULL, echo = FALSE}
+```{r, out.height = 350, out.width = 400, fig.retina = NULL, echo = FALSE}
 knitr::include_graphics("figs/mary.png")
 ```
 </div>
@@ -346,222 +197,14 @@ knitr::include_graphics("http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama
 > - Misc. other options. 
 > - (`+` plays the same role in `ggplot2` that `%>%` does in data manipulation.)
 
-## First Plot {.smaller}
+# R Markdown
 
-Does getting **lots** of reviews usually mean you get **good** reviews? 
+## Literate Programming with R Markdown
 
-```{r, warning = FALSE, out.width = 600}
-listings %>% 
-	ggplot()
-```
-
-## First Plot {.smaller}
-
-```{r, warning = FALSE, out.width = 600}
-listings %>% 
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating)
-```
-
-## First Plot {.smaller}
-
-```{r, warning = FALSE, out.width = 600}
-listings %>% 
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating) + 
-	geom_point()
-```
-
-## First Plot {.smaller}
-
-```{r, warning = FALSE, out.width = 600}
-listings %>% 
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating) + 
-	geom_point(alpha = .2) 
-```
-
-## First Plot {.smaller}
-
-```{r, warning = FALSE, out.width = 600}
-listings %>% 
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating) + 
-	geom_point(alpha = .2) + 
-	theme_bw()
-```
-
-## First Plot {.smaller}
-
-```{r, warning = FALSE, out.width = 500, out.height=300}
-listings %>% 
-	filter(number_of_reviews < 100) %>% ## 
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating) + 
-	geom_point(alpha = .2) + 
-	theme_bw() 
-```
-
-## First Plot {.smaller}
-
-```{r, warning = FALSE, out.width = 500, out.height=300}
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating) + 
-	geom_point(alpha = .2) + 
-	theme_bw() + 
-	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
-```
-
-## First Plot {.smaller}
-
-```{r, warning = FALSE, out.width = 500, out.height=300}
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating) + 
-	geom_point(alpha = .2, color = 'firebrick') + ##
-	theme_bw() + 
-	labs(x='Number of Reviews', y='Review Score',title='Review Volume and Review Quality') 
-```
-
-## Changing Aesthetics {.smaller}
-
-```{r, warning = FALSE, out.width = 500, out.height=300}
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = review_scores_value,    ##
-		y = review_scores_location, ##
-		size = number_of_reviews) + ## 
-	geom_point(alpha = .2, color = 'firebrick') + 
-	theme_bw() 
-```
-
-## As a Heatmap {.smaller}
-
-```{r, warning = FALSE, out.width = 500, out.height=300}
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = review_scores_value, 
-		y = review_scores_location, 
-		fill = number_of_reviews) + ##
-	geom_tile() +                   ##
-	theme_bw() 
-```
-
-## Exercise 6
-
-The following code computes the average price of all listings on each day in the data set:
-```{r, warning = FALSE}
-average_price_table <- calendar %>% 
-	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric()) %>% 
-	group_by(date) %>% 
-	summarise(mean_price = mean(price, na.rm = TRUE))
-```
-
-Use `geom_line()` to visualize these prices with time on the `x`-axis and price on the `y`-axis. 
-
-## Exercise 6 Sample Solution
-
-```{r,  out.width = 500, out.height=300}
- average_price_table %>% 
-	ggplot() + 
-	aes(x = date, y = mean_price) + 
-	geom_line()
-```
-
-## Exercise 7
-
-```{r, warning = FALSE, echo = FALSE}
-
-current_table <- calendar %>% 
-	filter(!is.na(price), 
-		   date < lubridate::today(),
-		   date > lubridate::mdy('6/1/2016')) %>%
-	group_by(listing_id) %>% 
-	summarise(last_active = max(date))
-
-recent_listings <- listings %>% 
-	left_join(current_table, by = c('id' = 'listing_id')) %>% 
-	filter(last_active > lubridate::mdy('6/1/2016'))
-
-summary_table <- recent_listings %>% 
-	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
-		   price_per = price / accommodates,
-		   weekly_price = weekly_price %>% gsub('\\$|,', '',.) %>% as.numeric(),
-		   weekly_price_per = weekly_price / accommodates)  %>% 
-	group_by(neighbourhood, property_type) %>% 
-	summarize(n = n(), 
-			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
-			  price_per = mean(price_per, na.rm = TRUE),
-			  weekly_price_per = mean(weekly_price_per, na.rm = T),
-			  capacity = sum(beds)) %>% 
-	ungroup()
-```
-
-Using the `summary_table` object you created earlier, make a bar chart showing the number of **apartments** by neighbourhood. In this case, the correct `geom` to use is `geom_bar(stat = 'identity')`. 
-
-## Exercise 7 Sample Solution {.smaller}
-
-```{r, warning = FALSE, out.width = 500, out.height = 300}
-summary_table %>% 
-	filter(property_type == 'Apartment') %>% 
-	ggplot() + 
-	aes(x = neighbourhood, y= n) + 
-	geom_bar(stat = 'identity')
-```
-
-## Let's Clean This Up a Bit {.smaller}
-
-```{r, warning = FALSE, out.width = 500, out.height = 300}
-summary_table %>% 
-	filter(property_type == 'Apartment') %>% 
-	ggplot() + 
-	aes(x = reorder(neighbourhood, n), y=n) + ##
-	coord_flip() +                            ##
-	geom_bar(stat = 'identity')
-```
-
-# Comparisons: Fill, Color, and Facets
-
-## From Exercise 7 {.smaller}
-```{r, warning = FALSE,  out.width = 500, out.height=300}
-summary_table %>% 
-	ggplot() + 
-	aes(x = reorder(neighbourhood, n), y=n, fill = property_type) + ##
-	coord_flip() + 
-	geom_bar(stat = 'identity') 
-```
-
-## From Our First Plot {.smaller}
-```{r, warning = FALSE,  out.width = 500, out.height=300}
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = number_of_reviews, 
-		y = review_scores_rating, 
-		color = property_type) + ## 
-	geom_point(alpha = .5) + 
-	theme_bw() + 
-	labs(x='Number of Reviews', y='Review Score', 
-		 title='Review Volume and Review Quality') 
-```
-
-## From Our First Plot {.smaller}
-```{r, warning = FALSE,  out.width = 500, out.height=300}
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
-	geom_point(alpha = .5) + 
-	theme_bw() + 
-	facet_wrap(~property_type) + ##
-	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') 
-```
-
+- [R Markdown](https://rmarkdown.rstudio.com) is an authoring format for creating attractive documents, slides, websites, and more using `R`. 
+- It is easily the best way to share plots, code, and narrative in a single document. 
+- These slides are written in RMarkdown ([source here](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/index.html)). 
+- We are going to take a quick tour of R Markdown features before jumping into your mini-project for today. 
 
 # Mini-Project
 
@@ -569,11 +212,15 @@ listings %>%
 
 >- You are a seasoned data scientist who has just arrived in Boston.
 >- You're want to go see the sights, but you don't know where they are!
->- Instead of buying a tourist guide **like a Muggle**, you are going to use your skills in exploratory data analysis to find cool spots to visit. 
+>- Instead of buying a tourist guide like a Muggle would, you are going to use your skills in exploratory data analysis to find cool spots to visit. 
+
+## What You'll Make
+
+Like [this](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/dashboard.html), but way better. 
 
 ## Instructions 
 
-- Your **deliverable** is `dashboard.rmd`, which you can find in the `1_orientation/2_data_science/code` directory. 
+- Your **deliverable** is `dashboard.rmd`, which you can find in the `1_orientation/2_data_science/code` directory. You should have checked that this `knit` correctly in the preassignment. 
 - Personalize the dashboard with your name and your partner's name. 
 - Conduct analysis to identify **three** locations or neighborhoods you want to visit. Use Google to figure out what might be interesting about those spots, but your commentary should show how your analysis supports your findings. 
 - At the end of the hour, you will upload `dashboard.html` at the provided link. 
