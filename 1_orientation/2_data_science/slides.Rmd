@@ -258,7 +258,7 @@ knitr::include_graphics("https://rviews.rstudio.com/post/2017-06-09-What-is-the-
 
 - [Literate Documents](http://timelyportfolio.github.io/rCharts_nyt_home_price/)
 - [Interactive Dashboards](http://jkunst.com/flexdashboard-highcharter-examples/pokemon/) with Shiny
-- [Blogs and Websites](https://philchodrow.github.io/post/2017-06-19-info-segregation-2/)
+- [Blogs and Websites](https://philchodrow.com)
 - These [slides](http://rmarkdown.rstudio.com/ioslides_presentation_format.html) are written in `R`
 
 
