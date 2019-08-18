@@ -565,25 +565,20 @@ listings %>%
 
 # Mini-Project
 
-## Project Description
+## The Setup
 
-- Working with your partner, you are going to make a business intelligence (BI) dashboard for AirBnB, using the EDA skills we have developed in this session. 
-- You will use this dashboard to lead a meeting with decision-makers on where to prioritize host recruitment efforts. 
-- It will look like [this](https://philchodrow.github.io/mban_orientation/data_science_intro/wrangle_viz/dashboard.html) -- but better! 
+>- You are a seasoned data scientist who has just arrived in Boston.
+>- You're want to go see the sights, but you don't know where they are!
+>- Instead of buying a tourist guide **like a Muggle**, you are going to use your skills in exploratory data analysis to find cool spots to visit. 
 
-## Instructions {.smaller}
+## Instructions 
 
-1. Open `wrangle_viz/dashboard.Rmd`
-2. Click the `knit` button at the top of RStudio and observe the result. If you see a dashboard, then are good to go. 
-3. Modify the dashboard: 
-	- Include your names in the `author` metadata up top
-	- Write code for data preparation and visualizations. 
-	- Include all your code in the `R` "code chunks" that begin with ````{r}`
-	- Add commentary in the indicated area
-	- `knit` your dashboard again. Save the `.Rmd` file. We're coming back to it this afternoon! 
-4. **FILL OUT [FEEDBACK SURVEY](https://goo.gl/forms/7rqAPMn37DzRqWko2)**
-5. **Resources:** Data wrangling [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf), `R` graphics [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), [`R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/)
-	
+- Your **deliverable** is `dashboard.rmd`, which you can find in the `1_orientation/2_data_science/code` directory. 
+- Personalize the dashboard with your name and your partner's name. 
+- Conduct analysis to identify **three** locations or neighborhoods you want to visit. Use Google to figure out what might be interesting about those spots, but your commentary should show how your analysis supports your findings. 
+- At the end of the hour, you will upload `dashboard.html` at the provided link. 
+- A subset of groups will be ***randomly chosen to briefly present their work.***
+
 # Additional Resources
 
 ## Map of the Tidyverse

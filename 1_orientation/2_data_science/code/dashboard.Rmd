@@ -1,5 +1,5 @@
 ---
-title: "AirBnB Supply Dashboard"
+title: "Day 1 mini-project"
 author: "By Anonymous Analyst Extraordinaire"
 output: 
   flexdashboard::flex_dashboard:
@@ -9,17 +9,13 @@ output:
 ---
 
 ```{r}
+
 # INSTRUCTIONS
-# 1. Click the `knit` button at the top of RStudio and observe the result. If you see a dashboard, then are good to go. 
-# 2. Now, modify the dashboard: 
-	# - Include your names in the `author` metadata up top
-	# - Write code for data preparation and visualizations. 
-	# - Include all your code in the `R` "code chunks" that begin with ````{r}`
-	# - Add commentary in the indicated area
-# 4. `knit` your final dashboard one last time and place it in the shared Dropbox folder (link in email)
-# 5. **FILL OUT FEEDBACK SURVEY** by copying and pasting the link below into your browser:  
-# https://goo.gl/forms/7rqAPMn37DzRqWko2
-# 6. Break for lunch! 
+
+# You are a seasoned data scientist who has just arrived in Boston. You're looking to go see the sights, but you don't know where they are! Instead of buying a tourist guide like a Muggle, you are going to use your skills in exploratory data analysis and visualization to identify some of the cool spots to visit. 
+
+# Working with your partner, conduct analyses to identify at least THREE cool spots that you want to check out. Use the dashboard format to communicate your findings. You can check e.g. on Google to confirm your findings, but you should include clear commentary indicating how your analysis supports your findings. I've included some of the code from the script we worked on together to help you get started. 
+
 ```
 
 ```{r}
@@ -28,67 +24,49 @@ output:
 # - Data wrangling [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf), 
 # - `R` graphics [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf), 
 # - [`R` Graphics Cookbook](http://www.cookbook-r.com/Graphs/)
+# - [RMarkdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
 ```
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(tidyverse)
+library(lubridate)
 ```
 
 ```{r data_prep}
 # put your data preparation code here. To get you started, the data preparation we performed in the session previously has already been pasted in. Feel free to add any additional data preparation code needed for your visualizations
 
-listings <- read_csv('../data/listings.csv')
-calendar <- read_csv('../data/calendar.csv')
+listings <- read_csv('../../data/listings.csv')
+calendar <- read_csv('../../data/calendar.csv')
 
-current_table <- calendar %>% 
-	filter(!is.na(price), 
-		   date < lubridate::today(),
-		   date > lubridate::mdy('6/1/2016')) %>%
-	group_by(listing_id) %>% 
-	summarise(last_active = max(date))
-
-recent_listings <- listings %>% 
-	left_join(current_table, by = c('id' = 'listing_id')) %>% 
-	filter(last_active > lubridate::mdy('6/1/2016'))
-
-summary_table <- recent_listings %>% 
-	mutate(price = price %>% gsub('\\$|,', '',.) %>% as.numeric(),
-		   price_per = price / accommodates,
-		   weekly_price = weekly_price %>% gsub('\\$|,', '',.) %>% as.numeric(),
-		   weekly_price_per = weekly_price / accommodates)  %>% 
-	group_by(neighbourhood, property_type) %>% 
-	summarize(n = n(), 
-			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
-			  price_per = mean(price_per, na.rm = TRUE),
-			  weekly_price_per = mean(weekly_price_per, na.rm = T),
-			  capacity = sum(beds)) %>% 
-	ungroup()
+source("clean_prices.R")
+listings <- clean_prices(listings)
+calendar <- clean_prices(calendar)
 ```
 
-
-# Descriptive Analysis
-
+# A First Tab
 
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Box 1
+### A map! 
 
 ```{r box_1}
-# Put the code for your main visualization here. A high-quality main visualization will likely use `color`, `fill`, or `facet_wrap` to make help decision-makers make comparisons between different categories.  
-# 
-listings %>% 
-	filter(number_of_reviews < 100) %>%
-	ggplot() + 
-	aes(x = number_of_reviews, y = review_scores_rating, color = property_type) + 
-	geom_point(alpha = .5) + 
-	theme_bw() + 
-	### <b>
-	facet_wrap(~property_type) + 
-	### </b>
-	labs(x='Number of Reviews', y='Review Score', title='Review Volume and Review Quality') + 
-	guides(color = FALSE)
+
+library(ggmap)
+
+boston_coords <- c(left   = -71.1289, 
+				   bottom = 42.3201, 
+				   right  = -71.0189, 
+				   top    = 42.3701)
+
+basemap <- get_map(location = boston_coords,
+				maptype = 'terrain')
+
+ggmap(basemap) + 
+	geom_point(aes(x = longitude, y = latitude), 
+			   data = listings, 
+			   size = .5)
 ```
 
 Column {data-width=350}
@@ -102,24 +80,29 @@ Frequently, visualization for decision-makers are most useful when accompanied b
 
 ```
 
-### Box 3
+### A different visualization! 
 
 ```{r box_3}
 # Put the code for a supporting visualization here. This visualization should add context and nuance, but expect the main visualization to convey the bulk of your message. 
 
-summary_table %>% 
-	ggplot() + 
-	###<b>
-	aes(x = reorder(neighbourhood, n), y=n, fill = property_type) + 
-	###</b>
-	coord_flip() + 
-	geom_bar(stat = 'identity') +
-	xlab('Neighborhood') + 
-	ylab('Number of Listings')
+# This is not a good visualization -- always remember to include titles and legends. Make yours better! 
+
+neighbourhood_lookup <- listings %>% 
+	select(id, neighbourhood)
+
+calendar %>% 
+	left_join(neighbourhood_lookup, by = c('listing_id' = 'id')) %>% 
+	group_by(neighbourhood, date) %>% 
+	summarise(price = mean(price), n = n()) %>% 
+	filter(n > 100) %>%
+	ggplot() +
+	aes(x = date, y = price, color = neighbourhood) + 
+	geom_line() + 
+	guides(color = FALSE)
 ```
 
 
-# Modeling
+# A Second Tab
 
 
 Column {data-width=650}
@@ -127,6 +110,7 @@ Column {data-width=650}
 
 ### Box 1
 
+Your dashboard is allowed to have multiple tabs! Only use it if you need it. 
 
 Column {data-width=350}
 -----------------------------------------------------------------------
