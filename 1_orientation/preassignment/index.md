@@ -95,9 +95,9 @@ If you encounter any error messages that you are unable to handle, please email 
 
 ## Test Packages
 
-In the folder on your desktop from which you downloaded the repo, open the file `1_orientation/preassignment/example_dashboard.rmd`. It will open in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). The "Knit" button is the one circled in [this image](http://cinf401.artifice.cc/images/workflow-25.png). You will need to be connected to the internet in order for this to work. 
+In the folder on your desktop from which you downloaded the repo, open the file `1_orientation/2_data_science/code/dashboard.rmd`. It will open in RStudio. Click the "Knit" button at the top of the source editor, or press `cmd + shift + k` (`ctrl + shift + k` on Windows). The "Knit" button is the one circled in [this image](http://cinf401.artifice.cc/images/workflow-25.png). You will need to be connected to the internet in order for this to work. 
 
-After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/1_orientation/preassignment/example_dashboard.html).  If your output matches the example, congratulations! You are up and running with R and RStudio. Move on to the next step. 
+After a few moments, RStudio should pop up with a new window containing a dashboard that looks like [this](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/code/dashboard.html).  If your output matches the example, congratulations! You are up and running with R and RStudio. Move on to the next step. 
 
 **If You Encounter Problems**
 
