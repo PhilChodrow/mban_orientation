@@ -107,13 +107,13 @@ After a few moments, RStudio should pop up with a new window containing a dashbo
 
 # 3. Optimization: Julia and JuMP
 
-**Please complete all the steps below before the first day of class.** We have very limited time in class and we will not be able to help you with installation problems during the teaching time. If you have difficulties with the installations below, please email `emgibson@mit.edu`.
+**Please try to complete all the steps below before the first day of class.** We will only be using Julia and Gurobi on the second day, but we have very limited time in class and we will not be able to help you with installation problems during the teaching time. If you have difficulties with the installations below, please email `mban-orientation-2019@mit.edu` and include as much information as possible so that we can assist you.
+
+Note that you will need to be connected to the MIT network to activate one of these installations, but most of the other steps can be completed from any location. 
 
 ## Install Julia
 
-Julia is programming language developed at MIT.
-
-To install Julia, go to [`https://julialang.org/downloads/`](https://julialang.org/downloads/) and download the appropriate version for your operating system. See [`here`](https://julialang.org/downloads/platform.html) for more detailed instructions.
+Julia is programming language developed at MIT. To install Julia, go to [`https://julialang.org/downloads/`](https://julialang.org/downloads/) and download the appropriate version for your operating system. See [`here`](https://julialang.org/downloads/platform.html) for more detailed instructions.
 We will assume that everyone has installed the most recent version of Julia (v1.1). If you have an older version installed, we recommend that you install the newer version as well.
 
 To confirm that Julia is installed, open a Julia window by clicking on the Julia icon in your applications menu (note: mac users should make sure Julia is copied into their applications folder). You should see a prompt at the bottom of the new window that looks like this:
@@ -157,14 +157,14 @@ Variables: 0
 
 Gurobi is a commercial optimization solver that we will use to solve optimization problems in class. Here are the basic steps that you will need to follow to install Gurobi:
 
-1. Make a Gurobi account using your @mit.edu email address (select the Academic option, not the commercial option).
-2. Download the Gurobi software.
-3. Create and download an Academic License to use the software.
-4. Use the license file to activate the Gurobi software that you installed.
+1. Make a Gurobi account [`here`](https://www.gurobi.com/registration-general-reg/) using your @mit.edu email address (select the Academic option, not the commercial option).
+2. Download the Gurobi Optimizer software [`here`](https://www.gurobi.com/downloads/) and install.
+3. Create and download an Academic License to use the software [`here`](https://www.gurobi.com/downloads/end-user-license-agreement-academic/).
+4. Use the license file to activate the Gurobi software that you installed. Follow the instructions on the license page to run the grbgetkey command. **Note that you must be connected to the MIT SECURE network to do this.** If you are not on campus, please move on to the next section (IJulia) and come back to this step later.
 
-The detailed installation instructions are available [`here`](https://www.gurobi.com/documentation/quickstart.html). If you get stuck trying to follow these instructions, please email [`emgibson@mit.edu`] for assistance.
+A summary of the Gurobi installation/activation process is available [`here`](https://www.gurobi.com/academia/academic-program-and-licenses/) and detailed installation instructions are available [`here`](https://www.gurobi.com/documentation/quickstart.html). If you get stuck trying to follow these instructions, please email `mban-orientation-2019@mit.edu` for assistance.
 
-After installing Gurobi, we need to add a Julia package called "Gurobi" that allows the Julia to communicate with the Gurobi software. Run the following lines in your Julia window:
+After installing Gurobi, we need to add a Julia package called "Gurobi" that allows Julia to communicate with the Gurobi software. Run the following lines in your Julia window:
 ```julia
 julia> using Pkg
 julia> Pkg.add("Gurobi")
@@ -211,7 +211,7 @@ If this is successful, a Jupyter tab will open in the default browser on your co
 
 ## Final Check
 
-Copy and paste the following code into the new notebook (next to the "In []:"" prompt)
+Once you have completed all the steps above, copy and paste the following code into a new Jupyter notebook (next to the "In []:"" prompt)
 
 ```julia
 using JuMP, Gurobi
