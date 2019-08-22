@@ -13,7 +13,7 @@ min_reviews <- 5
 allowed_neighbourhoods <- c("Downtown","Back Bay","Chinatown") #add areas
 
 # These parameters describe the dates and length of stay for which we want to check availibility.
-dates <- ymd(c("2019-08-30","2019-09-27","2019-10-25"))
+dates <- ymd(c("2019-08-30","2019-09-27","2019-10-25", "2019-11-25"))
 nights <- 3
 
 # These parameters the amenities that we will add as columns in our data
@@ -37,7 +37,7 @@ filtered_listings <- listings %>%
 # First step: construct a helper data frame that contains the dates of the stays we want.
 
 date_df <- tibble(
-	stay = rep(1:nights, length(dates)), 
+	stay = rep(1:length(dates), nights), 
 	date = dates + rep(1:nights, each = length(dates)) - 1) 
 
 # calculate the prices for available listings. 
@@ -64,6 +64,8 @@ filtered_listings <- filtered_listings %>%
 for(a in amenities){
   filtered_listings[,a] = grepl(a,filtered_listings$amenities)
 }
+
+filtered_listings[grepl('stay', colnames(filtered_listings))]
 
 # write out the data
 filtered_listings %>% 
