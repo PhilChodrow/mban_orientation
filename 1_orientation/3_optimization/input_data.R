@@ -1,5 +1,4 @@
 ## Analysis packages
-
 library(tidyverse)
 library(lubridate) 
 source("../2_data_science/code/clean_prices.R")
@@ -13,8 +12,13 @@ min_reviews <- 5
 allowed_neighbourhoods <- c("Downtown","Back Bay","Chinatown") #add areas
 
 # These parameters describe the dates and length of stay for which we want to check availibility.
-dates <- ymd(c("2019-08-30","2019-09-27","2019-10-25", "2019-11-25"))
 nights <- 3
+args = commandArgs(trailingOnly=TRUE)
+dates = ymd(args[[1]])
+print(dates)
+# If you want to run this script in RStudio, set the dates manually
+#dates <- ymd(c("2019-08-30","2019-09-27","2019-10-25", "2019-11-25"))
+
 
 # These parameters the amenities that we will add as columns in our data
 amenities <- c("Kitchen","Air conditioning")
@@ -42,7 +46,7 @@ date_df <- tibble(
 
 # calculate the prices for available listings. 
 # The result is a data_frame with columns for each of the stays we want -- a listing is included if it is available for at least one of them. 
-
+calendar$available = calendar$available=='t'
 availability <- calendar %>% 
 	filter(available == TRUE, 
 				 minimum_nights <= nights) %>% 
@@ -62,11 +66,12 @@ filtered_listings <- filtered_listings %>%
 # finally, search for the listed amenities and add extra columns to the listing data
 # in general, for-loops are highly discouraged in R, but this method does appear to be by far the most concise way. 
 for(a in amenities){
-  filtered_listings[,a] = grepl(a,filtered_listings$amenities)
+  filtered_listings[,gsub(" ","_",a)] = grepl(a,filtered_listings$amenities)
 }
 
-filtered_listings[grepl('stay', colnames(filtered_listings))]
 
 # write out the data
 filtered_listings %>% 
 	write_csv('filtered_listings.csv')
+
+print("Success!")
