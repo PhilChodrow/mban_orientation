@@ -114,7 +114,7 @@ Note that you will need to be connected to the MIT network to activate one of th
 ## Install Julia
 
 Julia is programming language developed at MIT. To install Julia, go to [`https://julialang.org/downloads/`](https://julialang.org/downloads/) and download the appropriate version for your operating system. See [`here`](https://julialang.org/downloads/platform.html) for more detailed instructions.
-We will assume that everyone has installed the most recent version of Julia (v1.1). If you have an older version installed, we recommend that you install the newer version as well.
+We will assume that everyone has installed the most recent version of Julia (either v1.1 or v1.2). If you have an older version installed, we recommend that you install the newer version as well.
 
 To confirm that Julia is installed, open a Julia window by clicking on the Julia icon in your applications menu (note: mac users should make sure Julia is copied into their applications folder). You should see a prompt at the bottom of the new window that looks like this:
 
@@ -207,11 +207,11 @@ julia> notebook()
 install Jupyter via Conda, y/n? [y]: 
 ```
 
-If this is successful, a Jupyter tab will open in the default browser on your computer. Click “New” in the top right corner to make a new notebook (if a menu appears, select Julia 1.1). A new tab will open with a blank Jupyter notebook.
+If this is successful, a Jupyter tab will open in the default browser on your computer. Click “New” in the top right corner to make a new notebook (if a menu appears, select Julia 1.1 or 1.2). A new tab will open with a blank Jupyter notebook.
 
 ## Final Check
 
-Once you have completed all the steps above, copy and paste the following code into a new Jupyter notebook (next to the "In []:"" prompt)
+Once you have completed all the steps above, copy and paste the following code into a new Jupyter notebook (next to the "In []:" prompt)
 
 ```julia
 using JuMP, Gurobi
