@@ -1,4 +1,4 @@
-library(tidyverse)
+suppressWarnings(library(tidyverse))
 
 clean_prices <- function(df){
 	clean_price <- function(x) gsub('\\$|,', '',x) %>% as.numeric()

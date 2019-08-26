@@ -197,12 +197,15 @@ knitr::include_graphics("http://pix-media.s3.amazonaws.com/blog/1001/HadleyObama
 > - Misc. other options. 
 > - (`+` plays the same role in `ggplot2` that `%>%` does in data manipulation.)
 
-# R Markdown
+# Literate Programming with R Markdown
 
-## Literate Programming with R Markdown
+## Literate Programming
+
+The idea of *literate programming* is to collect your code, outputs, and explanatory narrative in a single, convenient document that can meet the needs of multiple stakeholders.  
+
+## R Markdown
 
 - [R Markdown](https://rmarkdown.rstudio.com) is an authoring format for creating attractive documents, slides, websites, and more using `R`. 
-- It is easily the best way to share plots, code, and narrative in a single document. 
 - These slides are written in RMarkdown ([source here](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_science/index.html)). 
 - We are going to take a quick tour of R Markdown features before jumping into your mini-project for today. 
 

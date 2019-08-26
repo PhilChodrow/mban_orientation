@@ -15,15 +15,6 @@ library(lubridate) # for date manipulation later
 listings <- read_csv('../../data/listings.csv')
 calendar <- read_csv('../../data/calendar.csv')
 
-# I'm going to do just a little bit of data cleaning for you. 
-# There are a few columns in each data set that should be prices but R will read them as strings. 
-# The below three lines fix that. 
-
-source("clean_prices.R")
-listings <- clean_prices(listings)
-calendar <- clean_prices(calendar)
-
-
 # Inspect the data
 listings
 
@@ -35,6 +26,29 @@ colnames(listings)
 
 # Use glimpse() to get a structured overview of the data
 glimpse(listings)
+
+# Let's try to compute the mean of the prices. What happens? What's the problem? 
+
+mean(listings$price) 
+
+
+# I'm going to do just a little bit of data cleaning for you. 
+# There are a few columns in each data set that should be prices (i.e. numbers) but R will read them as strings. 
+# The below three lines fix that. 
+
+# Load in a custom R  file. By the end of today you'll be able to understand most  of it. 
+source("clean_prices.R")           
+
+# Apply the "clean_prices" custom function to each data set. 
+listings <- clean_prices(listings)
+calendar <- clean_prices(calendar)
+
+# Now let's check again 
+
+glimpse(listings)
+mean(listings$price)
+
+# Good to go! 
 
 # ----------------------------------------------
 # WARMUP: The Nicest Spots in JP
@@ -64,17 +78,18 @@ jp_best <- select(jp_sorted, neighbourhood, name, review_scores_rating)
 jp_best
 
 # Problem: this code wastes:
-# 1. **Headspace** to think of names for the intermediate steps that we don't 
+# 1. **Headspace** to think of names for the intermediate steps ("jp_only", "jp_sorted") that we don't 
 # actually care about. 
-# 2. **Writing time** to write those names and include them in the function calls.
+# 2. **Writing time** to type those names and include them in the function calls.
 # 3. **Computer memory** to store the intermediate steps. This doesn't matter 
 # so much now, but for larger data sets this will rapidly become a problem. 
 
 # Let's see if we can address these problems using nested syntax instead. 
+# Nested syntax refers to simply writing function calls inside other functions. 
 
 select(arrange(filter(listings, neighbourhood == 'Jamaica Plain'), desc(review_scores_rating)), neighbourhood, name, review_scores_rating)
 
-# Ok, that's no longer wasteful, but it's also illegible. What to do? Back to the slides to discuss the pipe
+# Ok, that's no longer wasteful, but it's also illegible -- hard to write, hard to troubleshoot. What to do? Back to the slides to discuss the pipe
 
 # -----------------------------------------------------
 # EXERCISE 1: The Pipe
@@ -100,7 +115,9 @@ listings %>%
 
 # You are going to spend a long weekend in Back Bay with 59 of your closest friends.
 
-# Working with your partner, modify your code slightly to construct a table of the listings in Back Bay, sorted by the number of people who can stay there. Display the price column as well. You may need to use `glimpse` to see which columns you'll want to use. 
+# Working with your partner, modify your code slightly to construct a table of the listings in Back Bay.
+# Sort the results in descending order by the number of people who can stay there, and in ascending order by price, displaying both columns. 
+# Display the price column as well. You may need to use `glimpse` to see which columns you'll want to use. 
 
 # ----------------------------------------------
 # SOLUTION
@@ -108,35 +125,51 @@ listings %>%
 
 listings %>% 
 	filter(neighbourhood == 'Back Bay') %>% 
-	arrange(desc(accommodates)) %>% 
+	arrange(desc(accommodates), price) %>% 
 	select(neighbourhood, name, accommodates, price)
 
 # -----------------------------------------------------------------
 # Exploratory Data Analysis
 # -----------------------------------------------------------------
 
-# Remember our case study -- we are going to provide recommendations to AirBnB on where to focus their host recruitment efforts. To that end, let's see how to construct a simple summary table in which we'll display the average rating and price-per-guest by neighborhood. We can use the accommodates field as a simple estimate of how many people can fit in a listing. 
+# What's the average price per person to stay at an AirBnB in Boston? Let's see how to construct a simple summary table in which we'll display the average rating and price-per-guest by neighborhood. We can use the accommodates field as a simple estimate of how many people can fit in a listing. 
 
 listings %>% 
 	mutate(price_per = price / accommodates)
 
-# Nifty! Now let's summarize the number of records, mean price_per, and mean rating. 
+# Next, let's summarise() the results by computing the average: 
+
+listings %>% 
+	mutate(price_per = price / accommodates) %>% 
+	summarise(price_per = mean(price_per))
+
+# We can actually compute multiple summary statistics simultaneously. Maybe we want the total number of listings and the mean rating as well. We can actually just pack them into the same summarise() call:  	
 
 listings %>% 
 	mutate(price_per = price / accommodates)  %>% 
-	summarize(n = n(), 
-			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
-			  price_per = mean(price_per, na.rm = TRUE)) 
+	summarise(n = n(), 
+			  mean_rating = mean(review_scores_rating),
+			  price_per = mean(price_per)) 
 
-# This appears to have worked, but isn't tremendously useful. We usually want to slice and dice our data by values of different variables. We can do that by adding in the group_by() function to our pipeline. Toward our motivating question, we'll group_by(neighbourhood) here. 
+# Oops! We got an NA for the mean_rating. We can fix that by adding an na.rm = TRUE parameter to mean_rating, which simply says to omit missing values from the computation. 
+
+listings %>% 
+	mutate(price_per = price / accommodates)  %>% 
+	summarise(n = n(), 
+			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
+			  price_per = mean(price_per))
+
+# This appears to have worked, but isn't tremendously useful. We usually want to slice and dice our data by values of different variables. We can do that by adding in the group_by() function to our pipeline. We'll group_by(neighbourhood) here. 
 
 listings %>% 
 	mutate(price_per = price / accommodates)  %>% 
 	group_by(neighbourhood) %>% 
-	summarize(n = n(), 
+	summarise(n = n(), 
 			  mean_rating = mean(review_scores_rating, na.rm = TRUE),
 			  price_per = mean(price_per, na.rm = TRUE)) 
 	
+# Note that, when we group_by() and then summarise(), we get a new column giving the group label -- in this case, the neighborhood. 
+
 # -----------------------------------------------------
 # EXERCISE 3: Summarising Data
 # -----------------------------------------------------
@@ -145,7 +178,7 @@ listings %>%
 # 
 # 1. Group by property_type as well as neighborhood. How does this impact the output?
 # 2. Add a new column to the table with the average rate per person for WEEKLY rentals, using the weekly_price column. 
-# 3. Add a new column giving the total "capacity" for each neighborhood, given as the total number of beds in rentals in that neighborhood. 
+# 3. Add a new column giving the total "capacity" for each neighborhood, given as the total number of people who can be accomodated by in rentals in that neighborhood. 
 # 4. Name the result summary_table
 
 # ----------------------------------------------
@@ -185,20 +218,19 @@ ranked_summary_table <- summary_table %>%
 # RELATIONAL DATA
 # -----------------------------------------------------------------
 
-# How current is this summary data? Does it reflect how things are NOW, or how things were many months or even years ago? In this section, we're going to see how to use relations to incorporate data from multiple tables. 
-
 # Suppose we're planning a trip for September. We'd like to check what listings have availability during September. This information isn't contained in the listings table, but it is contained in the calendar table: 
 
 calendar
+calendar %>% glimpse()
 
-# So, how do we get it out? 
+# How can we connect this information to the listings table in order to learn more about what spots are available in September? 
 
 # -----------------------------------------------------
 # EXERCISE 5: September Availability
 # -----------------------------------------------------
 
-# Construct a table with two columns. The first column should give the listing_id of the listing. The second column should be called nights_available and give the total number of nights of availability in the month of September. Finally, filter the result so that the table only contains listings with at least one available night in September. 
-# HINT: you might find it useful to see what the following command returns: 
+# Construct a table with two columns. The first column should give the listing_id of the listing. The second column should be called nights_available and give the total number of nights of availability in the month of September. Finally, filter the result so that the table only contains listings with at least one available night in September. You will probably want to use mutate(), filter(), group_by(), and summarise(). 
+# HINT: you might also find it useful to see what the following command returns: 
 
 # month("2019-09-03", label = TRUE)
 
@@ -219,10 +251,18 @@ september_availability <- calendar %>%
 listings <- listings %>% 
 	left_join(september_availability, by = c('id' = 'listing_id'))
 
-# This operation generates NAs when there's no entry in the september_availability table. Let's filter those out: 
+# Let's take a look at the new column we've created:
+
+listings %>% 
+	select(id, nights_available)
+
+# What does the NA mean?
+# Let's filter it out
 
 listings_sep <- listings %>% 
 	filter(!is.na(nights_available))
+
+# If you've made it this far, great job! Next up: visualization. 
 
 # -----------------------------------------------------------------
 # GETTING VISUAL
@@ -237,7 +277,7 @@ listings %>%
 	aes(x = review_scores_rating) + 
 	geom_histogram()
 
-# How about a bar chart? What does this code do? 
+# How about a bar chart?
 
 summary_table %>% 
 	filter(property_type == 'Apartment') %>% 
@@ -254,20 +294,23 @@ summary_table %>%
 	geom_bar(stat = 'identity') + 
 	coord_flip()
 
-# Next, let's do a simple scatter plot of the number of reviews vs. review score. We'll build up this plot line by line. 
+# Next, let's do a simple scatter plot of the number of reviews vs. review score. We'll again build up this plot line by line. 
 
 listings %>% 
 	ggplot() + 
 	aes(x = number_of_reviews, y = review_scores_rating) + 
 	geom_point(alpha = .2, color = 'firebrick') + 
 	theme_bw() + 
-	labs(x='Number of Reviews', y='Review Score',title='Review Volume and Review Quality') 
+	labs(x = 'Number of Reviews', 
+		 y = 'Review Score',
+		 title = 'Review Volume and Review Quality') 
+# what does the warning mean?
 
 # -----------------------------------------------------
 # EXERCISE 6: TRENDS OVER TIME
 # -----------------------------------------------------
 
-# First, inspect the calendar table to get a sense for what fields are available. Compute a table with two columns: a date and an average price per day. Finally, make a line chart using geom_line() to visualize the average trend, with date on the x-axis and mean price on the y-axis. 
+# First, inspect the calendar table to get a reminder for what fields are available. Compute a table with two columns: a date and an average price per day. Finally, make a line chart using geom_line() to visualize the average trend, with date on the x-axis and mean price on the y-axis. 
 	
 # ----------------------------------------------
 # SOLUTION
@@ -338,7 +381,7 @@ calendar %>%
 	aes(x = date, y = mean_price, color = is_boat) + 
 	geom_line()
 	
-# We've covered some of the most important types of plots -- histograms, bar charts, line plots, and scatterplots, as well as ways to slice-and-dice these using color and small multiples. Now we're going to add a geographic component so we can see *where* listings of interest are located in the city. This is going to come up in a big way when we visualize the solutions of routing problems tomorrow.  
+# We've covered some of the most important types of plots -- histograms, bar charts, line plots, and scatterplots, as well as ways to slice-and-dice these using color and small multiples. Now we're going to add a geographic component so we can see *where* listings of interest are located in the city.
 
 # We can get a "basemap" of Boston using the ggmap package, as in the following code: 
 

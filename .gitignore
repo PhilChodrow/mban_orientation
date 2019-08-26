@@ -16,3 +16,4 @@ _site/
 feedback
 reflections.*
 highlight.scss
+*.ipynb_checkpoints
