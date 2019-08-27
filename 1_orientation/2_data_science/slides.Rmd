@@ -227,7 +227,6 @@ Like [this](https://philchodrow.github.io/mban_orientation/1_orientation/2_data_
 - Personalize the dashboard with your name and your partner's name. 
 - Conduct analysis to identify **three** locations or neighborhoods you want to visit. Use Google to figure out what might be interesting about those spots, but your commentary should show how your analysis supports your findings. 
 - At the end of the hour, you will upload `dashboard.html` at the provided link. 
-- A subset of groups will be ***randomly chosen to briefly present their work.***
 
 # Additional Resources
 
