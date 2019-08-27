@@ -9,7 +9,7 @@ source("../2_data_science/code/clean_prices.R")
 # These parameters indicate the criteria we will use to filter the listings
 min_score <- 90
 min_reviews <- 5
-allowed_neighbourhoods <- c("Downtown","Back Bay","Chinatown") #add areas
+allowed_neighbourhoods <- c("Downtown","Back Bay","Chinatown")
 
 # These parameters describe the dates and length of stay for which we want to check availibility.
 nights <- 3
@@ -46,7 +46,8 @@ date_df <- tibble(
 
 # calculate the prices for available listings. 
 # The result is a data_frame with columns for each of the stays we want -- a listing is included if it is available for at least one of them. 
-calendar$available = calendar$available=='t'
+#calendar$available = calendar$available=='t'
+
 availability <- calendar %>% 
 	filter(available == TRUE, 
 				 minimum_nights <= nights) %>% 
@@ -66,7 +67,7 @@ filtered_listings <- filtered_listings %>%
 # finally, search for the listed amenities and add extra columns to the listing data
 # in general, for-loops are highly discouraged in R, but this method does appear to be by far the most concise way. 
 for(a in amenities){
-  filtered_listings[,gsub(" ","_",a)] = grepl(a,filtered_listings$amenities)
+  filtered_listings[,gsub(" ","_",a)] = as.numeric(grepl(a,filtered_listings$amenities))
 }
 
 
