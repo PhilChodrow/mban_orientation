@@ -7,7 +7,7 @@ Topics covered include:
 - Feature engineering, including some basic text analysis. 
 - Data splits: training, testing, and validation. 
 - Training models: linear regression, logistic regression, random forests, and k-means clustering. 
-- Tidily extracting and visualizing model predictions. 
+- Tidily extracting, evaluating, and visualizing model predictions. 
 
 ## Preassignment
 
