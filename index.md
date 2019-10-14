@@ -23,8 +23,11 @@ Please note that this first preassignment is especially long: plan to allow 2 ho
 
 # SIP Week 
 
-1. Statistical Modeling and Machine Learning with R
-2. Advanced Topics: Navigating the Cycle of Data Science 
+In this week's workshops, we'll learn the basics of machine learning in R; work together through a case study that synthesizes our core analytic skills (and adds some new ones); and develop interactive data applications using R and the `shiny` package. 
+
+1. [Statistical Modeling and Machine Learning with R](https://philchodrow.github.io/mban_orientation/2_SIP/1_statistical_modeling/index.html)
+2. [Case Study: Navigating the Cycle of Data Science](https://philchodrow.github.io/mban_orientation/2_SIP/2_case_study/index.html) 
+3. [Interactive Data Products with Shiny](https://philchodrow.github.io/mban_orientation/2_SIP/3_interactive/index.html)
 
 # IAP 
 
