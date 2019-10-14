@@ -17,3 +17,5 @@ feedback
 reflections.*
 highlight.scss
 *.ipynb_checkpoints
+mban.sublime-project
+mban.sublime-workspace
