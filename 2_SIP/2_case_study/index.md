@@ -1,4 +1,4 @@
-# Advanced R: Tackling Complex Analyses the Tidy Way
+# Case Study: Navigating the Cycle of Data Science
 
 *Instructor: [Phil Chodrow](https://philchodrow.com)*
 
