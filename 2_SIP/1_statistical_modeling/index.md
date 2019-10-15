@@ -4,20 +4,12 @@ In this three-hour workshop, we will introduce workflows in R for performing ele
 
 Topics covered include: 
 
-- Feature engineering, including some basic text analysis. 
+- Feature engineering, including some elementary sentiment analysis. 
 - Data splits: training, testing, and validation. 
 - Training models: linear regression, logistic regression, random forests, and k-means clustering. 
-- Tidily extracting, evaluating, and visualizing model predictions. 
+- Tidily extracting, evaluating, and visualizing model performance. 
 
 ## Preassignment
 
-Prior to the session, you may find it helpful to review your scripts from back in August, as we will be relying heavily on the tools we introduced then, including all our data wrangling and visualization functions. 
-
-Prior to the session, please run the following commands in R Studio.
-
-```{r}
-install.packages(c('tidytext', 'randomForest'))
-```
-
-
+You are not ready for the session until you have successfully downloaded and run the [preassignment](https://philchodrow.github.io/mban_orientation/2_SIP/preassignment/preassignment_1.R) in RStudio. 
 

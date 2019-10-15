@@ -25,9 +25,19 @@ Please note that this first preassignment is especially long: plan to allow 2 ho
 
 In this week's workshops, we'll learn the basics of machine learning in R; work together through a case study that synthesizes our core analytic skills (and adds some new ones); and develop interactive data applications using R and the `shiny` package. 
 
+## Preassignment
+
+Prior to the session, you may find it helpful to review your scripts from back in August, as we will be relying heavily on the tools we introduced then, including all our data wrangling and visualization functions. 
+
+Additionally, please download and run the [preassignment](https://philchodrow.github.io/mban_orientation/2_SIP/preassignment/preassignment_1.R) in R to make sure that you have the required software. 
+
+## Session Materials
+
 1. [Statistical Modeling and Machine Learning with R](https://philchodrow.github.io/mban_orientation/2_SIP/1_statistical_modeling/index.html)
 2. [Case Study: Navigating the Cycle of Data Science](https://philchodrow.github.io/mban_orientation/2_SIP/2_case_study/index.html) 
 3. [Interactive Data Products with Shiny](https://philchodrow.github.io/mban_orientation/2_SIP/3_interactive/index.html)
+
+
 
 # IAP 
 
