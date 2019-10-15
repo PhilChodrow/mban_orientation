@@ -6,7 +6,7 @@ In this three-hour workshop, we will introduce workflows in R for performing ele
 
 ![](http://r4ds.had.co.nz/diagrams/data-science.png)
 
-
+*Image credit: Hadley Wickham*
 
 ## Learning Objectives
 
