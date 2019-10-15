@@ -1,8 +1,8 @@
 library(tidyverse)
 
 #' read in the data
-prices <- read_csv('data/raw/calendar.csv')
-listings <- read_csv('data/raw/listings.csv')
+prices <- read_csv('../data/calendar.csv')
+listings <- read_csv('../data/listings.csv')
 
 #' clean the prices data frame, including computation of price_per
 prices <- prices %>%

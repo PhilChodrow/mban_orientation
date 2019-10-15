@@ -1,7 +1,6 @@
 #' -------------------------------------------------------------------------
 #' CASE STUDY: Advanced Topics in Data Science
 #' By Phil Chodrow
-#' January 16th, 2019
 #' -------------------------------------------------------------------------
 
 #' This is the script for following along with our case-study analysis of trends 
@@ -85,6 +84,15 @@ listings <- read_all_csv('data/listings')
 #' process. 
 
 #' Preliminary Exploration -------------------------------------------------
+
+#' First, let's take a look at the data. 
+
+prices %>% glimpse()
+prices %>% summary() # see a problem?
+
+prices <- prices %>% 
+	filter(price_per < 1000)
+
 
 #' EXERCISE: Time to take a look to see what we have. The first version of 
 #' our analysis question is: 
@@ -337,7 +345,7 @@ p
 
 april_prices <- prices_modeled %>% 
 	filter(month(date, label = T) == 'Apr') %>% 
-	select(listing_id, date, remainder)
+	select(listing_id, date, remainder) 
 
 #' EXERCISE: As you may know, R's implementation of k-means requires that 
 #' the data be stored as a matrix. Use `tidyr::spread()` to convert `april_prices` into 
@@ -347,8 +355,9 @@ april_prices <- prices_modeled %>%
 #' Then, remove the `listing_id`` column with `select()`, and convert the result 
 #' to a matrix with `as.matrix()`. 
 
-prices_to_cluster<- april_prices %>% 
-	spread(key = date, value = remainder) 
+prices_to_cluster <- april_prices %>% 
+	spread(key = date, value = remainder) %>% 
+	drop_na()
 
 prices_matrix <- prices_to_cluster %>% 
 	select(-listing_id) %>% 
@@ -367,40 +376,8 @@ my_kmeans <- function(k){
 	kmeans(prices_matrix, k)
 }
 
-
-# cluster_models <- data_frame(k = rep(1:10, 10)) %>%
-#	  mutate(kclust = map(k, my_kmeans))
-
-#' Woops! We got an error due to the presence of NAs in the matrix. 
-#' But....
-
-april_prices$remainder %>% is.na() %>% sum()
-
-#' So where did the NAs come from? Missing data, that's where! 
-
-#' ----------------------------------------------------------------------------
-#' 
-#' ----------------------------------------------------------------------------
-
-#' EXERCISE: Modify the block in which you constructed april_prices so that only 
-#' listings are shown which have complete data for the entire month of April. 
-#' Some useful functions include `complete()` and `is.na()`. You might also want 
-#' to try combining `group_by()` with `filter()`. Once you've done this
-
-prices_to_cluster<- april_prices %>% 
-  complete(listing_id, date) %>% 
-  group_by(listing_id) %>% 
-  filter(sum(is.na(remainder)) == 0) %>% 
-  ungroup() %>% 
-  spread(key = date, value = remainder) 
-
-prices_matrix <- prices_to_cluster %>% 
-  select(-listing_id) %>% 
-  as.matrix()
-
 cluster_models <- data_frame(k = rep(1:10, 10)) %>%
   mutate(kclust = map(k, my_kmeans))
-
 
 #' Model Evaluation ------------------------------------------------------------
 
@@ -436,18 +413,35 @@ chosen_model <- cluster_models$kclust[cluster_models$k == 2][[1]]
 #' Let's inspect the clustered series. To do this, we need to add the 
 #' predictions to prices_for_clustering and use `gather()`: 
 
-prices_clustered <- prices_to_cluster %>% 
-	mutate(cluster = chosen_model$cluster) %>% 
-	gather(key = date, value = price, -cluster, -listing_id) %>% 
-	mutate(date = as.Date(date))
+cluster_lookup <- data_frame(
+	listing_id = prices_to_cluster$listing_id, 
+	cluster = chosen_model$cluster
+)
+
+prices_clustered <- prices %>% 
+	left_join(cluster_lookup, by = c('listing_id' = 'listing_id')) %>% 
+	drop_na()
 
 #' Moment of Truth!
 
 prices_clustered %>% 
+	filter(month(date, label = TRUE, abbr = TRUE) == 'Apr') %>% 
 	ggplot() + 
-	aes(x = date, y = price, group = listing_id) + 
-	geom_line() + 
+	aes(x = date, y = price_per, group = listing_id) + 
+	geom_line(alpha = .2) + 
 	facet_wrap(~cluster)
+
+#' Showing the mean
+
+prices_clustered %>% 
+	group_by(cluster, date) %>% 
+	summarise(m = mean(price_per)) %>% 
+	ggplot() + 
+	aes(x = date, y = m, color = factor(cluster), group = cluster) + 
+	geom_line() + 
+	theme_bw() + 
+	scale_color_manual(values = c('navy', 'orange')) 
+
 
 #' Geospatial Visualization ----------------------------------------------------
 
@@ -458,16 +452,10 @@ prices_clustered %>%
 #' in the `listings` data frame. We'll use `left_join()` for this, but first
 #' we need to remove all the duplicates in `prices_clustered`.  
 
-cluster_lookup <- prices_clustered %>% 
-	filter(!duplicated(listing_id)) %>% 
-	select(listing_id, cluster)
-
 locations_to_plot <- listings %>% 
 	left_join(cluster_lookup, by = c('id' = 'listing_id')) %>% 
 	filter(!is.na(cluster)) %>% 
   select(cluster, latitude, longitude)
-
-locations_to_plot
 
 #' Now we'll plot using leaflet, an interative geospatial 
 #' visualization library. 
