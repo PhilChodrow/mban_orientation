@@ -1,4 +1,4 @@
-install.packages(c('tidytext', 'randomForest', 'yardstick', 'janeaustenr')) 
+install.packages(c('tidytext', 'randomForest', 'yardstick', 'janeaustenr','knitr','leaflet')) 
 
 library(tidyverse)
 library(tidytext)
@@ -11,6 +11,15 @@ austen_books() %>%
 	group_by(word) %>% 
 	summarise(n = n()) %>% 
 	arrange(desc(n))
+
+# what about this? 
+
+library(leaflet)
+
+m <- leaflet() %>% setView(lng = -71.0589, lat = 42.3601, zoom = 12)
+m %>% addTiles()
+
+
 
 
 

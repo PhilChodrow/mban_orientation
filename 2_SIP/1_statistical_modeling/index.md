@@ -1,13 +1,22 @@
 # Statistical Modeling and Machine Learning in R
 
-In this three-hour workshop, we will introduce workflows in R for performing elementary statistical modeling and machine learning. Throughout, we will emphasize tidy workflows that are easy to write, easy to read, and easy to reproduce. 
+*Instructor: [Phil Chodrow](https://philchodrow.com)*
 
-Topics covered include: 
+In this three-hour workshop, we will introduce workflows in R for performing elementary statistical modeling and machine learning. Throughout, we will emphasize tidy workflows that are easy to write, easy to read, easy to reproduce, and easy to slot in to the broader cycle of data science. 
 
-- Feature engineering, including some elementary sentiment analysis. 
-- Data splits: training, testing, and validation. 
-- Training models: linear regression, logistic regression, random forests, and k-means clustering. 
-- Tidily extracting, evaluating, and visualizing model performance. 
+![](http://r4ds.had.co.nz/diagrams/data-science.png)
+
+
+
+## Learning Objectives
+
+By the end of this session, students will be able to:
+
+- Efficiently engineer useful features for downstream modeling tasks, including elementary sentiment analysis. 
+- Be able to easily split data into training, testing, and validation sets; and manage their splits in tidy fashion. 
+- Train a selection of fundamental machine learning models, including linear regression, logistic regression, random forests, and k-means clustering. 
+- Tidily extract, evaluate, and visualize model predictions and performance. 
+- Contextualize machine learning workflows within the broader cycle of data science. 
 
 ## Preassignment
 
