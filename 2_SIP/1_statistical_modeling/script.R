@@ -1,14 +1,13 @@
-library(tidyverse)
-library(tidytext)
-library(modelr)
-library(randomForest)
-library(yardstick)
-library(cld3)
-library(kernlab)
-library(ggmap)
+library(tidyverse)     # core data manipulation
+library(tidytext)      # text analysis
+library(modelr)        # modeling helpers
+library(randomForest)  # random forest regression
+library(yardstick)     # classification evaluation functions. 
+library(cld3)          # language identification
+library(kernlab)       # spectral clustering
+library(ggmap)         # geospatial viz
 
-
-# Today we're going to continue working with the AirBnB data set that we introduced back in August. It comes in three pieces, and this time we'll work with all three: 
+# Today we're going to continue working with the AirBnB data set that we introduced back in August. It comes in three pieces. Last time, we worked mainly with the listings data set. This time, we'll use listings and reviews. Next session, we'll focus on the calendar data. 
 
 listings <- read_csv('../data/listings.csv')
 calendar <- read_csv('../data/calendar.csv')
@@ -21,7 +20,7 @@ reviews  <- read_csv('../data/reviews.csv')
 #' 2. Select or engineer the features we think might be predictive. 
 #' 3. Implement one or more models and evaluate their performance on training data. 
 #' 4. Evaluate model performance on test data. 
-#' Our predictable theme is that "tidy" tools like we used back in August will help us navigate this process in an easy, reproducible way. 
+#' Our predictable theme for the session is that "tidy" tools like we used back in August will help us navigate this process in a smooth, reproducible way. 
 
 #' ------------------------------------------------------------
 #' CLEANING
@@ -43,12 +42,14 @@ listings %>%
 	mutate_at(vars(contains('price')), 
 						parse_number)
 
-#' Now all columns whose names contain the word "price" are numeric. We'd like to do the same thing to the calendar data, but we don't want to write the same code twice. What to do?
+#' Now all columns whose names contain the word "price" are numeric. We'd like to do the same thing to the calendar data, but we don't want to write the same code twice. What to do? Let's write a *function* that will do this piece of data cleaning for us. 
 
 clean_prices <- function(df){
 	df %>% 
 		mutate_at(vars(contains('price')), parse_number)
 }
+
+#' We'll write some more complicated functions later in the session. 
 
 listings <- listings %>% 
 	clean_prices()
@@ -56,22 +57,21 @@ listings <- listings %>%
 calendar <- calendar %>%
 	clean_prices()
 
-
 #' ------------------------------------------------------------
 #' FEATURE ENGINEERING AND EXPLORATORY DATA ANALYSIS
 #' ------------------------------------------------------------
 
-# We want to recommend listings to users that we think they'll like. So, we would like to design an algorithm that will predict whether a user will like a listing, based on features we can extract from our data. 
+#' We want to recommend listings to users that we think they'll like. So, we would like to design an algorithm that will predict whether a user will like a listing, based on features we can extract from our data. 
 
-# First problem: we actually don't have a feature that says how much a user liked a listing. What we do have is the review text. 
+#' First problem: we actually don't have a feature that says how much a user liked a listing. What we do have is the review text, in the comments column. 
 
 reviews %>% glimpse()
 
-# We can turn the review text into a measure of satisfaction using some basic tools from *sentiment analysis.* What we are going to do is look for words that have positive or negative semantic valences associated with them. These valences can be quantified and validated through experiments. The first thing we need to do is get a list of words and their valences, called a "lexicon." The package tidytext provides the get_sentiments() and unnest_tokens() commands we'll use below. 
+#' We can turn the review text into a measure of satisfaction using some basic tools from *sentiment analysis* . What we are going to do is look for words that have positive or negative semantic valences associated with them. These valences can be quantified and validated through experiments. The first thing we need to do is get a list of words and their valences, called a *lexicon.* The package tidytext provides the get_sentiments() and unnest_tokens() commands we'll use below. 
 
 sentiment <- get_sentiments('afinn')
 
-# There are a few other lexicons we could grab as well, but this one is easiest because it assigns numerical scores to words. We'll play with another one later in the session. 
+#' There are a few other lexicons we could grab as well, but this one is easiest because it assigns numerical scores to words. We'll play with another one later in the session. 
 
 sentiment
 
@@ -81,7 +81,7 @@ sentiment %>%
 	group_by(value) %>% 
 	summarise(n = n())
 
-sentiment %>% filter(value == 5) # warning: changing 5 to -5 will surface some extremely graphic and offensive language. 
+sentiment %>% filter(value == 5) # warning: searching out negative values will surface some extremely graphic and offensive language. 
 
 # So, we need to somehow find instances of these words in the reviews. The first step is to reshape the review table by *tokenizing*. Tokenizing creates a single row for each word in each review. This operation may take a few seconds. 
 
@@ -106,7 +106,7 @@ review_sentiments <- words_with_sentiments %>%
 reviews_with_sentiments <- reviews %>% 
 	left_join(review_sentiments)
 
-#' EXERCISE: Working with your partner, make a table containing the top 20 most positive reviews. Inspect the text of the comments. Do the results make sense to you? 
+#' EXERCISE: Working with your partner, make a table containing the top 20 most positive reviews. Inspect the text of the comments. Do these results make sense? 
 
 reviews_with_sentiments %>% 
 	arrange(desc(sentiment)) %>% 
@@ -129,37 +129,55 @@ add_sentiment_feature <- function(df, id_col, text_col){
 		left_join(sentiments, by = c(id_col)) 
 }
 
-listings <- add_sentiment_feature(listings, id_col = 'id', text_col = 'description') %>% 
+reviews_with_sentiments <- add_sentiment_feature(reviews, id_col = 'id', text_col = 'comments') %>% 
+	rename(reviewer_sentiment = sentiment) %>% 
+	drop_na(reviewer_sentiment) 
+
+#' Because we wrote a nice function, we can easily add a corresponding feature to a different data set. 
+
+#' MINI-EXERCISE: add a feature called "description_sentiment" to the listings data, based on the "description" column. 
+
+listings_with_sentiments <- add_sentiment_feature(listings, id_col = 'id', text_col = 'description') %>%
 	rename(description_sentiment = sentiment)
 
-reviews <- add_sentiment_feature(reviews, id_col = 'id', text_col = 'comments') %>% 
-	rename(reviewer_sentiment = sentiment) 
+#' Unfortunately, we have a bit of a problem in our data. To see it, let's look at some of the "worst" reviews: 
 
-reviews <- reviews %>% 
-	drop_na(reviewer_sentiment)
+reviews_with_sentiments %>% 
+	arrange(reviewer_sentiment) %>% 
+	head(20) %>% 
+	select(comments)
+
+#' Oops. Fortunately, the good folks at Google have written a package for detecting languages in strings. 
+
+detect_language("To boldly go where no one has gone before.")
+detect_language("Petit a petit, l’oiseau fait son nid")
+detect_language("Det finnes ingen dårlig vær, bare dårlige klær")
+
+#' EXERCISE: filter down reviews_with_sentiments so that it contains only English language reviews (in the comments field). You should be able to do this with one mutate() and one filter() call. Note that this operation may take a little while.  Once you've done that, check whether the lowest-scoring reviews are now in English. 
+
+reviews_with_sentiments <- reviews_with_sentiments %>%
+	mutate(language = detect_language(comments)) %>% 
+	filter(language == 'en')
+
+reviews_with_sentiments %>% 
+	arrange(reviewer_sentiment) %>% 
+	head(20) %>% 
+	select(comments)
 
 #' So, now we have the feature we'd like to predict: a measure of how much the user liked their stay. The next thing we want to do is add information about the listing that we can use to make predictions. So, let's add the information from the listings table to the reviews: 
 
-reviews_with_features <- reviews %>% 
-	left_join(listings, by = c('listing_id' = 'id')) 
+reviews_with_features <- reviews_with_sentiments %>% 
+	left_join(listings_with_sentiments, by = c('listing_id' = 'id')) 
+
+#' Later, we're going to work with the ratings given to the listings. Before going farther, let's drop rows that have NAs in any of the "scores" columns. There's a nice convenience function to do this: 
 
 reviews_with_features <- reviews_with_features %>% 
 	drop_na(contains('scores'))
 
-#' Next, we have a bit of a problem with the review texts. 
-#' 
-#' EXERCISE: Find the 20 reviews with the lowest value of "reviewer_sentiment." What's the problem?
-
-
-reviews_with_features <- reviews_with_features %>%
-	mutate(language = detect_language(comments))
-
-reviews_with_features <- reviews_with_features %>% 
-	filter(language == 'en')
-
-
 #' reviews_with_features is now our primary predictive data set. 
 #' Now let's see if we can spot a relationship between the description_sentiment and reviewer_sentiment columns: 
+
+#' EXERCISE: Plot reviewer_sentiment against description_sentiment. Using geom_smooth() to add a trendline. What do you see? HINT: you might find it helpful to filter out listings that don't have very many of reviews. This information is captured in the number_of_reviews column. 
 
 reviews_with_features %>% 
 	filter(number_of_reviews > 10,
@@ -169,9 +187,9 @@ reviews_with_features %>%
 	geom_point(alpha = .1) + 
 	geom_smooth()
 
-#' OPEN_ENDED EXERCISE: Working with your partner, look through the columns in reviews_with_features. Using ggplot, make a plot showing the relationship between the sentiment feature and at least one other feature. Depending on the features you try, good geoms might be geom_point(), geom_boxplot(), or geom_violin(). Feel free to do any data manipulation you might need along the way. 
+#' OPEN_ENDED EXERCISE: Working with your partner, look through the columns in reviews_with_features. Using ggplot, make a plot showing the relationship between the reviewer_sentiment feature and at least one other feature. Depending on the features you try, good geoms might be geom_point(), geom_boxplot(), or geom_violin(). Feel free to do any data manipulation you might need along the way. 
 
-#' Sample Solution 1
+#' Sample Solution 1: experienced hosts
 
 reviews_with_features %>% 
 	# filter(number_of_reviews > 10) %>% 
@@ -181,7 +199,7 @@ reviews_with_features %>%
 	geom_smooth() + 
 	scale_x_continuous(trans = 'log10')
 
-#' Sample Solution 2
+#' Sample Solution 2: review_scores_rating
 
 p <- reviews_with_features %>% 
 	filter(number_of_reviews > 10) %>% 
@@ -191,7 +209,16 @@ p <- reviews_with_features %>%
 
 p
 
-#' Sample Solution 3
+#' Sample Solution 3: superhost? 
+
+#' reviews_with_features %>% 
+reviews_with_features %>% 
+	filter(number_of_reviews > 10) %>% 
+	ggplot() + 
+	aes(x = host_is_superhost, y = reviewer_sentiment) + 
+	geom_boxplot() 
+
+#' Sample Solution 4: time of the year
 
 reviews_with_features %>% 
 	mutate(month = lubridate::month(date, label = TRUE, abbr = TRUE)) %>% 
@@ -211,7 +238,7 @@ reviews_with_features <- reviews_with_features %>%
 p + geom_smooth(method = 'lm')
 	 
 #' Normally, we want to extract statistics and get better control, so this isn't really going to work for us. We need to do something systematic. Before we do, we should *split* our data into training, validation, and test sets. 
-#' 
+
 #' 1. The training set is what we will use to optimize our model. 
 #' 2. The validation set will give us an estimate of performance on the test set. 
 #' 3. Finally, the test set will serve as the overall measure of quality for the model. 
@@ -229,16 +256,22 @@ lm_model <- lm(reviewer_sentiment~review_scores_rating, data = partition$train)
 
 lm_model %>% summary()
 
-#' However, we don't want to evaluate the model on the training set -- we want to evaluate on the test set. Fortunately, there are some nice functions in the modelr package for precisely this kind of task. 
+#' What are the important things to learn here? 
+
+#' However, we don't want to evaluate the model on the training set -- we want to evaluate on the validation (and eventually test) set. Fortunately, there are some nice functions in the modelr package for precisely this kind of task. Let's compute the validation RMSE (root mean square error).  
 
 modeled <- partition$validation %>% 
 	as_data_frame() %>% 
 	add_predictions(lm_model)
 
+#' MINI-EXERCISE: using a single summarise() call, compute the RMSE. The RMSE is defined as the square root of the mean squared difference between the model prediction and the actual value. You can find further discussion of the RMSE, including an explicit formula, here: https://en.wikipedia.org/wiki/Root-mean-square_deviation 
+
 model_rmse <- modeled %>% 
 	summarise(rmse = sqrt(mean((reviewer_sentiment - pred )^2)))
 
 model_rmse
+
+#' How does this compare to the Root Mean Square Error shown by model %>% summary()? What do we conclude? 
 
 #' Let's try to generalize this workflow a little bit. Note that R wants the specification of the dependent and independent variables in the "formula" syntax. For example: 
 
@@ -262,9 +295,12 @@ model_output <- lm_rmse(formula)
 model_output$rmse
 model_output$model %>% summary()
 
+#' MINI-EXERCISE: try regressing reviewer_sentiment against review_scores_rating and month. What do you see? 
 
 formula_2 <- as.formula(reviewer_sentiment~review_scores_rating+month)
 lm_rmse(formula_2)$rmse
+
+#' Now let's try regressing reviewer_sentiment against all the review_scores_* columns. 
 
 formula_3 <- as.formula(paste0(
 	"reviewer_sentiment~",
@@ -272,13 +308,11 @@ formula_3 <- as.formula(paste0(
 				 	keep(grepl('scores', .)) ,
 				 collapse='+')
 ))
-lm_rmse(formula_3)$rmse
+model_output <- lm_rmse(formula_3)
+model_output$rmse
+model_output$model %>% summary()
+#' Is this interpretable? What might be our issues? 
 
-#' It's worthwhile to investigate the coefficients in here: 
-
-formula_3 %>% 
-	lm(data = partition$train) %>% 
-	summary()
 
 #' EXERCISE: Working with your partner, try adding (or removing!) some variables using the formula syntax. Can you beat the validation performance of formula_3? 
 
@@ -290,7 +324,7 @@ lm_rmse(formula_4)$rmse
 
 #' So, linear models are great and all, but they can't capture nonlinear relationships. Fortunately, if we're being tidy about our code, it's easy to incorporate alternative regression functions into our pipeline. 
 
-#' Let's start by training a random forest model
+#' Let's start by training a random forest model. A random forest is a collection of slightly randomized decision trees. They often have excellent predictive performance, but can be expensive to train. 
 
 rf <- randomForest(formula, data = partition$train, ntree = 50)
 
@@ -298,13 +332,11 @@ partition$validation %>%
 	as_data_frame() %>% 
 	add_predictions(rf) 
 
-modelr::rmse(rf, partition$validation)
-
 #' Now let's generalize the lm_rmse function we wrote to take a general regressor: 
 
-regressor_rmse <- function(formula, model_class, ...){
+regressor_rmse <- function(formula, model_class, evaluate_on = partition$validation,...){
 	model <- model_class(formula, data = partition$train, ...)
-	rmse <- partition$validation %>% 
+	rmse <- evaluate_on %>% 
 		as_data_frame() %>% 
 		add_predictions(model) %>% 
 		mutate(.resid = reviewer_sentiment - pred) %>% 
@@ -313,20 +345,24 @@ regressor_rmse <- function(formula, model_class, ...){
 	return(list(model = model, rmse = rmse))
 }
 
-regressor_rmse(formula, lm)$rmse
-regressor_rmse(formula, randomForest, ntree = 5)$rmse
+regressor_rmse(formula, lm, partition$validation)$rmse
+regressor_rmse(formula, lm, partition$train)$rmse
+regressor_rmse(formula, randomForest, ntree = 5, partition$train)$rmse
+regressor_rmse(formula, randomForest, ntree = 5, partition$validation)$rmse
 
 regressor_rmse(formula_4, lm)$rmse
 regressor_rmse(formula_4, randomForest, ntree = 50)$rmse # this call might take a little while
 
 #' In this section, we built a series of regression models and tested their performance on data. Along the way, we learned how to specify models using R's formula syntax; how to extract model predictions; and how to write functions to efficiently evaluate model performance. Essentially these same principles will go into classification, which we study next. 
 
+#' OPEN-ENDED EXERCISE: Working with your partner, see if you can improve on any of these models. Add features to the formulae, using either random forest or linear regression. Measure your performance on the validation set. Once you have settled on a model, measure performance on the test set. How did you do? 
+
 
 #' ----------------------------------------------------
 #' CLASSIFICATION
 #' ----------------------------------------------------
 
-#' In  this section, we are going to focus on basic classification. We'll focus on binary classification using logistic regression. In particular, we'll try to predict whether a stay went disastrously poorly using some of the predictors we've seen so far. First, let's look at the distribution of sentiment scores. 
+#' In  this section, we are going to focus on basic classification using logistic regression. In particular, we'll try to predict whether a stay went disastrously poorly using some of the predictors we've seen so far. First, let's look at the distribution of sentiment scores. 
 
 reviews_with_features %>% 
 	ggplot() + 
@@ -350,51 +386,55 @@ partition <- resample_partition(reviews_with_features, c(train = .6, validation 
 
 model <- glm(is_disaster~description_sentiment, data = partition$train, family = 'binomial')
 
-#' As before, we can extract predictions from the model using the add_predictions function: 
+#' As before, we can extract predictions from the model using the add_predictions function. We need to give an extra parameter to specify that the response we want is the modeled probability of being a disaster. 
 
 modeled <- partition$validation %>% 
 	as_data_frame() %>% 
 	add_predictions(model, var = 'probs', type = 'response') 
 
-#' EXERCISE: Create two boxplots showing the distribution of the variable probs depending on whether the stay was a disaster or not. 
+#' EXERCISE: Create two boxplots showing the distribution of the variable probs depending on whether the stay was a disaster or not. Does it look like we are capturing any signal? 
 
 modeled %>% 
 	ggplot() + 
 	aes(x = is_disaster, y = probs, group = is_disaster) + 
 	geom_boxplot()
 
-#' A standard way to summarise the quality of a parameterized prediction algorithm is with the "Area Under the Curve." 
-
-#' Before we start messing with the model, let's write a function to assess model quality. A standard one is AUC, or "Area Under the Curve." What curve? This one! 
+#' A standard way to summarise the quality of a parameterized prediction algorithm is with the "Area Under the Curve." Which curve? This one! 
 #' Note: these functions come from the "yardstick" package. 
 
 modeled %>% 
 	roc_curve(factor(is_disaster), probs) %>% 
 	autoplot()
 
+#' Hey look, we got almost exactly a straight line! That's good, right? 
+
 #' We can extract the AUC with another convenient function:
 
 modeled %>% 
 	roc_auc(factor(is_disaster), probs)
 
-#' Like before, we'll write a function that allows us to easily compare models:
+#' Ok, so these measures are not good -- 0.5 is the lowest possible AUC score for binary classification. So, we should try a different model. Before we do, let's again write a function that allows us to easily compare models:
 
-classifier_AUC <- function(formula, model_class, ...){
+classifier_AUC <- function(formula, model_class, evaluate_on = partition$validation, ...){
 	model <- model_class(formula, data = partition$train,...)
-	AUC <- partition$validation %>% 
+	AUC <- evaluate_on %>% 
 		as_data_frame() %>% 
 		add_predictions(model, var = 'probs') %>% 
 		yardstick::roc_auc(truth = factor(is_disaster), probs) 
 	return(list(model = model, AUC = AUC))
 }
 
+#' Let's try a different formula
+
 formula_1 <- as.formula(is_disaster~description_sentiment+host_is_superhost)
 
 classifier_AUC(formula_1, glm, family = 'binomial')$AUC
 
+#' EXERCISE: Try some more formulae. How high can you get the AUC? 
+
 formula_2 <- as.formula(is_disaster~review_scores_rating+description_sentiment+host_is_superhost)
 
-classifier_AUC(formula_3, glm, family='binomial')
+classifier_AUC(formula_2, glm, family='binomial')
 
 #' Let's see if we can figure out from the data what features of a home might contribute to a disastrous stay. This formula extracts all the review scores except the overall rating. 
 
@@ -409,14 +449,7 @@ formula_3 <- as.formula(paste0(
 classifier_AUC(formula_3, glm, family = 'binomial')$model %>%
 	summary()
 
-#' Confusion matrix
-validation_with_preds <- partition$validation %>% 
-	as_data_frame() %>% 
-	mutate(pred = predict(model, 
-												newdata=., 
-												type = 'response'))
-
-#' EXERCISE: Experiment with adding, subtracting, and changing features. Can you improve the model? 
+#' Which factors appear to be the most important in determining whether a stay went disastrously wrong? This finding illustrates an important feature of statistical modeling: often we can both make predictions and learn about interpretable patterns in the data. 
 
 #' ----------------------------------------------------
 #' UNSUPERVISED LEARNING: CLUSTERING
@@ -439,7 +472,7 @@ geo <- listings_sub %>%
 #' - *K-means* clustering may be familiar to you. When we do k-means, we iteratively move a set of "centers" around in space until they are "aligned" with the data according to a least-squares criterion. 
 #' - *Spectral clustering* is a popular form of clustering in the machine learning community. The "secret sauce" is running the data through a big pile of linear algebra first, and then doing k-means in "the projected eigenspace of the normalized graph Laplacian." Don't worry about it. 
 
-k <- 20
+k <- 10
 
 clustered <- listings_sub %>% 
 	mutate(kmeans = kmeans(geo, k)$cluster,
@@ -461,7 +494,7 @@ boston_coords <- c(left   = -71.1589,
 basemap <- get_map(location = boston_coords,
 									 maptype = 'terrain')
 
-#' EXERCISE: Create a facetted pair of maps, with each pane of the facet corresponding to a clustering method, and color representing the cluster identity. You might find it useful to use color = factor(cluster) in your aesthetic -- the factor() will help ggplot interpret it as categorical, resulting in better colors. You'll probably want to use facet_wrap(~method) somewhere in your pipeline. You might also want to try appearance modifiers like guides(color = FALSE) or theme_void(). 
+#' EXERCISE: Create a faceted pair of maps, with each pane of the facet corresponding to a clustering method, and color representing the cluster identity. You might find it useful to use color = factor(cluster) in your aesthetic -- the factor() will help ggplot interpret it as categorical, resulting in better colors. You'll probably want to use facet_wrap(~method) somewhere in your pipeline. You might also want to try appearance modifiers like guides(color = FALSE) or theme_void(). 
 
 ggmap(basemap) + 
 	geom_point(aes(x = longitude, 
