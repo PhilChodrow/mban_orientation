@@ -1,4 +1,5 @@
-install.packages(c('tidytext', 'randomForest', 'yardstick', 'janeaustenr','knitr','leaflet')) 
+install.packages(c('tidytext', 'randomForest', 'yardstick', 'janeaustenr','knitr','leaflet'))
+install.packages(c('lubridate', 'fuzzyjoin', 'shiny'))
 
 library(tidyverse)
 library(tidytext)
