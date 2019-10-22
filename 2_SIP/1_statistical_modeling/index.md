@@ -22,3 +22,8 @@ By the end of this session, students will be able to:
 
 You are not ready for the session until you have successfully downloaded and run the [preassignment](https://philchodrow.github.io/mban_orientation/2_SIP/preassignment/preassignment_1.R) in RStudio. 
 
+## Session Materials
+
+- [Slides](https://philchodrow.github.io/mban_orientation/2_SIP/1_statistical_modeling/slides.html)
+- [Student script](https://philchodrow.github.io/mban_orientation/2_SIP/1_statistical_modeling/student_script.R)
+- [Full script](https://philchodrow.github.io/mban_orientation/2_SIP/1_statistical_modeling/script.R)
