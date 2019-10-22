@@ -1,7 +1,6 @@
 #' -------------------------------------------------------------------------
 #' CASE STUDY: Advanced Topics in Data Science
 #' By Phil Chodrow
-#' January 16th, 2019
 #' -------------------------------------------------------------------------
 
 #' This is the script for following along with our case-study analysis of trends 
@@ -14,9 +13,10 @@
 #' Load libraries ----------------------------------------------------------
 
 library(tidyverse) #' includes dplyr, tidyr, ggplot2, purrr
-library(broom)     #' for retrieving model predictions
 library(lubridate) #' for manipulating dates and times
 library(leaflet)   #' for geospatial visualization
+library(modelr)    #'
+library(broom)     #' for glance()
 
 #' Today we are going to continue with that AirBnB data set we used earlier
 #' in our time together. We are going to use two distinct data sets. 
@@ -35,8 +35,6 @@ library(leaflet)   #' for geospatial visualization
 #' `for(thing in things){do_something_to(thing)}`
 
 
-
-
 #' Well, that worked, but we defined a `names` vector that we don't care about
 #' and wrote five lines to achieve our aim. Let's explore a better approach. 
 
@@ -48,7 +46,6 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
 #' What do `map()` and `reduce()` do?
 
 #' EXERCISE: Working with your partner, inspect the data in the `data/listings` 
@@ -56,13 +53,9 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
-
 #' OPTIONAL EXERCISE: Generalize the last two code chunks by writing a function that 
 #' reads in all files in a given directory and returns a single data frame. 
 #' You may assume that all given files are in .csv format and have the same columns. 
-
-
 
 
 
@@ -74,6 +67,10 @@ library(leaflet)   #' for geospatial visualization
 #' process. 
 
 #' Preliminary Exploration -------------------------------------------------
+
+#' First, let's take a look at the data. 
+
+
 
 #' EXERCISE: Time to take a look to see what we have. The first version of 
 #' our analysis question is: 
@@ -93,15 +90,12 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
-
 #' EXERCISE: It might be easier to get a big-picture view by plotting the average
 #' over time. Working with the person next to you, construct a visualization of 
 #' the mean over time. 
 #' 	- Use `group_by(date) %>% summarise()`` to create a data frame holding the mean
 #' 	- You probably want `geom_line()`` again
 #'  - We are going to come back to this plot, so name it `p`
-
 
 
 
@@ -117,7 +111,6 @@ library(leaflet)   #' for geospatial visualization
 #' 
 
 
-
 #' Ok, so that's helpful, but we've seen that the seasonal variation is different
 #' between listings. Eventually, we want to fit a *different* model to *each*
 #' listing. For now, let's fit a single one. The span is a hyperparameter, a bit
@@ -127,18 +120,15 @@ library(leaflet)   #' for geospatial visualization
 
 
 #' We can get the smoothing curve as the predicted value from the model. 
-#' The most convenient way to do this is using the `augment()` function from the 
-#' `broom` package. The output is a data frame containing all the original data, 
+#' The most convenient way to do this is using the `add_predictions()` function from modelr that we introduced last time. 
+#' The output is a data frame containing all the original data, 
 #' plus the fitted model values, standard errors, and residuals. 
 
 
 
 
-#' Note that the `augment()` function returns fitted values, residuals, and 
-#' standard errors, in addition to the original columns. 
-
 #' EXERCISE: Working with your partner, plot both the  `price_per` column and 
-#' the `.fitted` column against the date. 
+#' the `pred` column against the date. 
 
 
 
@@ -155,9 +145,7 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
 #' What just happened? Maybe we should inspect things a bit: 
-
 
 
 #' Now we define our LOESS modeling function. Its first argument is a
@@ -166,12 +154,9 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
-
 #' Our next step is to use `map()` to model each of the data frames in the 
 #' data column of prices_nested. Note that we are fitting 
 #' `nrow(prices_nest) = 1,705` distinct models simultaneously with this command. 
-
 
 
 
@@ -182,11 +167,10 @@ library(leaflet)   #' for geospatial visualization
 
 
 #' Once you're comfortable with that, it's time to extract predictions from 
-#' the models. We'll use purrr::map2 and broom::augment to do this. map2 is just
+#' the models. We'll use purrr::map2 and modelr::add_predictions to do this. map2 is just
 #' like map, but it iterates over two lists simultaneously. We do this because
 #' the augment function requires both the model and the original data. 
 #' This call might take a little while.  
-
 
 
 
@@ -203,13 +187,11 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
 #' EXERCISE: Now, working with a partner, please visualize the model predictions
 #' against the actual data for the first 2000 rows. Use geom_line() for both. 
 #' You'll need to use geom_line() twice, with a different y aesthetic in each,
 #' and you should consider using facet_wrap to show each listing and its model
 #' in a separate plot. 
-
 
 
 
@@ -231,17 +213,13 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
 #' Now we can construct a new column for the part of the signal that's not 
 #' captured by either the long-term trend or the periodic oscillation:  
-
-
 
 
 #' EXERCISE: Working with your partner, plot all four columns 
 #' (price_per, trend, periodic, and remainder) as facets on the same visualization. 
 #' Start by figuring out what the following code does: 
-
 
 
 
@@ -255,12 +233,9 @@ library(leaflet)   #' for geospatial visualization
 #' visualization of the mean of the remainder column over time. What do you see?
 
 
-
-
 #' We haven't done a perfect modeling job, but we have made considerable progress
 #' toward isolating the signal in April. If we like, we can compare this picture to 
 #' the original signal p from before: 
-
 
 
 #' Now to K-Means ---------------------------------------------------------
@@ -277,7 +252,6 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
 #' EXERCISE: As you may know, R's implementation of k-means requires that 
 #' the data be stored as a matrix. Use `tidyr::spread()` to convert `april_prices` into 
 #' "wide" format, where the rows correspond to individual listings and there's a 
@@ -285,6 +259,7 @@ library(leaflet)   #' for geospatial visualization
 #' the column names and a value stating how the matrix values should be filled in. 
 #' Then, remove the `listing_id`` column with `select()`, and convert the result 
 #' to a matrix with `as.matrix()`. 
+
 
 
 
@@ -300,34 +275,10 @@ library(leaflet)   #' for geospatial visualization
 
 
 
-
-# cluster_models <- data_frame(k = rep(1:10, 10)) %>%
-#	  mutate(kclust = map(k, my_kmeans))
-
-#' Woops! We got an error due to the presence of NAs in the matrix. 
-#' But....
-
-
-
-#' So where did the NAs come from? Missing data, that's where! 
-
-#' ----------------------------------------------------------------------------
-#' 
-#' ----------------------------------------------------------------------------
-
-#' EXERCISE: Modify the block in which you constructed april_prices so that only 
-#' listings are shown which have complete data for the entire month of April. 
-#' Some useful functions include `complete()` and `is.na()`. You might also want 
-#' to try combining `group_by()` with `filter()`. Once you've done this
-
-
-
-
 #' Model Evaluation ------------------------------------------------------------
 
 #' How do we know how many clusters to use? One way is to extract a summary of 
 #' each model using `broom::glance()`. Here's how that looks for a single model: 
-
 
 
 #' EXERCISE: Extract the model summary using glance for each model, and then 
@@ -346,7 +297,6 @@ library(leaflet)   #' for geospatial visualization
 #' chosen value of k. 
 
 
-
 #' Let's inspect the clustered series. To do this, we need to add the 
 #' predictions to prices_for_clustering and use `gather()`: 
 
@@ -357,6 +307,9 @@ library(leaflet)   #' for geospatial visualization
 #' Moment of Truth!
 
 
+#' Showing the mean
+
+	
 
 
 #' Geospatial Visualization ----------------------------------------------------
@@ -369,8 +322,11 @@ library(leaflet)   #' for geospatial visualization
 #' we need to remove all the duplicates in `prices_clustered`.  
 
 
+
 #' Now we'll plot using leaflet, an interative geospatial 
 #' visualization library. 
+
+
 
 
 #' Does this map support or testify against our hypothesis?

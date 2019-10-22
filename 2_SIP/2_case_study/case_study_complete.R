@@ -13,9 +13,10 @@
 #' Load libraries ----------------------------------------------------------
 
 library(tidyverse) #' includes dplyr, tidyr, ggplot2, purrr
-library(broom)     #' for retrieving model predictions
 library(lubridate) #' for manipulating dates and times
 library(leaflet)   #' for geospatial visualization
+library(modelr)    #'
+library(broom)     #' for glance()
 
 #' Today we are going to continue with that AirBnB data set we used earlier
 #' in our time together. We are going to use two distinct data sets. 
@@ -93,7 +94,6 @@ prices %>% summary() # see a problem?
 prices <- prices %>% 
 	filter(price_per < 1000)
 
-
 #' EXERCISE: Time to take a look to see what we have. The first version of 
 #' our analysis question is: 
 #' 
@@ -145,7 +145,7 @@ p
 #' default option for `geom_smooth`:
 #' 
 
-p + geom_smooth()
+p + geom_smooth(span = .2)
 
 #' Ok, so that's helpful, but we've seen that the seasonal variation is different
 #' between listings. Eventually, we want to fit a *different* model to *each*
@@ -162,15 +162,15 @@ single_model
 single_model %>% summary()
 
 #' We can get the smoothing curve as the predicted value from the model. 
-#' The most convenient way to do this is using the `augment()` function from the 
-#' `broom` package. The output is a data frame containing all the original data, 
+#' The most convenient way to do this is using the `add_predictions()` function from modelr that we introduced last time. 
+#' The output is a data frame containing all the original data, 
 #' plus the fitted model values, standard errors, and residuals. 
 
-model_preds <- broom::augment(single_model, model_data) 
+model_preds <- model_data %>% 
+	add_predictions(single_model)
+	
 model_preds %>% head()
 
-#' Note that the `augment()` function returns fitted values, residuals, and 
-#' standard errors, in addition to the original columns. 
 
 #' EXERCISE: Working with your partner, plot both the  `price_per` column and 
 #' the `.fitted` column against the date. 
@@ -178,7 +178,7 @@ model_preds %>% head()
 model_preds %>%
 	ggplot(aes(x = date)) + 
 	geom_line(aes(y = price_per)) + 
-	geom_line(aes(y = .fitted), color = 'red')
+	geom_line(aes(y = pred), color = 'red')
 
 #' Now, how can we do this many times, for each listing? 
 #' If you said `map()`, you are absolutely on point. However, we need a strange 
@@ -212,7 +212,7 @@ my_loess <- function(data, span){
 #' `nrow(prices_nest) = 1,705` distinct models simultaneously with this command. 
 
 prices_with_models <- prices_nested %>% 
-	mutate(model = map(data, my_loess, span = .25))
+	mutate(model = map(data, my_loess, span = .2))
 
 #' Just like there are data frames in the data column, there are statistical 
 #' models in the model column. Let's inspect that column to make sure it has 
@@ -221,13 +221,13 @@ prices_with_models <- prices_nested %>%
 prices_with_models$model[[1]] %>% summary()
 
 #' Once you're comfortable with that, it's time to extract predictions from 
-#' the models. We'll use purrr::map2 and broom::augment to do this. map2 is just
+#' the models. We'll use purrr::map2 and modelr::add_predictions to do this. map2 is just
 #' like map, but it iterates over two lists simultaneously. We do this because
 #' the augment function requires both the model and the original data. 
 #' This call might take a little while.  
 
 prices_with_preds <- prices_with_models %>%
-	mutate(preds = map2(model,data, augment))
+	mutate(preds = map2(data, model, add_predictions))
 
 #' Hey look, another list column of data frames! You may want to inspect this 
 #' column too, for example: 
@@ -242,7 +242,7 @@ prices_modeled <- prices_with_preds %>%
 #' generated. Let's rename the .fitted column "trend" instead:
 
 prices_modeled <- prices_modeled %>% 
-	rename(trend = .fitted) 
+	rename(trend = pred) 
 
 #' EXERCISE: Now, working with a partner, please visualize the model predictions
 #' against the actual data for the first 2000 rows. Use geom_line() for both. 
@@ -277,7 +277,7 @@ prices_modeled %>%
 prices_modeled <- prices_modeled %>% 
 	mutate(weekday = wday(date, label = TRUE)) %>% #' compute the weekday
 	group_by(listing_id, weekday) %>% 
-	mutate(periodic = mean(.resid)) %>% 
+	mutate(periodic = mean(price_per - trend)) %>% 
 	ungroup()
 
 #' Now we can construct a new column for the part of the signal that's not 
@@ -292,14 +292,14 @@ prices_modeled <- prices_modeled %>%
 
 prices_modeled %>% 
 	head(1500) %>% 
-	select(-.se.fit, -.resid, -weekday) %>% 
+	select(-weekday) %>% 
 	tidyr::gather(metric, value, -listing_id, -date) 
 
 #' Now build from there
 
 prices_modeled %>% 
 	head(1500) %>% 
-	select(-.se.fit, -.resid, -weekday) %>% 
+	select(-weekday) %>% 
 	gather(metric, value, -listing_id, -date) %>% 
 	mutate(metric = factor(metric, c('price_per',
 									 'trend',
