@@ -6,7 +6,6 @@ library(yardstick)
 library(janeaustenr)
 library(kernlab)
 
-
 #' what does this code do? 
 austen_books() %>% 
 	unnest_tokens(word, text) %>% 

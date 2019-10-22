@@ -1,0 +1,80 @@
+---
+title: "Machine Learning in R"
+author: "Phil Chodrow"
+date: "Wednesday, October 23rd, 2019"
+output: 
+  revealjs::revealjs_presentation:
+    slide_level: 2
+    css: slides.css
+    self_contained: true
+    reveal_options:
+      slideNumber: false
+      controls: false
+      center: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, out.width = "300px", out.height = "350px", fig.align="center")
+```
+
+## {.noborder}
+
+<center>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">&quot;When we raise money it’s AI, when we hire it&#39;s machine learning, and when we do the work it&#39;s logistic regression.&quot;<br><br>(I&#39;m not sure who came up with this but it&#39;s a gem 💎)</p>&mdash; Daniela Witten (@daniela_witten) <a href="https://twitter.com/daniela_witten/status/1177294449702928384?ref_src=twsrc%5Etfw">September 26, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
+
+
+## Data Science Is: 
+
+> - Gathering **data that matters.**
+> - Asking **questions that matter** about your data. 
+> - **Choosing appropriate methods**  to answer those questions. 
+> - **Implementing solutions** that meet stakeholder needs. 
+
+## My ~~Favorite~~ Second Favorite Picture 
+
+```{r, out.height = 300, out.width = 800, echo = FALSE, fig.align='center'}
+knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.png')
+```
+
+(*Image credit: Hadley Wickham*)
+
+- Last time: exploratory data analysis and visualization. 
+- This time: modeling. 
+
+## {.noborder}
+
+```{r} 
+knitr::include_graphics('https://imgs.xkcd.com/comics/machine_learning.png')
+```
+
+## Agenda for Today
+
+1. Functions and reusable code. 
+2. Elementary feature engineering (text analysis).
+3. Regression modeling: linear, random forest regression. 
+4. Classification: logistic regression. 
+5. Clustering: k-means and spectral 
+
+**Running theme**: using tidy tools to think critically and flexibly about your models.  
+
+## Exercise 0
+
+<div id='left'>
+> 1. Look left.
+> 2. Look right.
+> 3. Pick a partner (groups of 3 are fine). 
+> 4. Give them a professional, yet friendly smile. 
+> 5. You are going to need them soon. 
+
+</div>
+
+<div id='right'>
+<div class='fragment'>
+```{r, out.width = 500, out.height = 300}
+knitr::include_graphics('figures/0602-sir-patrick-stewart.jpg')
+```
+</div>
+</div>
+
+
