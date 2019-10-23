@@ -380,7 +380,8 @@ reviews_with_features %>% summarise(mean(is_disaster))
 
 #' We have added a new feature, so we need to re-partition the data. 
 
-partition <- resample_partition(reviews_with_features, c(train = .6, validation = .2, test = .2))
+partition <- resample_partition(reviews_with_features, 
+																c(train = .6, validation = .2, test = .2))
 
 #' Now we're ready for logistic regression. Logistic regression uses the "glm" function with "family = binomial" specified.  
 
@@ -451,7 +452,6 @@ classifier_AUC(formula_3, glm, family = 'binomial')$model %>%
 
 #' Which factors appear to be the most important in determining whether a stay went disastrously wrong? This finding illustrates an important feature of statistical modeling: often we can both make predictions and learn about interpretable patterns in the data. 
 
-#' ----------------------------------------------------
 #' UNSUPERVISED LEARNING: CLUSTERING
 #' ----------------------------------------------------
 #' When performing unsupervised learning like clustering, we don't usually have an objective function that can be used to measure the quality of our model. Often, this requires us to be creative in how we measure the success of a supervised learning model. 
