@@ -31,6 +31,10 @@ Also please download the student script (below) and save it in your favored work
 
 ## Session Materials
 
-- [Student script](https://philchodrow.github.io/mban_orientation/2_SIP/3_advanced_topics/script_student.R)
+All of the following scripts should be placed in the same directory. You may need to change the data paths in the first three to match where you've saved the `listings` and `calendar` AirBnB datasets. 
+
+- [Student script](https://philchodrow.github.io/mban_orientation/2_SIP/3_advanced_topics/script_student.R) 
 - [Full script](https://philchodrow.github.io/mban_orientation/2_SIP/3_advanced_topics/script_complete.R)
+- [Shiny prep script](https://philchodrow.github.io/mban_orientation/2_SIP/3_advanced_topics/shiny_prep.R) (this is a required initialization script for the shiny app)
+- [Shiny App](https://philchodrow.github.io/mban_orientation/2_SIP/3_advanced_topics/app.R)
 - [Join Slides](https://philchodrow.github.io/mban_orientation/2_SIP/3_advanced_topics/joins.pdf)
