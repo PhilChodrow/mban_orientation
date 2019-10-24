@@ -1,6 +1,5 @@
 
-#' Load libraries ----------------------------------------------------------
-setwd("~/Documents/mit/class/mban_orientation/2_SIP/3_advanced_topics")
+setwd("~/classes/mban_orientation/2_SIP/3_advanced_topics")
 
 library(tidyverse) #' includes dplyr, tidyr, ggplot2
 library(lubridate) #' for manipulating dates and times
@@ -23,7 +22,7 @@ creme_de_la_creme = listings %>%
         vars(starts_with("review_scores")), 
         function(x) x > mean(x, na.rm = T)) %>%
     ungroup() %>%
-    select(id, neighbourhood_cleansed, property_type,
+    select(id, name, neighbourhood_cleansed, property_type,
            accommodates, bedrooms, bathrooms, 
            latitude, longitude) # Picking out some columns
 
@@ -75,9 +74,12 @@ get_availability_table = function(ndays, npeople){
 
 
 weekend_of = ymd(20191108)
+ndays = 4
+npeople = 4
 
 toplot = get_availability_table(ndays, npeople) %>%
     filter(stay_start == weekend_of)
+
     
 toplot %>% 
     gather(type, number, accommodates, bedrooms, bathrooms) %>%
