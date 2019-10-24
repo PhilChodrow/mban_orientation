@@ -35,7 +35,7 @@ Additionally, please download and run the [preassignment](https://philchodrow.gi
 
 1. [Statistical Modeling and Machine Learning with R](https://philchodrow.github.io/mban_orientation/2_SIP/1_statistical_modeling/index.html)
 2. [Case Study: Navigating the Cycle of Data Science](https://philchodrow.github.io/mban_orientation/2_SIP/2_case_study/index.html) 
-3. [Interactive Data Products with Shiny](https://philchodrow.github.io/mban_orientation/2_SIP/3_interactive/index.html)
+3. [Interactive Data Products with Shiny](https://philchodrow.github.io/mban_orientation/2_SIP/3_advanced_topics/index.html)
 
 
 
