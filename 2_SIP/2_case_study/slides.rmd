@@ -2,7 +2,7 @@
 title: "Advanced Topics in Data Science"
 subtitle: "*MBAn R Workshop*"
 author: "Phil Chodrow"
-date: "January 16th, 2019"
+date: "October 24th, 2019"
 output: 
   revealjs::revealjs_presentation:
     slide_level: 2
@@ -26,9 +26,6 @@ prices <- list.files('data/prices', full.names = T) %>%
   reduce(rbind)
 ```
 
-# Good Morning
-
-
 
 ## Some Draft Session Titles
 
@@ -36,8 +33,8 @@ prices <- list.files('data/prices', full.names = T) %>%
 
 >- Don't Write For Loops   
 >- Stupid Data Frame Tricks
->- Stupid Data Frame *Methods*
->- ***"Advanced Topics in Data Science"*** ("I Give Up On Descriptive Names")
+>- **"Advanced Topics in Data Science"** ("I Give Up On Descriptive Names")
+>- ***Case Study: Navigating the Cycle of Data Science***
 
 <br/>
 
@@ -45,17 +42,14 @@ prices <- list.files('data/prices', full.names = T) %>%
 So, uh, what are we actually doing here?
 </div>
 
-## What's Data Science? {.center}
 
-<div class='fragment'>
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">New data scientist definition: A data scientist is a statistician who is wearing a bow tie 😝</p>&mdash; Hadley Wickham (@hadleywickham) <a href="https://twitter.com/hadleywickham/status/906146116412039169?ref_src=twsrc%5Etfw">September 8, 2017</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+## Data Science Is: 
 
-</div>
+> - Gathering **data that matters.**
+> - Asking **questions that matter** about your data. 
+> - **Choosing appropriate methods**  to answer those questions. 
+> - **Implementing solutions** that meet stakeholder needs. 
 
-## Checks out
-
-![](https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg)
 
 ## Recall My Favorite Picture
 
@@ -76,7 +70,7 @@ knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.
 <br/>
 (*Image credit: Hadley Wickham*)
 
-## Back in August, We Did...
+## Previously, We Did...
 
 <br/>
 
@@ -103,7 +97,7 @@ knitr::include_graphics('https://ismayc.github.io/moderndiver-book/images/tidy1.
 
 ## Impress This Guy
 
-```{r, out.height = 500, echo = FALSE}
+```{r, out.height = 500, out.width=500, echo = FALSE}
 knitr::include_graphics('figs/not_impressed.jpg')
 ```
 
@@ -127,7 +121,7 @@ knitr::include_graphics('figs/not_impressed.jpg')
 > 5. Maybe a handshake too. 
 
 <div class = 'fragment'>
-```{r, out.height = 350,  echo = FALSE, fig.align='center'}
+```{r, out.height = 350, out.width=450,  echo = FALSE, fig.align='center'}
 knitr::include_graphics('figs/handshake.jpg')
 ```
 </div>
@@ -365,35 +359,35 @@ knitr::include_graphics('figs/kmeans1.png')
 
 # Case Study, Part 4 {.center}
 
-## Explicitly Missing Data and `NA`
+<!-- ## Explicitly Missing Data and `NA` -->
 
-```{r, echo = FALSE}
-df <- data_frame('Station' = c('Enterprise D', 'Enterprise D', 'Deep Space 9', 'Deep Space 9'),
-           'Officer' = c('Captain', 'XO', 'Captain', 'XO'),
-           'Name' = c('Picard', 'Riker', 'Sisko', NA)) 
-df %>% kable()
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- df <- data_frame('Station' = c('Enterprise D', 'Enterprise D', 'Deep Space 9', 'Deep Space 9'), -->
+<!--            'Officer' = c('Captain', 'XO', 'Captain', 'XO'), -->
+<!--            'Name' = c('Picard', 'Riker', 'Sisko', NA))  -->
+<!-- df %>% kable() -->
+<!-- ``` -->
 
-## Implicitly Missing Data
+<!-- ## Implicitly Missing Data -->
 
-> A combination of factors is **implicitly missing** is there's simply no row corresponding to it.
+<!-- > A combination of factors is **implicitly missing** is there's simply no row corresponding to it. -->
 
-```{r, echo = FALSE}
-df <- df[1:3,]
-df %>% kable()
-```
+<!-- ```{r, echo = FALSE} -->
+<!-- df <- df[1:3,] -->
+<!-- df %>% kable() -->
+<!-- ``` -->
 
-There "should" be $2\times 2 = 4$ rows in this DF. Who is the XO on Deep Space 9? 
+<!-- There "should" be $2\times 2 = 4$ rows in this DF. Who is the XO on Deep Space 9?  -->
 
-## Implicit $\rightarrow$ Explicit
+<!-- ## Implicit $\rightarrow$ Explicit -->
 
-Use `tidyr::complete` to add rows for implicitly missing data: 
+<!-- Use `tidyr::complete` to add rows for implicitly missing data:  -->
 
-```{r, echo = TRUE}
-df %>% complete(Station, Officer) %>% kable() 
-```
+<!-- ```{r, echo = TRUE} -->
+<!-- df %>% complete(Station, Officer) %>% kable()  -->
+<!-- ``` -->
 
-OK: ready for K-means! 
+<!-- OK: ready for K-means!  -->
 
 # Case Study, Part 5 {.center}
 
