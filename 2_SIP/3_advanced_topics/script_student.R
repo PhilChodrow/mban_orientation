@@ -179,13 +179,10 @@ listings %>%
 #' ----------------------------------------------
 #' SOLUTION
 #' ----------------------------------------------
-#' You can use `arrange` to order the rows `review_scores_rating` first, then `review_scores_cleanliness`
-#' and use `row_number()` within the group to get the rank. 
-listings %>% 
-    select(id, neighbourhood_cleansed, review_scores_rating, review_scores_cleanliness) %>% 
-    group_by(neighbourhood_cleansed) %>%
-    arrange(desc(review_scores_rating), desc(review_scores_cleanliness)) %>%
-    mutate(neighb_rank = row_number())
+
+
+
+
 
 
 #' ----------------------------------------------
@@ -356,12 +353,9 @@ listings %>%
 #' ----------------------------------------------
 #' SOLUTION
 #' ----------------------------------------------
-creme_de_la_creme = listings %>%
-    group_by(neighbourhood_cleansed) %>%
-    filter_at(
-        vars(starts_with("review_scores")), 
-        function(x) x > mean(x, na.rm = T)) %>%
-    ungroup()
+
+
+
 
 #' ----------------------------------------------
 #' EXERCISE 3: Window functions
@@ -399,40 +393,10 @@ month(ymd("2019-01-01"), label=TRUE)
 #' ----------------------------------------------
 #' SOLUTION
 #' ----------------------------------------------
-avail = calendar %>% 
-    group_by(listing_id) %>%
-    arrange(date, .by_group = T) %>% 
-    mutate(total_price = adjusted_price + lead(adjusted_price, 1), 
-           available_both = available & lead(available, 1)) %>% 
-    ungroup() %>% 
-    filter(
-        available_both,
-        year(date) == 2019,
-        month(date) == 11,
-        weekdays(date) == "Friday", 
-        2 >= minimum_nights, 
-        2 <= maximum_nights) %>%
-    select(listing_id, date, total_price)
 
-#' Ok there's one small issue here: if we wanted a 5-day stay instead of a 2-day stay, 
-#' typing out all the lead(...) calls would get painful real fast. 
-#' 
-#' There's some special packages that make "rolling" versions of functions easier (moving average, 
-#' rolling sum etc) which could be helpful here. Another way to fix this will be through joins as we will 
-#' see in just a bit. 
 
-#' ----------------------------------------------
-#' WARNING
-#' ----------------------------------------------
-#' When using `lag/lead`, make sure that the time series data is *COMPLETE*. 
-#' In many cases, there might be implicit missing values, i.e. days where the row 
-#' is ommitted (e.g. for product sales because there were no sales on that day). 
-#' In that case, `lead(sales)` will give the value of sales in the next row, which might 
-#' not be the next day as desired. 
-#' 
-#' Though we won't cover them here there are several function to help you convert
-#' implicit missing rows to explicit NA rows, e.g. `complete()` or `crossing()`
 
+ 
 
 #' ----------------------------------------------
 #' CASE_WHEN
@@ -542,34 +506,12 @@ avail_long %>%
 ndays = 4
 
 avail = avail_long %>%
-    filter(diff_days >= 0,
-           diff_days < ndays, 
-           ndays >= minimum_nights, 
-           ndays <= maximum_nights) %>%
-    group_by(listing_id, stay_start) %>%
-    summarise(total_price = sum(adjusted_price), 
-              available_all = all(available)) %>%
-    ungroup() %>%
-    filter(available_all) %>%
-    select(listing_id, stay_start, total_price) 
+    filter() %>%
+    summarise() %>%
+    ungroup() %>% # Not necessary but good practice
+    filter() %>%
+    select() 
 
-#' Here's what happened. When we joined on just `listing_id`, there were lots of cross-matches
-#' and therefore row duplication. For example, the LHS row (3781, 2019-11-01) matched 61 rows on the RHS, 
-#' i.e. all 61 Nov/Dec calendar days for that listing. LHS row (3781, 2019-11-08) also matched those rows, 
-#' adding another 61 rows. 
-#' 
-#' The date on the LHS (which is one of the November Fridays) is a potential start date for our stay. 
-#' The date on the RHS is a (potentially invalid) option for the stay's end. 
-#' 
-#' We could then treat these sets of 61 rows for each listing/stay start as groups, filtering to 
-#' those within the appropriate number of days of the LHS date and summarising them to get the 
-#' appropriate prices/availability. 
-#' 
-#' Of course, this comes at a cost: in joining we created an intermediate table with a lot more rows
-#' (one for every matching combination). We tried to keep that number as low as possible by filtering
-#' the LHS to Nov Fridays only and the RHS to Nov/Dec only, but that's still (5 Nov Fridays) * (61 days) = 
-#' 305 rows per listing. If we hadn't filtered, we would have had (365 * 365)  rows per listing, which
-#' would have been huge.
 
 
 #' ----------------------------------------------

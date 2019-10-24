@@ -73,7 +73,8 @@ get_availability_table = function(ndays, npeople){
 }
 
 
-
+ndays = 4
+npeople = 4
 weekend_of = ymd(20191108)
 
 toplot = get_availability_table(ndays, npeople) %>%
